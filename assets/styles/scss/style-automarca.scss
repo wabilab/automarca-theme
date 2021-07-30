@@ -197,6 +197,10 @@ strong {
 
     font-size: 18px;
 
+    &.subtitle {
+        font-weight: 400;
+    }
+
     @media (max-width: 1199.99px) {
         font-size: 16px;
     }
@@ -1526,7 +1530,7 @@ footer {
     padding-top: 0;
     padding-bottom: 0;
 
-    @media(max-width: 991.98px) {
+    @media (max-width: 991.98px) {
         padding-top: 20px;
         padding-bottom: 20px;
     }
@@ -1545,7 +1549,7 @@ footer {
         width: 100%;
 
         li {
-          border-top: 1px solid #FFF; 
+            border-top: 1px solid #FFF;
         }
     }
 
@@ -1602,6 +1606,7 @@ footer {
         @media (max-width: 1499.98px) {
             margin: 0 10px;
         }
+
         @media (max-width: 1399.98px) {
             margin: 0 30px;
         }
@@ -1619,7 +1624,6 @@ footer {
             padding: 10px 0;
             margin: 0;
         }
-
 
         &:after {
             content: attr(data-text);
@@ -1650,9 +1654,9 @@ footer {
             left: 0;
             transition: all .3s ease-in-out;
 
-            @media(max-width: 991.98px) {
+            @media (max-width: 991.98px) {
                 bottom: 5px;
-            } 
+            }
         }
 
         &.active {
@@ -1795,11 +1799,11 @@ footer {
             padding: 10px 0;
             margin: 0 20px;
         }
+
         @media (max-width: 991.98px) {
             padding: 10px 0;
             margin: 0;
         }
-        
 
         &:first-child {
             margin-left: 0;
@@ -2648,5 +2652,29 @@ footer {
         .title-2 {
             margin-bottom: 30px;
         }
+    }
+}
+
+.car-thumb-slider {
+    margin-top: 20px;
+    margin-left: -20px;
+
+    .slick-slide {
+        padding-left: 20px;
+    }
+
+    .slick-list {
+        width: 90%;
+        margin: 0 auto;
+    }
+
+    .slick-next::before, .slick-prev::before {
+        font-family: "automarca";
+        font-size: 20px;
+        line-height: 1;
+        color: #000;
+        opacity: 1;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
     }
 }
