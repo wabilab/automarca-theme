@@ -387,4 +387,29 @@ $(function () {
         };
         return filter;
     }
+
+    // CAR IMG SLIDER
+    $(".car-img-slider").slick({
+      lazyLoad: "ondemand",
+      slidesToShow: 1,
+      slidesToScroll: 1,
+      dots: false,
+      arrows: false,
+      infinite: true,
+      responsive: [],
+      asNavFor: '.car-thumb-slider'
+    });
+    // car-img-slider
+
+    $(".car-thumb-slider").slick({
+      lazyLoad: "ondemand",
+      slidesToShow: 4,
+      slidesToScroll: 1,
+      dots: false,
+      arrows: true,
+      infinite: true,
+      responsive: [],
+      asNavFor: '.car-img-slider'
+    });
+    // CAR THUMB SLIDER
 });
