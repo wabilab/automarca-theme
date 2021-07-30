@@ -1,0 +1,135 @@
+// Sizes
+
+// $margin-none: 0;
+// $margin-sm: 5;
+// $margin-base: 15;
+// $margin-lg: 30;
+// $margin-xl: 50;
+// $margin-xxl: 100;
+
+// $padding-xxl: 100;
+// $padding-xl: 50;
+// $padding-lg: 30;
+// $padding-base: 15;
+// $padding-sm: 5;
+// $padding-none: 0;
+
+@mixin make-paddings($class, $padding) {
+    .pad-#{$class}-#{$padding} {
+        padding: ($padding * 1px) !important;
+    }
+
+    .pad-l-#{$class}-#{$padding} {
+        padding-left: ($padding * 1px) !important;
+    }
+
+    .pad-r-#{$class}-#{$padding} {
+        padding-right: ($padding * 1px) !important;
+    }
+
+    .pad-t-#{$class}-#{$padding} {
+        padding-top: ($padding * 1px) !important;
+    }
+
+    .pad-b-#{$class}-#{$padding} {
+        padding-bottom: ($padding * 1px) !important;
+    }
+
+    .pad-y-#{$class}-#{$padding} {
+        @extend .pad-t-#{$class}-#{$padding};
+
+        @extend .pad-b-#{$class}-#{$padding};
+    }
+
+    .pad-x-#{$class}-#{$padding} {
+        @extend .pad-l-#{$class}-#{$padding};
+
+        @extend .pad-r-#{$class}-#{$padding};
+    }
+}
+
+@mixin make-margins($class, $margin) {
+    .mar-#{$class}-#{$margin} {
+        margin: ($margin * 1px) !important;
+    }
+
+    .mar-l-#{$class}-#{$margin} {
+        margin-left: ($margin * 1px) !important;
+    }
+
+    .mar-r-#{$class}-#{$margin} {
+        margin-right: ($margin * 1px) !important;
+    }
+
+    .mar-t-#{$class}-#{$margin} {
+        margin-top: ($margin * 1px) !important;
+    }
+
+    .mar-b-#{$class}-#{$margin} {
+        margin-bottom: ($margin * 1px) !important;
+    }
+
+    .mar-v-#{$class}-#{$margin} {
+        @extend .mar-t-#{$class}-#{$margin};
+
+        @extend .mar-b-#{$class}-#{$margin};
+    }
+
+    .mar-h-#{$class}-#{$margin} {
+        @extend .mar-l-#{$class}-#{$margin};
+
+        @extend .mar-r-#{$class}-#{$margin};
+    }
+}
+
+@mixin make-all-paddings($class) {
+    @for $i from 0 through 150 {
+        @include make-paddings($class, $i);
+    }
+
+    // @include make-paddings($class, $padding-base);
+    // @include make-paddings($class, $padding-lg);
+    // @include make-paddings($class, $padding-xl);
+    // @include make-paddings($class, $padding-xxl);
+}
+
+@mixin make-all-margins($class) {
+    @for $i from 0 through 150 {
+        @include make-margins($class, $i);
+    }
+
+    // @include make-margins($class, $margin-none);
+    // @include make-margins($class, $margin-sm);
+    // @include make-margins($class, $margin-base);
+    // @include make-margins($class, $margin-lg);
+    // @include make-margins($class, $margin-xl);
+    // @include make-margins($class, $margin-xxl);
+}
+
+@include make-all-paddings(xxl);
+@include make-all-margins(xxl);
+
+@media (max-width: 1399.98px) {
+    @include make-all-paddings(xl);
+    @include make-all-margins(xl);
+}
+
+@media (max-width: 1199.98px) {
+    @include make-all-paddings(lg);
+    @include make-all-margins(lg);
+}
+
+@media (max-width: 991.98px) {
+    @include make-all-paddings(md);
+    @include make-all-margins(md);
+}
+
+@media (max-width: 767.98px) {
+    @include make-all-paddings(sm);
+    @include make-all-margins(sm);
+}
+
+@media (max-width: 575.98px) {
+    @include make-all-paddings(xs);
+    @include make-all-margins(xs);
+}

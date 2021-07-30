@@ -1,0 +1,25 @@
+{
+    "classPrefix": "",
+    "enableClasses": true,
+    "enableJSClass": true,
+    "scriptGlobalName": "window",
+    "usePrefixes": true,
+    "minify": false,
+    "options": [
+      "atRule",
+      "domPrefixes",
+      "hasEvent",
+      "html5shiv",
+      "html5printshiv",
+      "load",
+      "mq",
+      "prefixed",
+      "prefixes",
+      "prefixedCSS"
+    ],
+    "feature-detects": [
+      "dom/intersection-observer",
+      "dom/mutationObserver",
+      "img/webp",
+    ],
+}
