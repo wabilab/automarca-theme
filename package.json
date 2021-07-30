@@ -50,6 +50,7 @@
     "browsersync": "gulp browsersync"
   },
   "dependencies": {
+    "@googlemaps/js-api-loader": "^1.12.1",
     "@popperjs/core": "^2.9.2",
     "acorn": "^8.4.1",
     "bootstrap": "^5.0.1",
