@@ -114,7 +114,7 @@ function get_search_results_count(WP_REST_Request $request){
                     'type' => 'NUMERIC'
                 );
             }else if($key == 'novice') {
-                if($value == true){
+                if($value == 'true'){
                     $meta_query = array(
                         'key' => 'cv',
                         'value' => 95 ,

@@ -3,6 +3,8 @@
 /**
  * Pagina Home
  */
+session_start();
+$_SESSION['test'] = 'true';
 
 get_header(); ?>
 <main class="page-wrapper">
