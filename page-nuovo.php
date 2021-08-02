@@ -17,7 +17,7 @@ $filtri = array(
 	'alimentazione' => str_replace('_', ' ' , $alimentazione),
 );
 
-if($filtri['marca'] == 'benzina verde' || $filtri['marca'] == 'diesel' || $filtri['marca'] == 'gpl' || $filtri['marca'] == 'ibrida' || $filtri['marca'] == 'metano') {
+if($filtri['marca'] == 'benzina verde' || $filtri['marca'] == 'diesel' || $filtri['marca'] == 'gpl' || $filtri['marca'] == 'ibrida' || $filtri['marca'] == 'metano' || $filtri['marca'] == 'elettrica') {
 	$filtri['alimentazione'] = $filtri['marca'];
 	$filtri['marca'] = '';
 	$filtri['modello'] = '';
@@ -49,7 +49,7 @@ foreach($filtri as $k => $q){
 }
 
 foreach($_GET as $k => $v){
-	if($v != 'all' && $v != ''){
+	if($v != 'all' && $v != '' && $k != 'order'){
 		if($k == 'maxPrice'){
 			$arr = array(
 				'key' => 'prezzo',
@@ -105,12 +105,24 @@ if((count($_GET) == 1 && isset($_GET['pagina'])) || count($_GET) == 0 ){
 	$concat = '&';
 }
 
+
+if(isset($_GET['order'])){
+	$orderarr = explode('_' , $_GET['order']);
+}else{
+	$orderarr[] = 'prezzo';
+	$orderarr[] = 'desc';
+}
+
+
 $paged = isset($_GET['pagina']) ? $_GET['pagina'] : 1;
 $args = array(
 	'post_type' => 'auto-in-vendita',
 	'posts_per_page' => '6',
 	'paged' => $paged,
 	'meta_query' => $queryArr,
+	'meta_key' =>$orderarr[0],
+	'orderby' => 'meta_value',
+	'order' => strtoupper($orderarr[1])
 );
 $cars = new WP_Query($args);
 
@@ -270,11 +282,11 @@ get_header();
 							<div class="cars-search-title title-2"><?= count($cars -> posts) * $page_num; ?> Offerte per la tua ricerca</div>
 							<div class="cars-order d-flex">
 								<p>Ordina:</p>
-								<select class="form-select order-select" name="order" id="order" aria-label="Ordina">
-									<option value="price_asc">prezzo - crescente</option>
-									<option value="price_desc">prezzo - decrescente</option>
-									<option value="model_asc">Modello (A - Z)</option>
-									<option value="model_desc">Modello (Z - A)</option>
+								<select class="form-select-2 order-select" name="order" id="order" aria-label="Ordina">
+									<option value="prezzo_asc">prezzo - crescente</option>
+									<option value="prezzo_desc">prezzo - decrescente</option>
+									<option value="modello_asc">Modello (A - Z)</option>
+									<option value="modello_desc">Modello (Z - A)</option>
 									<option value="km_asc">km - crescente</option>
 									<option value="km_desc">km - decrescente</option>
 								</select>
@@ -288,13 +300,11 @@ get_header();
 								if($query != 'AND' && $query['value'] != '') :
 								?>
 							<div class="automarca-active-filter">
-								<span class="filter-widged"><?= $query['key'].'='.$query['value'] ?></span><span href="" class="remove-filter" data-filter="" data-type="<?= $query['key'] ?>" ></span>
+								<span class="filter-widged"><?= $query['value'] ?></span><span href="" class="remove-filter" data-filter="" data-type="<?= $query['key'] ?>" ></span>
 							</div>
 							<?php 
 						endif;
 						} 
-
-						var_dump($queryArr);
 						?>
 						</div>
 						<div class="remove-all-container mt-3">
