@@ -127,7 +127,6 @@ get_header();
 		</div>
 	</header>
 	<?php 
-	var_dump($_SESSION);
 	?>
 	<section class="container-fluid section section-padding-sm cars-search-grid-container">
 		<div class="row justify-content-center">
@@ -347,12 +346,14 @@ get_header();
 							<div class="col-12">
 								<nav aria-label="Page navigation example">
 									<ul class="pagination automarca-pagination justify-content-center d-none d-xl-flex">
+										<?php if($paged != 1) : ?>
 										<li class="page-item flex-grow-1">
 											<a class="page-link text-link prev" href="<?= $url_params .$concat ?>pagina=<?= $paged - 1?>" aria-label="Previous">
 												<span class="arrow"></span><span class="d-none d-sm-inline">Precedente</span>
 											</a>
 										</li>
 										<?php
+											endif;
 											for($y = $paged - 3 ; $y < $paged ; $y++){
 												if($y > 0) : 
 												?>
@@ -366,33 +367,30 @@ get_header();
 												<li class="page-item"><a class="page-link" href="<?= $url_params . $concat ?>pagina=<?= $i ?>"><?= $i  ?></a></li>
 											<?php		
 											}
-											?>
-										
-										
+											if($paged < $page_num) :
+											?>	
 										<li class="page-item flex-grow-1 text-end">
 											<a class="page-link text-link next" href="<?= $url_params .$concat ?>pagina=<?= $paged +1?>" aria-label="Next">
 												<span class="d-none d-sm-inline">Successiva</span><span class="arrow"></span>
 											</a>
 										</li>
+										<?php
+											endif;
+										?>
 									</ul>
-									<ul class="pagination automarca-pagination justify-content-center d-flex d-xl-none">
+									<!-- <ul class="pagination automarca-pagination justify-content-center d-flex d-xl-none">
 										<li class="page-item flex-grow-1">
 											<a class="page-link text-link prev" href="#" aria-label="Previous">
 												<span class="arrow"></span><span class="d-none d-sm-inline">Precedente</span>
 											</a>
-										</li>
-										<?php 
-											for($i = 1 ; $i <= $page_num ; $i++){ ?>
-											<li class="page-item"><a class="page-link" href="?pagina=<?=  $i + 1?>"><?= $i +1 ?></a></li>
-											<?php
-											}
-											?>
+										</li> 
+											<li class="page-item"><a class="page-link" href="?pagina=</a></li>
 										<li class="page-item flex-grow-1 text-end">
 											<a class="page-link text-link next" href="#" aria-label="Next">
 												<span class="d-none d-sm-inline">Successiva</span><span class="arrow"></span>
 											</a>
 										</li>
-									</ul>
+									</ul> -->
 								</nav>
 							</div>
 						</div>
