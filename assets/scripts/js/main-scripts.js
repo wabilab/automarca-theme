@@ -327,7 +327,7 @@ $(function () {
         let filter =  {
             post_type : 'auto-in-vendita',
             filters : { 
-              tipologia : $('input[name="condition"]:checked').val(),
+              /* tipologia : $('input[name="condition"]:checked').val(), */
               marca : brandInput.val(),
               modello : modelInput.val(),
               maxPrice : maxPriceInput.val(),
@@ -338,12 +338,11 @@ $(function () {
               novice : noviceInput.is(':checked') == true ? true : '',
           }
         }
-        
         get_search_results_count(filter); 
     }
 
     function get_search_results_count(filterObj){
-        /* console.log('tipologia ' + $('input[name="condition"]:checked').val()), */
+        console.log(filterObj);
         $.ajax({
         method: "GET",
         data : filterObj,
@@ -360,29 +359,46 @@ $(function () {
 
     function compile_filter_url(){
         let filter = { 
-          tipologia : $('input[name="condition"]:checked').val(),
-          marca : brandInput.val(),
-          modello : modelInput.val(),
-          maxPrice : maxPriceInput.val(),
-          km : kmInput.val(),
-          anno : yearInput.val(),
-          alimentazione : fuelInput.val(),
-          cambio : transmissioninput.val(),
-          novice : noviceInput.is(':checked') == true ? true : '',
+          /* tipologia : $('input[name="condition"]:checked').val(), */
+          query_var : {
+            marca : brandInput.val(),
+            modello : modelInput.val(),
+            alimentazione : fuelInput.val(),
+          },
+          get_params : {
+            maxPrice : maxPriceInput.val(),
+            km : kmInput.val(),
+            anno : yearInput.val(),
+            cambio : transmissioninput.val(),
+            novice : noviceInput.is(':checked') == true ? true : '',
+          }
         };
-        
-        console.log(filter);
         var searchUrl = home_url + '/nuovo/';
         var paramsArr =  [];
-        for (const [key , value] of Object.entries(filter)){
-            if (value != '' && (key == 'marca' || key == 'modello' || key == 'alimentazione')){
-                searchUrl += value + '-';
-            }else if(value != ''){
-                let newParam = '&' + key + '=' + value;
-                paramsArr.push(newParam);
+        let index = 0;
+        for (const [key , value] of Object.entries(filter.query_var)){
+            if (value != ''){
+              if(filter.query_var.lenght < 2){
+                searchUrl += value
+              } else if(index == 0){
+                searchUrl += value
+                index++
+              } else {
+                searchUrl += '-' + value;
+              }
             }
         }
-
+        let params_index = 0;
+        for(const [key , value] of Object.entries(filter.get_params)){
+          if(value != '' && params_index == 0){
+            let newParam = '?' + key + '=' + value;
+            paramsArr.push(newParam);
+            params_index++;
+          }else if(value != ''){
+            let newParam = '&' + key + '=' + value;
+            paramsArr.push(newParam);
+          }
+        }
         paramsArr.forEach(el => {
             searchUrl += el;
         });
@@ -390,21 +406,9 @@ $(function () {
         window.location.href = searchUrl;
     }
 
-    function get_filters(){
-        let filter = { 
-            tipologia : $('input[name="condition"]:checked').val(),
-            marca : brandInput.val(),
-            modello : modelInput.val(),
-            maxPrice : maxPriceInput.val(),
-            km : kmInput.val(),
-            anno : yearInput.val(),
-            alimentazione : fuelInput.val(),
-            cambio : transmissioninput.val(),
-            novice : noviceInput.is(':checked') == true ? true : '',
-        };
-        return filter;
-    }
+    set_filters();
 
+    $('.live-filter').on('change' , () => {compile_filter_url()});
 
     // CAR IMG SLIDER
     $(".car-img-slider").slick({

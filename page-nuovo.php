@@ -17,20 +17,24 @@ $filtri = array(
 	'modello' => str_replace('_', ' ' , $modello),
 	'alimentazione' => str_replace('_', ' ' , $alimentazione),
 );
+
 $queryArr = ['relation' => 'AND'];
 foreach($filtri as $k => $q){
+	if($q != 'all'){
 	$arr = array(
 		'key' => $k,
 		'value' => $q,
 		'compare' => '='
 	);
 	$queryArr[]=$arr;
+	}
 }
 
-var_dump($queryArr);
+get_header(); 
 
 
-get_header(); ?>
+
+?>
 
 <main class="page-wrapper">
 	<header class="container-fluid section bg-orange section-padding header-page">
@@ -52,8 +56,6 @@ get_header(); ?>
 			</div>
 		</div>
 	</header>
-	<?php echo get_query_var('param1') . get_query_var('param2') . get_query_var('param3'); ?>
-	<?php echo get_query_var('param3'); ?>
 	<section class="container-fluid section section-padding-sm cars-search-grid-container">
 		<div class="row justify-content-center">
 			<div class="col-12 col-xxl-10">
@@ -72,7 +74,7 @@ get_header(); ?>
 										<input type="hidden" name="condition" value="usato" id="condition">
 										<div class="col-12 form-col">
 											<label class="form-label" for="brand">Marca</label>
-											<select class="form-select" name="make" id="brand" aria-label="Marca">
+											<select class="form-select live-filter" name="make" id="brand" aria-label="Marca">
 												<option value="all">Tutti</option>
 												<option selected value="Ford">Ford</option>
 												<option value="Mazda">Mazda</option>
@@ -81,21 +83,14 @@ get_header(); ?>
 										</div>
 										<div class="col-12 form-col">
 											<label class="form-label" for="model">Modello</label>
-											<select class="form-select" name="model" id="model" aria-label="Modello">
+											<select class="form-select live-filter" name="model" id="model" aria-label="Modello">
 												<option value="all">Tutti</option>
 												<option value="fiesta" selected>Fiesta</option>
 											</select>
 										</div>
 										<div class="col-12 form-col">
-											<label class="form-label" for="version">Versione</label>
-											<select class="form-select" name="version" id="version" aria-label="Versione">
-												<option value="all">Tutte</option>
-												<option value="plus" selected>Plus</option>
-											</select>
-										</div>
-										<div class="col-12 form-col">
 											<label class="form-label" for="max-price">Prezzo fino a</label>
-											<select class="form-select" name="max_price" id="max-price" aria-label="Marca">
+											<select class="form-select live-filter" name="max_price" id="max-price" aria-label="Marca">
 												<option selected>prezzo fino a ...</option>
 												<?php
 												echo "<option value='500'>500 €</option>";
@@ -109,7 +104,7 @@ get_header(); ?>
 										</div>
 										<div class="col-12 form-col">
 											<label class="form-label" for="km-until">Km fino a</label>
-											<select class="form-select" name="km_until" id="km-until" aria-label="Marca">
+											<select class="form-select live-filter" name="km_until" id="km-until" aria-label="Marca">
 												<option value="all">Qualsiasi</option>
 												<?php
 												echo "<option value='5000'>5.000 km</option>";
@@ -122,7 +117,7 @@ get_header(); ?>
 										</div>
 										<div class="col-12 form-col">
 											<label class="form-label" for="year">Anno</label>
-											<select class="form-select" placeholder="anno" name="year" id="year">
+											<select class="form-select live-filter" placeholder="anno" name="year" id="year">
 												<option value="all">Qualsiasi</option>
 												<?php
 												$year = date('Y');
@@ -135,7 +130,7 @@ get_header(); ?>
 										</div>
 										<div class="col-12 form-col">
 											<label class="form-label" for="fuel_type">Alimentazione</label>
-											<select class="form-select" placeholder="alimentazione" name="fuel_type" id="fuel_type">
+											<select class="form-select live-filter" placeholder="alimentazione" name="fuel_type" id="fuel_type">
 												<option value="all">Tutte</option>
 												<option selected value="benzina">Benzina</option>
 												<option value="diesel">Diesel</option>
@@ -148,7 +143,7 @@ get_header(); ?>
 										</div>
 										<div class="col-12 form-col">
 											<label class="form-label" for="transmission">Cambio</label>
-											<select class="form-select" placeholder="cambio" name="transmission" id="transmission">
+											<select class="form-select live-filter" placeholder="cambio" name="transmission" id="transmission">
 												<option value="all">Tutte</option>
 												<option selected value="manuale">Manuale</option>
 												<option value="automatico">Automatico</option>
@@ -156,7 +151,7 @@ get_header(); ?>
 										</div>
 										<div class="col-12 form-col">
 											<label class="form-label" for="novice-drivers">Neopatentati</label>
-											<select class="form-select" name="novice_drivers" id="novice-drivers">
+											<select class="form-select live-filter" name="novice_drivers" id="novice-drivers">
 												<option value="Si">Sì</option>
 												<option value="No">No</option>
 											</select>
@@ -183,20 +178,11 @@ get_header(); ?>
 							</div>
 						</div>
 						<div class="active-filters-container">
+							<?php 
+							$filters = array()
+							?>
 							<div class="automarca-active-filter">
 								<span>Ford</span> <a href="#" class="remove-filter" data-filter="brand"></a>
-							</div>
-							<div class="automarca-active-filter">
-								<span>Fiesta</span> <a href="#" class="remove-filter" data-filter="model"></a>
-							</div>
-							<div class="automarca-active-filter">
-								<span>Fino a 12.000 €</span> <a href="#" class="remove-filter" data-filter="max_price"></a>
-							</div>
-							<div class="automarca-active-filter">
-								<span>2019</span> <a href="#" class="remove-filter" data-filter="year"></a>
-							</div>
-							<div class="automarca-active-filter">
-								<span>Benzina</span> <a href="#" class="remove-filter" data-filter="fuel_type"></a>
 							</div>
 						</div>
 						<div class="remove-all-container mt-3">
@@ -210,9 +196,7 @@ get_header(); ?>
 								'meta_query' => $queryArr,
 							);
 							$cars = new WP_Query($args);
-							var_dump($cars -> posts);
-							if ( $cars->have_posts() ) {
-    							while ( $cars->have_posts() ) { 
+							if ( $cars->have_posts() ) { while ( $cars->have_posts() ) { 
 								$cars->the_post();
 							?>
 							<div class="col-12 col-md-6 col-xxl-4 car-item">
@@ -251,7 +235,13 @@ get_header(); ?>
 							</div>
 							<?php
 							};
-							};	?>
+							};	
+							var_dump($cars -> posts);
+							var_dump(extract($_REQUEST));
+							foreach($_GET as $key => $value){
+								echo $key .'=>'. $value . '<br>'; 
+							};
+							?>
 		<!-- 					<div class="col-12 col-md-6 col-xxl-4 car-item">
 								<div class="title-container">
 									<div class="title-5">
