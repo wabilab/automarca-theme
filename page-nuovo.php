@@ -101,6 +101,16 @@ if((count($_GET) == 1 && isset($_GET['pagina'])) || count($_GET) == 0 ){
 	$concat = '&';
 }
 
+$paged = isset($_GET['pagina']) ? $_GET['pagina'] : 1;
+$args = array(
+	'post_type' => 'auto-in-vendita',
+	'posts_per_page' => '6',
+	'paged' => $paged,
+	'meta_query' => $queryArr,
+);
+$cars = new WP_Query($args);
+
+$page_num = $cars -> max_num_pages;
 
 get_header(); 
 
@@ -253,7 +263,7 @@ get_header();
 					</div>
 					<div class="col-12 col-lg-8">
 						<div class="cars-search-title-container">
-							<div class="cars-search-title title-2">25 Offerte per la tua ricerca</div>
+							<div class="cars-search-title title-2"><?= count($cars -> posts) * $page_num; ?> Offerte per la tua ricerca</div>
 							<div class="cars-order d-flex">
 								<p>Ordina:</p>
 								<select class="form-select order-select" name="order" id="order" aria-label="Ordina">
@@ -287,17 +297,6 @@ get_header();
 						</div>
 						<div class="row mt-5 cars-grid">
 							<?php
-
-							$paged = isset($_GET['pagina']) ? $_GET['pagina'] : 1;
-							$args = array(
-								'post_type' => 'auto-in-vendita',
-								'posts_per_page' => '6',
-								'paged' => $paged,
-								'meta_query' => $queryArr,
-							);
-
-							$cars = new WP_Query($args);
-				
 							if ( $cars->have_posts() ) { while ( $cars->have_posts() ) { 
 								$cars->the_post();
 							?>
@@ -338,7 +337,7 @@ get_header();
 							<?php
 							};
 							};	
-							$page_num = $cars -> max_num_pages;
+							
 							?>
 						</div>
 						<?php if ($page_num > 1) : ?>
