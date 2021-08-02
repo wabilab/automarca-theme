@@ -5,32 +5,132 @@
  */
 
 use PhpOffice\PhpSpreadsheet\Shared\Date;
+session_start();
 
 $marca = get_query_var('param1');
 $modello = substr(get_query_var('param2') , 1 , strlen(get_query_var('param2')));
 $alimentazione = substr(get_query_var('param3') , 1 , strlen(get_query_var('param3')));
-
-
 
 $filtri = array(
 	'marca' => str_replace('_', ' ' , $marca),
 	'modello' => str_replace('_', ' ' , $modello),
 	'alimentazione' => str_replace('_', ' ' , $alimentazione),
 );
+
+if($filtri['marca'] == 'benzina verde' || $filtri['marca'] == 'diesel' || $filtri['marca'] == 'gpl' || $filtri['marca'] == 'ibrida' || $filtri['marca'] == 'metano' || $filtri['marca'] == 'elettrica') {
+	$filtri['alimentazione'] = $filtri['marca'];
+	$filtri['marca'] = '';
+	$filtri['modello'] = '';
+}else if($filtri['modello'] == 'benzina verde' || $filtri['modello'] == 'diesel' || $filtri['modello'] == 'gpl' || $filtri['modello'] == 'ibrida' || $filtri['modello'] == 'metano'){
+	$filtri['alimentazione'] = $filtri['modello'];
+	$filtri['modello'] = '';
+}
+
+
+$_SESSION['marca'] = $filtri['marca'];
+$_SESSION['modello'] = $filtri['modello'];
+$_SESSION['alimentazione'] = $filtri['alimentazione'];
+$_SESSION['prezzo'] = $_GET['maxPrice'];
+$_SESSION['km'] = $_GET['km'];
+$_SESSION['anno'] = $_GET['anno'];
+
+
 $queryArr = ['relation' => 'AND'];
+
 foreach($filtri as $k => $q){
+	if($q != 'all'){
 	$arr = array(
 		'key' => $k,
 		'value' => $q,
-		'compare' => '='
+		'compare' => 'LIKE'
 	);
 	$queryArr[]=$arr;
+	}
 }
 
-var_dump($queryArr);
+foreach($_GET as $k => $v){
+	if($v != 'all' && $v != '' && $k != 'order'){
+		if($k == 'maxPrice'){
+			$arr = array(
+				'key' => 'prezzo',
+				'value' => $v,
+				'compare' => '<',
+				'type' => 'NUMERIC'
+			);
+		} else if($k == 'km'){
+			$arr = array(
+				'key' => $k,
+				'value' => $v,
+				'compare' => '<',
+				'type' => 'NUMERIC'
+			);
+		} else if($k == 'anno') {
+			$arr = array(
+				'key' => 'anno_immatricolazione',
+				'value' => $v,
+				'compare' =>'>=',
+				'type' => 'NUMERIC'
+			);
+		} else if($k == 'novice'){
+			if($v == 'true'){
+				$arr = array(
+					'key' => 'cv',
+					'value' => 95,
+					'compare' => '<',
+					'type' => 'NUMERIC'
+				);
+			}
+		}
+		$queryArr[] = $arr;
+	}
+} 
+
+$url_params = '';
+
+$params_index = 0; 
+foreach($_GET as $k => $v){
+	if($k != 'pagina'){
+		if($params_index == 0){
+			$url_params .= '?'. $k .'='.$v; 
+		} else{
+			$url_params .= '&' . $k . '=' . $v;
+		}
+		$params_index++;
+	}
+} 
+
+if((count($_GET) == 1 && isset($_GET['pagina'])) || count($_GET) == 0 ){
+	$concat = '?';
+} else {
+	$concat = '&';
+}
 
 
-get_header(); ?>
+if(isset($_GET['order'])){
+	$orderarr = explode('_' , $_GET['order']);
+}else{
+	$orderarr[] = 'prezzo';
+	$orderarr[] = 'desc';
+}
+
+
+$paged = isset($_GET['pagina']) ? $_GET['pagina'] : 1;
+$args = array(
+	'post_type' => 'auto-in-vendita',
+	'posts_per_page' => '6',
+	'paged' => $paged,
+	'meta_query' => $queryArr,
+	'meta_key' =>$orderarr[0],
+	'orderby' => 'meta_value',
+	'order' => strtoupper($orderarr[1])
+);
+$cars = new WP_Query($args);
+
+$page_num = $cars -> max_num_pages;
+
+get_header(); 
+
+?>
 
 <main class="page-wrapper">
 	<header class="container-fluid section bg-orange section-padding header-page">
@@ -52,8 +152,8 @@ get_header(); ?>
 			</div>
 		</div>
 	</header>
-	<?php echo get_query_var('param1') . get_query_var('param2') . get_query_var('param3'); ?>
-	<?php echo get_query_var('param3'); ?>
+	<?php 
+	?>
 	<section class="container-fluid section section-padding-sm cars-search-grid-container">
 		<div class="row justify-content-center">
 			<div class="col-12 col-xxl-10">
@@ -72,36 +172,37 @@ get_header(); ?>
 										<input type="hidden" name="condition" value="usato" id="condition">
 										<div class="col-12 form-col">
 											<label class="form-label" for="brand">Marca</label>
-											<select class="form-select" name="make" id="brand" aria-label="Marca">
-												<option value="all">Tutti</option>
-												<option selected value="Ford">Ford</option>
+											<select class="form-select live-filter" name="make" id="brand" aria-label="Marca">
+												<?php if($_SESSION['marca'] != '' && $_SESSION['marca'] != NULL) : ?>
+												<option selected value="<?=$_SESSION['marca']?>"><?= $_SESSION['marca']?></option>
+												<?php endif; ?>
+												<option value="">Tutti</option>
+												<option value="Ford">Ford</option>
 												<option value="Mazda">Mazda</option>
 												<option value="Volkswagen">Volkswagen</option>
 											</select>
 										</div>
 										<div class="col-12 form-col">
 											<label class="form-label" for="model">Modello</label>
-											<select class="form-select" name="model" id="model" aria-label="Modello">
-												<option value="all">Tutti</option>
-												<option value="fiesta" selected>Fiesta</option>
-											</select>
-										</div>
-										<div class="col-12 form-col">
-											<label class="form-label" for="version">Versione</label>
-											<select class="form-select" name="version" id="version" aria-label="Versione">
-												<option value="all">Tutte</option>
-												<option value="plus" selected>Plus</option>
+											<select class="form-select live-filter" name="model" id="model" aria-label="Modello">
+												<?php if($_SESSION['modello'] != '' && $_SESSION['modello'] != NULL) : ?>
+												<option value="<?=$_SESSION['modello']?>"><?= $_SESSION['modello']?></option>
+												<?php endif; ?>
+ 												<option value="">Tutti</option>
+												<option value="fiesta">Fiesta</option>
 											</select>
 										</div>
 										<div class="col-12 form-col">
 											<label class="form-label" for="max-price">Prezzo fino a</label>
-											<select class="form-select" name="max_price" id="max-price" aria-label="Marca">
-												<option selected>prezzo fino a ...</option>
-												<?php
+											<select class="form-select live-filter" name="max_price" id="max-price" aria-label="Marca">
+												<option value="">prezzo fino a ...</option>
+												<?php if($_SESSION['prezzo'] != '' && $_SESSION['prezzo'] != NULL) : ?>
+												<option selected value="<?= $_SESSION['prezzo']?>"><?= $_SESSION['prezzo']?> €</option>
+												<?php 
+												endif; 
 												echo "<option value='500'>500 €</option>";
 												for ($i = 1000; $i <= 500000; $i += 1000) {
 													$price = number_format($i, 0, ',', '.') . ' €';
-													$selected = $i == 12000 ? 'selected' : '';
 													echo "<option value='$i' $selected>$price</option>";
 												}
 												?>
@@ -109,9 +210,12 @@ get_header(); ?>
 										</div>
 										<div class="col-12 form-col">
 											<label class="form-label" for="km-until">Km fino a</label>
-											<select class="form-select" name="km_until" id="km-until" aria-label="Marca">
-												<option value="all">Qualsiasi</option>
+											<select class="form-select live-filter" name="km_until" id="km-until" aria-label="Marca">
+												<option value="">Qualsiasi</option>
+												<?php if($_SESSION['km'] != '' && $_SESSION['km'] != NULL) : ?>
+												<option selected value="<?= $_SESSION['km'] ?>"><?= $_SESSION['km'] . ' km'?></option>
 												<?php
+												endif;
 												echo "<option value='5000'>5.000 km</option>";
 												for ($i = 10000; $i <= 500000; $i += 10000) {
 													$kms = number_format($i, 0, ',', '.') . ' km';
@@ -122,12 +226,14 @@ get_header(); ?>
 										</div>
 										<div class="col-12 form-col">
 											<label class="form-label" for="year">Anno</label>
-											<select class="form-select" placeholder="anno" name="year" id="year">
-												<option value="all">Qualsiasi</option>
+											<select class="form-select live-filter" placeholder="anno" name="year" id="year">
+												<option value="">Qualsiasi</option>
+												<?php if($_SESSION['anno'] != '' && $_SESSION['anno'] != NULL) : ?>
+												<option selected value="<?= $_SESSION['anno']?>"><?= $_SESSION['anno'] ?></option>
 												<?php
+												endif;
 												$year = date('Y');
 												for ($i = $year; $i >= 1930; $i--) {
-													$selected = $i == 2019 ? 'selected' : '';
 													echo "<option value='$i' $selected>$i</option>";
 												}
 												?>
@@ -135,9 +241,12 @@ get_header(); ?>
 										</div>
 										<div class="col-12 form-col">
 											<label class="form-label" for="fuel_type">Alimentazione</label>
-											<select class="form-select" placeholder="alimentazione" name="fuel_type" id="fuel_type">
-												<option value="all">Tutte</option>
-												<option selected value="benzina">Benzina</option>
+											<select class="form-select live-filter" placeholder="alimentazione" name="fuel_type" id="fuel_type">
+												<option value="">Tutte</option>
+												<?php if($_SESSION['alimentazione'] != '' && $_SESSION['alimentazione'] != NULL) : ?>
+												<option selected value="<?= $_SESSION['alimentazione']?>"><?= $_SESSION['alimentazione'] ?></option>
+												<?php endif; ?>
+												<option value="benzina_verde">Benzina</option>
 												<option value="diesel">Diesel</option>
 												<option value="gpl">GPL</option>
 												<option value="metano">Metano</option>
@@ -148,18 +257,19 @@ get_header(); ?>
 										</div>
 										<div class="col-12 form-col">
 											<label class="form-label" for="transmission">Cambio</label>
-											<select class="form-select" placeholder="cambio" name="transmission" id="transmission">
-												<option value="all">Tutte</option>
-												<option selected value="manuale">Manuale</option>
+											<select class="form-select live-filter" placeholder="cambio" name="transmission" id="transmission">
+												<option value="">Tutte</option>
+												<option value="manuale">Manuale</option>
 												<option value="automatico">Automatico</option>
 											</select>
 										</div>
 										<div class="col-12 form-col">
-											<label class="form-label" for="novice-drivers">Neopatentati</label>
-											<select class="form-select" name="novice_drivers" id="novice-drivers">
-												<option value="Si">Sì</option>
-												<option value="No">No</option>
-											</select>
+											<div class="form-check">
+												<input class="form-check-input live-filter" type="checkbox" value="true" name="novice_drivers" id="novice-drivers">
+												<label class="form-check-label" for="novice-drivers">
+													Neopatentati
+												</label>
+											</div>
 										</div>
 									</form>
 									<p class="text-end"><a href="#" class="reset-link" id="reset-search">reimposta ricerca</a></p>
@@ -169,50 +279,40 @@ get_header(); ?>
 					</div>
 					<div class="col-12 col-lg-8">
 						<div class="cars-search-title-container">
-							<div class="cars-search-title title-2">25 Offerte per la tua ricerca</div>
+							<div class="cars-search-title title-2"><?= count($cars -> posts) * $page_num; ?> Offerte per la tua ricerca</div>
 							<div class="cars-order d-flex">
 								<p>Ordina:</p>
-								<select class="form-select order-select" name="order" id="order" aria-label="Ordina">
-									<option value="price_asc">prezzo - crescente</option>
-									<option value="price_desc">prezzo - decrescente</option>
-									<option value="model_asc">Modello (A - Z)</option>
-									<option value="model_desc">Modello (Z - A)</option>
+								<select class="form-select-2 order-select" name="order" id="order" aria-label="Ordina">
+									<option value="prezzo_asc">prezzo - crescente</option>
+									<option value="prezzo_desc">prezzo - decrescente</option>
+									<option value="modello_asc">Modello (A - Z)</option>
+									<option value="modello_desc">Modello (Z - A)</option>
 									<option value="km_asc">km - crescente</option>
 									<option value="km_desc">km - decrescente</option>
 								</select>
 							</div>
 						</div>
 						<div class="active-filters-container">
+							<?php 
+							
+							?>
+							<?php foreach($queryArr as $k => $query) { 
+								if($query != 'AND' && $query['value'] != '') :
+								?>
 							<div class="automarca-active-filter">
-								<span>Ford</span> <a href="#" class="remove-filter" data-filter="brand"></a>
+								<span class="filter-widged"><?= $query['value'] ?></span><span href="" class="remove-filter" data-filter="" data-type="<?= $query['key'] ?>" ></span>
 							</div>
-							<div class="automarca-active-filter">
-								<span>Fiesta</span> <a href="#" class="remove-filter" data-filter="model"></a>
-							</div>
-							<div class="automarca-active-filter">
-								<span>Fino a 12.000 €</span> <a href="#" class="remove-filter" data-filter="max_price"></a>
-							</div>
-							<div class="automarca-active-filter">
-								<span>2019</span> <a href="#" class="remove-filter" data-filter="year"></a>
-							</div>
-							<div class="automarca-active-filter">
-								<span>Benzina</span> <a href="#" class="remove-filter" data-filter="fuel_type"></a>
-							</div>
+							<?php 
+						endif;
+						} 
+						?>
 						</div>
 						<div class="remove-all-container mt-3">
 							<p><a href="#" class="reset-link" id="reset-filters">Rimuovi tutti i filtri</a></p>
 						</div>
 						<div class="row mt-5 cars-grid">
 							<?php
-							$paged = $_GET['pagina'];
-							$args = array(
-								'post_type' => 'auto-in-vendita',
-								'meta_query' => $queryArr,
-							);
-							$cars = new WP_Query($args);
-							var_dump($cars -> posts);
-							if ( $cars->have_posts() ) {
-    							while ( $cars->have_posts() ) { 
+							if ( $cars->have_posts() ) { while ( $cars->have_posts() ) { 
 								$cars->the_post();
 							?>
 							<div class="col-12 col-md-6 col-xxl-4 car-item">
@@ -251,261 +351,72 @@ get_header(); ?>
 							</div>
 							<?php
 							};
-							};	?>
-		<!-- 					<div class="col-12 col-md-6 col-xxl-4 car-item">
-								<div class="title-container">
-									<div class="title-5">
-										VOLKSWAGEN<br> PASSAT VARIANT
-									</div>
-									<p>
-										8ª serie Variant - 2.0 TDI Business BlueMotion
-									</p>
-								</div>
-								<img src="https://via.placeholder.com/800x600" class="car-img" alt="">
-								<div class="car-features">
-									<table class="table car-features-table">
-										<tbody>
-											<tr>
-												<td><img src="<?= get_template_directory_uri(); ?>/assets/images/home/icona-data.svg" class="feature-icon" alt=""> 05/2019</td>
-												<td><img src="<?= get_template_directory_uri(); ?>/assets/images/home/icona-km.svg" class="feature-icon" alt=""> 30.000 km</td>
-											</tr>
-											<tr>
-												<td><img src="<?= get_template_directory_uri(); ?>/assets/images/home/icona-alimentazione.svg" class="feature-icon" alt=""> Benzina</td>
-												<td><img src="<?= get_template_directory_uri(); ?>/assets/images/home/icona-cambio.svg" class="feature-icon" alt=""> Manuale</td>
-											</tr>
-										</tbody>
-									</table>
-								</div>
-								<div class="car-price">
-									<p class="price-content"><span>€ 19.900</span> € 19.900</p>
-									<p class="button-container"><a class="btn btn-automarca-car" href="#"><span>Scopri <span class="arrow"></span></span></a></p>
-								</div>
-							</div>
-							<div class="col-12 col-md-6 col-xxl-4 car-item">
-								<div class="title-container">
-									<div class="title-5">
-										VOLKSWAGEN<br> PASSAT VARIANT
-									</div>
-									<p>
-										8ª serie Variant - 2.0 TDI Business BlueMotion
-									</p>
-								</div>
-								<img src="https://via.placeholder.com/800x600" class="car-img" alt="">
-								<div class="car-features">
-									<table class="table car-features-table">
-										<tbody>
-											<tr>
-												<td><img src="<?= get_template_directory_uri(); ?>/assets/images/home/icona-data.svg" class="feature-icon" alt=""> 05/2019</td>
-												<td><img src="<?= get_template_directory_uri(); ?>/assets/images/home/icona-km.svg" class="feature-icon" alt=""> 30.000 km</td>
-											</tr>
-											<tr>
-												<td><img src="<?= get_template_directory_uri(); ?>/assets/images/home/icona-alimentazione.svg" class="feature-icon" alt=""> Benzina</td>
-												<td><img src="<?= get_template_directory_uri(); ?>/assets/images/home/icona-cambio.svg" class="feature-icon" alt=""> Manuale</td>
-											</tr>
-										</tbody>
-									</table>
-								</div>
-								<div class="car-price">
-									<p class="price-content"><span>€ 19.900</span> € 19.900</p>
-									<p class="button-container"><a class="btn btn-automarca-car" href="#"><span>Scopri <span class="arrow"></span></span></a></p>
-								</div>
-							</div>
-							<div class="col-12 col-md-6 col-xxl-4 car-item">
-								<div class="title-container">
-									<div class="title-5">
-										VOLKSWAGEN<br> PASSAT VARIANT
-									</div>
-									<p>
-										8ª serie Variant - 2.0 TDI Business BlueMotion
-									</p>
-								</div>
-								<img src="https://via.placeholder.com/800x600" class="car-img" alt="">
-								<div class="car-features">
-									<table class="table car-features-table">
-										<tbody>
-											<tr>
-												<td><img src="<?= get_template_directory_uri(); ?>/assets/images/home/icona-data.svg" class="feature-icon" alt=""> 05/2019</td>
-												<td><img src="<?= get_template_directory_uri(); ?>/assets/images/home/icona-km.svg" class="feature-icon" alt=""> 30.000 km</td>
-											</tr>
-											<tr>
-												<td><img src="<?= get_template_directory_uri(); ?>/assets/images/home/icona-alimentazione.svg" class="feature-icon" alt=""> Benzina</td>
-												<td><img src="<?= get_template_directory_uri(); ?>/assets/images/home/icona-cambio.svg" class="feature-icon" alt=""> Manuale</td>
-											</tr>
-										</tbody>
-									</table>
-								</div>
-								<div class="car-price">
-									<p class="price-content"><span>€ 19.900</span> € 19.900</p>
-									<p class="button-container"><a class="btn btn-automarca-car" href="#"><span>Scopri <span class="arrow"></span></span></a></p>
-								</div>
-							</div>
-							<div class="col-12 col-md-6 col-xxl-4 car-item">
-								<div class="title-container">
-									<div class="title-5">
-										VOLKSWAGEN<br> PASSAT VARIANT
-									</div>
-									<p>
-										8ª serie Variant - 2.0 TDI Business BlueMotion
-									</p>
-								</div>
-								<img src="https://via.placeholder.com/800x600" class="car-img" alt="">
-								<div class="car-features">
-									<table class="table car-features-table">
-										<tbody>
-											<tr>
-												<td><img src="<?= get_template_directory_uri(); ?>/assets/images/home/icona-data.svg" class="feature-icon" alt=""> 05/2019</td>
-												<td><img src="<?= get_template_directory_uri(); ?>/assets/images/home/icona-km.svg" class="feature-icon" alt=""> 30.000 km</td>
-											</tr>
-											<tr>
-												<td><img src="<?= get_template_directory_uri(); ?>/assets/images/home/icona-alimentazione.svg" class="feature-icon" alt=""> Benzina</td>
-												<td><img src="<?= get_template_directory_uri(); ?>/assets/images/home/icona-cambio.svg" class="feature-icon" alt=""> Manuale</td>
-											</tr>
-										</tbody>
-									</table>
-								</div>
-								<div class="car-price">
-									<p class="price-content"><span>€ 19.900</span> € 19.900</p>
-									<p class="button-container"><a class="btn btn-automarca-car" href="#"><span>Scopri <span class="arrow"></span></span></a></p>
-								</div>
-							</div>
-							<div class="col-12 col-md-6 col-xxl-4 car-item">
-								<div class="title-container">
-									<div class="title-5">
-										VOLKSWAGEN<br> PASSAT VARIANT
-									</div>
-									<p>
-										8ª serie Variant - 2.0 TDI Business BlueMotion
-									</p>
-								</div>
-								<img src="https://via.placeholder.com/800x600" class="car-img" alt="">
-								<div class="car-features">
-									<table class="table car-features-table">
-										<tbody>
-											<tr>
-												<td><img src="<?= get_template_directory_uri(); ?>/assets/images/home/icona-data.svg" class="feature-icon" alt=""> 05/2019</td>
-												<td><img src="<?= get_template_directory_uri(); ?>/assets/images/home/icona-km.svg" class="feature-icon" alt=""> 30.000 km</td>
-											</tr>
-											<tr>
-												<td><img src="<?= get_template_directory_uri(); ?>/assets/images/home/icona-alimentazione.svg" class="feature-icon" alt=""> Benzina</td>
-												<td><img src="<?= get_template_directory_uri(); ?>/assets/images/home/icona-cambio.svg" class="feature-icon" alt=""> Manuale</td>
-											</tr>
-										</tbody>
-									</table>
-								</div>
-								<div class="car-price">
-									<p class="price-content"><span>€ 19.900</span> € 19.900</p>
-									<p class="button-container"><a class="btn btn-automarca-car" href="#"><span>Scopri <span class="arrow"></span></span></a></p>
-								</div>
-							</div>
-							<div class="col-12 col-md-6 col-xxl-4 car-item">
-								<div class="title-container">
-									<div class="title-5">
-										VOLKSWAGEN<br> PASSAT VARIANT
-									</div>
-									<p>
-										8ª serie Variant - 2.0 TDI Business BlueMotion
-									</p>
-								</div>
-								<img src="https://via.placeholder.com/800x600" class="car-img" alt="">
-								<div class="car-features">
-									<table class="table car-features-table">
-										<tbody>
-											<tr>
-												<td><img src="<?= get_template_directory_uri(); ?>/assets/images/home/icona-data.svg" class="feature-icon" alt=""> 05/2019</td>
-												<td><img src="<?= get_template_directory_uri(); ?>/assets/images/home/icona-km.svg" class="feature-icon" alt=""> 30.000 km</td>
-											</tr>
-											<tr>
-												<td><img src="<?= get_template_directory_uri(); ?>/assets/images/home/icona-alimentazione.svg" class="feature-icon" alt=""> Benzina</td>
-												<td><img src="<?= get_template_directory_uri(); ?>/assets/images/home/icona-cambio.svg" class="feature-icon" alt=""> Manuale</td>
-											</tr>
-										</tbody>
-									</table>
-								</div>
-								<div class="car-price">
-									<p class="price-content"><span>€ 19.900</span> € 19.900</p>
-									<p class="button-container"><a class="btn btn-automarca-car" href="#"><span>Scopri <span class="arrow"></span></span></a></p>
-								</div>
-							</div>
-							<div class="col-12 col-md-6 col-xxl-4 car-item">
-								<div class="title-container">
-									<div class="title-5">
-										VOLKSWAGEN<br> PASSAT VARIANT
-									</div>
-									<p>
-										8ª serie Variant - 2.0 TDI Business BlueMotion
-									</p>
-								</div>
-								<img src="https://via.placeholder.com/800x600" class="car-img" alt="">
-								<div class="car-features">
-									<table class="table car-features-table">
-										<tbody>
-											<tr>
-												<td><img src="<?= get_template_directory_uri(); ?>/assets/images/home/icona-data.svg" class="feature-icon" alt=""> 05/2019</td>
-												<td><img src="<?= get_template_directory_uri(); ?>/assets/images/home/icona-km.svg" class="feature-icon" alt=""> 30.000 km</td>
-											</tr>
-											<tr>
-												<td><img src="<?= get_template_directory_uri(); ?>/assets/images/home/icona-alimentazione.svg" class="feature-icon" alt=""> Benzina</td>
-												<td><img src="<?= get_template_directory_uri(); ?>/assets/images/home/icona-cambio.svg" class="feature-icon" alt=""> Manuale</td>
-											</tr>
-										</tbody>
-									</table>
-								</div>
-								<div class="car-price">
-									<p class="price-content"><span>€ 19.900</span> € 19.900</p>
-									<p class="button-container"><a class="btn btn-automarca-car" href="#"><span>Scopri <span class="arrow"></span></span></a></p>
-								</div>
-							</div> -->
+							};	
+							
+							?>
 						</div>
+						<?php if ($page_num > 1) : ?>
 						<div class="row pt-5 mt-5">
 							<div class="col-12">
 								<nav aria-label="Page navigation example">
 									<ul class="pagination automarca-pagination justify-content-center d-none d-xl-flex">
+										<?php if($paged != 1) : ?>
+										<li class="page-item flex-grow-1">
+											<a class="page-link text-link prev" href="<?= $url_params .$concat ?>pagina=<?= $paged - 1?>" aria-label="Previous">
+												<span class="arrow"></span><span class="d-none d-sm-inline">Precedente</span>
+											</a>
+										</li>
+										<?php
+											endif;
+											for($y = $paged - 3 ; $y < $paged ; $y++){
+												if($y > 0) : 
+												?>
+												<li class="page-item"><a class="page-link" href="<?= $url_params . $concat ?>pagina=<?= $y?>"><?= $y ?></a></li>
+											<?php
+											endif;
+											} ?>
+												<li class="page-item active"><a class="page-link" href="<?= $url_params . $concat ?>pagina=<?= $paged?>"><?= $paged  ?></a></li>
+											<?php 
+											for($i = $paged + 1; $i < $paged + 4 && $i <= $page_num; $i++ ){ ?>
+												<li class="page-item"><a class="page-link" href="<?= $url_params . $concat ?>pagina=<?= $i ?>"><?= $i  ?></a></li>
+											<?php		
+											}
+											if($paged < $page_num) :
+											?>	
+										<li class="page-item flex-grow-1 text-end">
+											<a class="page-link text-link next" href="<?= $url_params .$concat ?>pagina=<?= $paged +1?>" aria-label="Next">
+												<span class="d-none d-sm-inline">Successiva</span><span class="arrow"></span>
+											</a>
+										</li>
+										<?php
+											endif;
+										?>
+									</ul>
+									<!-- <ul class="pagination automarca-pagination justify-content-center d-flex d-xl-none">
 										<li class="page-item flex-grow-1">
 											<a class="page-link text-link prev" href="#" aria-label="Previous">
 												<span class="arrow"></span><span class="d-none d-sm-inline">Precedente</span>
 											</a>
-										</li>
-										<li class="page-item active"><a class="page-link" href="#">1</a></li>
-										<li class="page-item"><a class="page-link" href="<?= '?pagina=3' ?>">2</a></li>
-										<li class="page-item"><a class="page-link" href="#">3</a></li>
-										<li class="page-item"><a class="page-link" href="#">4</a></li>
-										<li class="page-item"><a class="page-link" href="#">5</a></li>
-										<li class="page-item"><a class="page-link" href="#">6</a></li>
-										<li class="page-item"><a class="page-link" href="#">7</a></li>
-										<li class="page-item"><a class="page-link" href="#">8</a></li>
-										<li class="page-item"><a class="page-link" href="#">9</a></li>
-										<li class="page-item"><a class="page-link" href="#">10</a></li>
+										</li> 
+											<li class="page-item"><a class="page-link" href="?pagina=</a></li>
 										<li class="page-item flex-grow-1 text-end">
 											<a class="page-link text-link next" href="#" aria-label="Next">
 												<span class="d-none d-sm-inline">Successiva</span><span class="arrow"></span>
 											</a>
 										</li>
-									</ul>
-									<ul class="pagination automarca-pagination justify-content-center d-flex d-xl-none">
-										<li class="page-item flex-grow-1">
-											<a class="page-link text-link prev" href="#" aria-label="Previous">
-												<span class="arrow"></span><span class="d-none d-sm-inline">Precedente</span>
-											</a>
-										</li>
-										<li class="page-item active"><a class="page-link" href="#">1</a></li>
-										<li class="page-item"><a class="page-link" href="<?= '?pagina=2' ?>">2</a></li>
-										<li class="page-item"><a class="page-link" href="<?= '?pagina=3' ?>">3</a></li>
-										<li class="page-item"><a class="page-link" href="#">4</a></li>
-										<li class="page-item"><a class="page-link" href="#">5</a></li>
-										<li class="page-item flex-grow-1 text-end">
-											<a class="page-link text-link next" href="#" aria-label="Next">
-												<span class="d-none d-sm-inline">Successiva</span><span class="arrow"></span>
-											</a>
-										</li>
-									</ul>
+									</ul> -->
 								</nav>
 							</div>
 						</div>
 					</div>
+					<?php 
+					endif;
+					?>
 				</div>
 			</div>
 		</div>
 	</section>
 </main>
 
-<?php get_footer(); ?>
+<?php 
+get_footer(); ?>

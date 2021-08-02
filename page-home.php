@@ -3,6 +3,8 @@
 /**
  * Pagina Home
  */
+session_start();
+
 
 get_header(); ?>
 <main class="page-wrapper">
