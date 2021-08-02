@@ -283,8 +283,8 @@ get_header();
 							<div class="cars-order d-flex">
 								<p>Ordina:</p>
 								<select class="form-select-2 order-select" name="order" id="order" aria-label="Ordina">
-									<option value="prezzo_asc">prezzo - crescente</option>
-									<option value="prezzo_desc">prezzo - decrescente</option>
+									<option value="prezzo_asc">prezzo-crescente</option>
+									<option value="prezzo_desc">prezzo-decrescente</option>
 									<option value="modello_asc">Modello (A - Z)</option>
 									<option value="modello_desc">Modello (Z - A)</option>
 									<option value="km_asc">km - crescente</option>
