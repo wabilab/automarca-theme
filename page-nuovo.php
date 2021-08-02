@@ -17,11 +17,15 @@ $filtri = array(
 	'alimentazione' => str_replace('_', ' ' , $alimentazione),
 );
 
-if($filtri['marca'] == 'benzina verde' ) {
+if($filtri['marca'] == 'benzina verde' || $filtri['marca'] == 'diesel' || $filtri['marca'] == 'gpl' || $filtri['marca'] == 'ibrida' || $filtri['marca'] == 'metano') {
 	$filtri['alimentazione'] = $filtri['marca'];
-	$filtri['marca'] = 'all';
-	$filtri['modello'] = 'all';
+	$filtri['marca'] = '';
+	$filtri['modello'] = '';
+}else if($filtri['modello'] == 'benzina verde' || $filtri['modello'] == 'diesel' || $filtri['modello'] == 'gpl' || $filtri['modello'] == 'ibrida' || $filtri['modello'] == 'metano'){
+	$filtri['alimentazione'] = $filtri['modello'];
+	$filtri['modello'] = '';
 }
+
 
 $_SESSION['marca'] = $filtri['marca'];
 $_SESSION['modello'] = $filtri['modello'];
@@ -173,7 +177,7 @@ get_header();
 												<option value="<?=$_SESSION['modello']?>"><?= $_SESSION['modello']?></option>
 												<?php endif; ?>
  												<option value="">Tutti</option>
-												<option value="fiesta" selected>Fiesta</option>
+												<option value="fiesta">Fiesta</option>
 											</select>
 										</div>
 										<div class="col-12 form-col">
@@ -197,7 +201,7 @@ get_header();
 											<select class="form-select live-filter" name="km_until" id="km-until" aria-label="Marca">
 												<option value="">Qualsiasi</option>
 												<?php if($_SESSION['km'] != '' && $_SESSION['km'] != NULL) : ?>
-												<option selected value="<?= $_SESSION['km'] ?>"><?= $_SESSION['km'] ?></option>
+												<option selected value="<?= $_SESSION['km'] ?>"><?= $_SESSION['km'] . ' km'?></option>
 												<?php
 												endif;
 												echo "<option value='5000'>5.000 km</option>";
@@ -249,7 +253,7 @@ get_header();
 										</div>
 										<div class="col-12 form-col">
 											<div class="form-check">
-												<input class="form-check-input" type="checkbox" value="true" name="novice_drivers" id="novice-drivers">
+												<input class="form-check-input live-filter" type="checkbox" value="true" name="novice_drivers" id="novice-drivers">
 												<label class="form-check-label" for="novice-drivers">
 													Neopatentati
 												</label>
@@ -280,16 +284,17 @@ get_header();
 							<?php 
 							
 							?>
-							<?php foreach($queryArr as $query) { 
-								if($query != 'AND') :
+							<?php foreach($queryArr as $k => $query) { 
+								if($query != 'AND' && $query['value'] != '') :
 								?>
 							<div class="automarca-active-filter">
-								<span><?= $query['value'] ?></span> <a href="" class="remove-filter" data-filter=""></a>
+								<span class="filter-widged"><?= $query['key'].'='.$query['value'] ?></span><span href="" class="remove-filter" data-filter="" data-type="<?= $query['key'] ?>" ></span>
 							</div>
 							<?php 
 						endif;
 						} 
-						var_dump($_SESSION)
+
+						var_dump($queryArr);
 						?>
 						</div>
 						<div class="remove-all-container mt-3">

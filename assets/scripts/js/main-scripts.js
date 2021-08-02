@@ -408,6 +408,39 @@ $(function () {
 
     set_filters();
 
+    $('#reset-search').on('click' ,function(){
+      window.location.href = home_url + '/nuovo';
+    })
+    $('.remove-filter').on('click' , function(){
+      switch ($(this).data('type')) {
+        case 'marca' :
+          brandInput.val('');
+          compile_filter_url();
+          break;
+        case 'model' : 
+          modelInput.val('');
+          compile_filter_url();
+          break;
+        case 'alimentazione' : 
+            fuelInput.val('');
+            compile_filter_url()
+            break;
+        case 'prezzo' : 
+          maxPriceInput.val('');
+          compile_filter_url();
+          break;
+        case 'km' : 
+          kmInput.val('');
+          compile_filter_url();
+          break;
+        case 'anno_immatricolazione' : 
+            yearInput.val('');
+            compile_filter_url();
+            break;
+      } 
+    }
+    )
+
     $('.live-filter').on('change' , () => {compile_filter_url()});
 
     // CAR IMG SLIDER
