@@ -4,9 +4,9 @@ import * as selectric from "selectric";
 import * as slick from "slick-carousel"
 /* import 'lazysizes';
 import 'lazysizes/plugins/unveilhooks/ls.unveilhooks'; */
-import { Loader } from "@googlemaps/js-api-loader";
-
-
+import {
+  Loader
+} from "@googlemaps/js-api-loader";
 const Modernizr = require("modernizr");
 
 window.mobileAndTabletCheck = function () {
@@ -91,7 +91,7 @@ $(function () {
       });
 
     } else {
-      
+
       var filterCollapse = document.getElementById("filter-collapse");
       new bootstrap.Collapse(filterCollapse, {
         toggle: false,
@@ -100,7 +100,7 @@ $(function () {
     }
   }
 
-  if($('#filter-collapse').length != 0) {
+  if ($('#filter-collapse').length != 0) {
     checkFiltersCollapse();
 
     $(window).on('resize', function () {
@@ -108,7 +108,7 @@ $(function () {
     });
   }
 
-  if($('#map').length != 0) {
+  if ($('#map').length != 0) {
 
     var data = $('#map').data('branchOfficeData');
 
@@ -308,108 +308,118 @@ $(function () {
 
 
     });
-}
+  }
 
-    var filterInput = $('.form-select'),
-        radioInput = $('.filterradio'),
-        brandInput = $('#brand'),
-        modelInput = $('#model'),
-        kmInput = $('#km-until'),
-        maxPriceInput = $('#max-price'),
-        fuelInput = $('#fuel_type'),
-        yearInput = $('#year'),
-        transmissioninput = $('#transmission'),
-        noviceInput = $('#novice-drivers');
-    
-    filterInput.on('change' , () => {set_filters()});
-    noviceInput.on('click' , () => {set_filters()});
-    radioInput.on('click' , () =>{set_filters()});
+  var filterInput = $('.form-select'),
+    radioInput = $('.filterradio'),
+    brandInput = $('#brand'),
+    modelInput = $('#model'),
+    kmInput = $('#km-until'),
+    maxPriceInput = $('#max-price'),
+    fuelInput = $('#fuel_type'),
+    yearInput = $('#year'),
+    transmissioninput = $('#transmission'),
+    noviceInput = $('#novice-drivers');
 
-    function set_filters(){
-        let filter =  {
-            post_type : 'auto-in-vendita',
-            filters : get_filters()
-        }
-        
-        get_search_results_count(filter); 
+  filterInput.on('change', () => {
+    set_filters()
+  });
+  noviceInput.on('click', () => {
+    set_filters()
+  });
+  radioInput.on('click', () => {
+    set_filters()
+  });
+
+  function set_filters() {
+    let filter = {
+      post_type: 'auto-in-vendita',
+      filters: get_filters()
     }
 
-    function get_search_results_count(filterObj){
-        /* console.log('tipologia ' + $('input[name="condition"]:checked').val()), */
-        
-        $.ajax({
-        method: "GET",
-        data : filterObj,
-        url : home_url + '/wp-json/v2/get_search_results_count',
-        }).done(function(response){
-        console.log(response);
-        $('#count-result').html(response);
-        })
+    get_search_results_count(filter);
+  }
+
+  function get_search_results_count(filterObj) {
+    / console.log('tipologia ' + $('input[name="condition"]:checked').val()), /
+    $.ajax({
+      method: "GET",
+      data: filterObj,
+      url: home_url + '/wp-json/v2/get_search_results_count',
+    }).done(function (response) {
+      console.log(response);
+      $('#count-result').html(response);
+    })
+  }
+
+  var filterSubmit = $('#filter-submit');
+
+  filterSubmit.on('click', () => {
+    compile_filter_url()
+  });
+
+  function compile_filter_url() {
+    let filter = get_filters();
+
+    console.log(filter);
+    var searchUrl = home_url + '/nuovo/';
+    var paramsArr = [];
+    for (const [key, value] of Object.entries(filter)) {
+      if (value != '' && (key == 'marca' || key == 'modello' || key == 'alimentazione')) {
+        searchUrl += value + '-';
+      } else if (value != '') {
+        let newParam = '&' + key + '=' + value;
+        paramsArr.push(newParam);
+      }
     }
 
-    var filterSubmit = $('#filter-submit');
-
-    filterSubmit.on('click' ,() => {compile_filter_url()});
-
-    function compile_filter_url(){
-        let filter = get_filters();
-        
-        console.log(filter);
-        var searchUrl = home_url + '/nuovo/';
-        var paramsArr =  [];
-        for (const [key , value] of Object.entries(filter)){
-            if (value != '' && (key == 'marca' || key == 'modello' || key == 'alimentazione')){
-                searchUrl += value + '-';
-            }else if(value != ''){
-                let newParam = '&' + key + '=' + value;
-                paramsArr.push(newParam);
-            }
-        }
-
-        paramsArr.forEach(el => {
-            searchUrl += el;
-        });
-
-        window.location.href = searchUrl;
-    }
-
-    function get_filters(){
-        let filter = { 
-            tipologia : $('input[name="condition"]:checked').val(),
-            marca : brandInput.val(),
-            modello : modelInput.val(),
-            maxPrice : maxPriceInput.val(),
-            km : kmInput.val(),
-            anno : yearInput.val(),
-            alimentazione : fuelInput.val(),
-            cambio : transmissioninput.val(),
-            novice : noviceInput.is(':checked') == true ? true : '',
-        };
-        return filter;
-    }
-
-    // CAR IMG SLIDER
-    $(".car-img-slider").slick({
-      lazyLoad: "ondemand",
-      slidesToShow: 1,
-      slidesToScroll: 1,
-      dots: false,
-      arrows: false,
-      infinite: true,
-      responsive: [],
-      asNavFor: '.car-thumb-slider'
+    paramsArr.forEach(el => {
+      searchUrl += el;
     });
-    // car-img-slider
 
-    $(".car-thumb-slider").slick({
-      lazyLoad: "ondemand",
-      slidesToShow: 4,
-      slidesToScroll: 1,
-      dots: false,
-      arrows: true,
-      infinite: true,
-      responsive: [],
-      asNavFor: '.car-img-slider'
-    });
-    // CAR THUMB SLIDER
+    window.location.href = searchUrl;
+  }
+
+  function get_filters() {
+    let filter = {
+      tipologia: $('input[name="condition"]:checked').val(),
+      marca: brandInput.val(),
+      modello: modelInput.val(),
+      maxPrice: maxPriceInput.val(),
+      km: kmInput.val(),
+      anno: yearInput.val(),
+      alimentazione: fuelInput.val(),
+      cambio: transmissioninput.val(),
+      novice: noviceInput.is(':checked') == true ? true : '',
+    };
+    return filter;
+  }
+
+
+  // CAR IMG SLIDER
+  $(".car-img-slider").slick({
+    lazyLoad: "ondemand",
+    slidesToShow: 1,
+    slidesToScroll: 1,
+    dots: false,
+    arrows: false,
+    infinite: true,
+    responsive: [],
+    asNavFor: '.car-thumb-slider'
+  });
+  // car-img-slider
+
+  $(".car-thumb-slider").slick({
+    lazyLoad: "ondemand",
+    slidesToShow: 4,
+    slidesToScroll: 1,
+    dots: false,
+    arrows: true,
+    infinite: true,
+    responsive: [],
+    asNavFor: '.car-img-slider',
+    prevArrow: '',
+    nextArrow: ''
+  });
+
 });
