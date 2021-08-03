@@ -89,7 +89,7 @@ $(function () {
       });
 
     } else {
-      
+
       var filterCollapse = document.getElementById("filter-collapse");
       new bootstrap.Collapse(filterCollapse, {
         toggle: false,
@@ -98,7 +98,7 @@ $(function () {
     }
   }
 
-  if($('#filter-collapse').length != 0) {
+  if ($('#filter-collapse').length != 0) {
     checkFiltersCollapse();
 
     $(window).on('resize', function () {
@@ -106,7 +106,7 @@ $(function () {
     });
   }
 
-  if($('#map').length != 0) {
+  if ($('#map').length != 0) {
 
     var data = $('#map').data('branchOfficeData');
 
@@ -308,20 +308,16 @@ $(function () {
     });
   }
 
-    var filterInput = $('.form-select'),
-        radioInput = $('.filterradio'),
-        brandInput = $('#brand'),
-        modelInput = $('#model'),
-        kmInput = $('#km-until'),
-        maxPriceInput = $('#max-price'),
-        fuelInput = $('#fuel_type'),
-        yearInput = $('#year'),
-        transmissioninput = $('#transmission'),
-        noviceInput = $('#novice-drivers');
-    
-    filterInput.on('change' , () => {set_filters()});
-    noviceInput.on('click' , () => {set_filters()});
-    radioInput.on('click' , () =>{set_filters()});
+  var filterInput = $('.form-select'),
+    radioInput = $('.filterradio'),
+    brandInput = $('#brand'),
+    modelInput = $('#model'),
+    kmInput = $('#km-until'),
+    maxPriceInput = $('#max-price'),
+    fuelInput = $('#fuel_type'),
+    yearInput = $('#year'),
+    transmissioninput = $('#transmission'),
+    noviceInput = $('#novice-drivers');
 
     function set_filters(){
         let filter =  {
@@ -353,9 +349,20 @@ $(function () {
         })
     }
 
-    var filterSubmit = $('#filter-submit');
+    get_search_results_count(filter);
+  }
 
-    filterSubmit.on('click' ,() => {compile_filter_url()});
+  function get_search_results_count(filterObj) {
+    / console.log('tipologia ' + $('input[name="condition"]:checked').val()), /
+    $.ajax({
+      method: "GET",
+      data: filterObj,
+      url: home_url + '/wp-json/v2/get_search_results_count',
+    }).done(function (response) {
+      console.log(response);
+      $('#count-result').html(response);
+    })
+  }
 
     function compile_filter_url(){
         let filter = { 
@@ -403,8 +410,8 @@ $(function () {
             searchUrl += el;
         });
 
-        window.location.href = searchUrl;
-    }
+  function compile_filter_url() {
+    let filter = get_filters();
 
     set_filters();
 
@@ -460,7 +467,6 @@ $(function () {
       responsive: [],
       asNavFor: '.car-thumb-slider'
     });
-    // car-img-slider
 
     $(".car-thumb-slider").slick({
       lazyLoad: "ondemand",
