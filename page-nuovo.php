@@ -25,6 +25,10 @@ if($filtri['marca'] == 'benzina verde' || $filtri['marca'] == 'diesel' || $filtr
 	$filtri['alimentazione'] = $filtri['modello'];
 	$filtri['modello'] = '';
 }
+if($filtri['marca'] != 'Ford' || $filtri['marca'] != 'Mazda' || $filtri['marca'] == 'Fiesta'){
+	$filtri['modello'] = $filtri['marca'];
+	$filtri['marca'] = '';
+}
 
 
 $_SESSION['marca'] = $filtri['marca'];
@@ -33,6 +37,7 @@ $_SESSION['alimentazione'] = $filtri['alimentazione'];
 $_SESSION['prezzo'] = $_GET['maxPrice'];
 $_SESSION['km'] = $_GET['km'];
 $_SESSION['anno'] = $_GET['anno'];
+$_SESSION['order'] = $_GET['order'];
 
 
 $queryArr = ['relation' => 'AND'];
@@ -110,19 +115,19 @@ if(isset($_GET['order'])){
 	$orderarr = explode('_' , $_GET['order']);
 }else{
 	$orderarr[] = 'prezzo';
-	$orderarr[] = 'desc';
+	$orderarr[] = 'asc';
 }
 
 
 $paged = isset($_GET['pagina']) ? $_GET['pagina'] : 1;
 $args = array(
 	'post_type' => 'auto-in-vendita',
-	'posts_per_page' => '6',
-	'paged' => $paged,
 	'meta_query' => $queryArr,
 	'meta_key' =>$orderarr[0],
 	'orderby' => 'meta_value',
-	'order' => strtoupper($orderarr[1])
+	'order' => strtoupper($orderarr[1]),
+	'posts_per_page' => '6',
+	'paged' => $paged
 );
 $cars = new WP_Query($args);
 
@@ -168,7 +173,6 @@ get_header();
 							<div class="collapse filters-collapse-container" id="filter-collapse">
 								<div class="filters-container">
 									<form class="row search-form" action="<?php echo home_url('/'); ?>">
-										<input type="hidden" name="order" value="price_asc" id="order">
 										<input type="hidden" name="condition" value="usato" id="condition">
 										<div class="col-12 form-col">
 											<label class="form-label" for="brand">Marca</label>
@@ -283,6 +287,9 @@ get_header();
 							<div class="cars-order d-flex">
 								<p>Ordina:</p>
 								<select class="form-select-2 order-select" name="order" id="order" aria-label="Ordina">
+									<?php if($_SESSION['order'] != '' && $_SESSION['order'] != NULL) : ?>
+										<option selected value="<?= $_SESSION['order']; ?>"> <?= str_replace('_', ' ' , $_SESSION['order']); ?></option>
+									<?php endif; ?>
 									<option value="prezzo_asc">prezzo-crescente</option>
 									<option value="prezzo_desc">prezzo-decrescente</option>
 									<option value="modello_asc">Modello (A - Z)</option>
