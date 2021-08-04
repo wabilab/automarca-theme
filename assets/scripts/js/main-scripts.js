@@ -334,22 +334,10 @@ $(function() {
                 novice: noviceInput.is(':checked') == true ? true : '',
             }
         }
+        console.log(filter);
         get_search_results_count(filter);
     }
 
-    function get_search_results_count(filterObj) {
-        console.log(filterObj);
-        $.ajax({
-            method: "GET",
-            data: filterObj,
-            url: home_url + '/wp-json/v2/get_search_results_count',
-        }).done(function(response) {
-            console.log(response);
-            $('#count-result').html(response);
-        })
-    }
-
-    set_filters();
 
 
     function get_search_results_count(filterObj) {
@@ -412,7 +400,7 @@ $(function() {
         })
 
         window.location.href = searchUrl;
-    }
+    } 
 
     set_filters();
 
