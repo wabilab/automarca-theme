@@ -25,7 +25,7 @@ if($filtri['marca'] == 'benzina verde' || $filtri['marca'] == 'diesel' || $filtr
 	$filtri['alimentazione'] = $filtri['modello'];
 	$filtri['modello'] = '';
 }
-if($filtri['marca'] != 'Ford' || $filtri['marca'] != 'Mazda' || $filtri['marca'] == 'Fiesta'){
+if($filtri['marca'] != 'Ford' && $filtri['marca'] != 'Mazda' && $filtri['marca'] != 'Volkswagen'){
 	$filtri['modello'] = $filtri['marca'];
 	$filtri['marca'] = '';
 }
@@ -118,13 +118,19 @@ if(isset($_GET['order'])){
 	$orderarr[] = 'asc';
 }
 
+if($orderarr[0] == 'prezzo' || $orderarr[0] == 'km'){
+	$orderby = 'meta_value_num';
+} else {
+	$orderby = 'meta_value';
+}
+
 
 $paged = isset($_GET['pagina']) ? $_GET['pagina'] : 1;
 $args = array(
 	'post_type' => 'auto-in-vendita',
 	'meta_query' => $queryArr,
 	'meta_key' =>$orderarr[0],
-	'orderby' => 'meta_value',
+	'orderby' => $orderby,
 	'order' => strtoupper($orderarr[1]),
 	'posts_per_page' => '6',
 	'paged' => $paged

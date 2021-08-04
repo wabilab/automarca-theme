@@ -319,6 +319,14 @@ $(function() {
         transmissioninput = $('#transmission'),
         noviceInput = $('#novice-drivers');
 
+    filterInput.on('change' , () => {set_filters()});
+    noviceInput.on('click' , () => {set_filters()});
+    radioInput.on('click' , () =>{set_filters()});
+
+    var filterSubmit = $('#filter-submit');
+    filterSubmit.on('click' ,() => {compile_filter_url()});
+
+
     function set_filters() {
         let filter = {
             post_type: 'auto-in-vendita',
@@ -366,7 +374,7 @@ $(function() {
                 anno: yearInput.val(),
                 cambio: transmissioninput.val(),
                 novice: noviceInput.is(':checked') == true ? true : '',
-                order: $('#order').val()
+                order: $('#order').val() == undefined ? '' : $('#order').val()
             }
         };
         var searchUrl = home_url + '/nuovo/';
