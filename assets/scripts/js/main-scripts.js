@@ -285,14 +285,14 @@ $(function() {
         transmissioninput = $('#transmission'),
         noviceInput = $('#novice-drivers');
 
-        // TRIGGER
-    filterInput.on('change' , () => {set_filters()});
-    noviceInput.on('click' , () => {set_filters()});
-    radioInput.on('click' , () =>{set_filters()});
-        // SUBMIT 
+    // TRIGGER
+    filterInput.on('change', () => { set_filters() });
+    noviceInput.on('click', () => { set_filters() });
+    radioInput.on('click', () => { set_filters() });
+    // SUBMIT 
     var filterSubmit = $('#filter-submit');
-    filterSubmit.on('click' ,() => {compile_filter_url()});
-      
+    filterSubmit.on('click', () => { compile_filter_url() });
+
     // SET FILTERS AND GET POSTS COUNT
     function set_filters() {
         let filter = {
@@ -369,16 +369,19 @@ $(function() {
             }
         }
         paramsArr.forEach(el => {
-            searchUrl += el;
-        })
-        // REDIRECT
+                searchUrl += el;
+            })
+            // REDIRECT
         window.location.href = searchUrl;
-    } 
+    }
 
     set_filters();
 
     //RESET FILTERS
     $('#reset-search').on('click', function() {
+        window.location.href = home_url + '/nuovo';
+    })
+    $('#reset-filters').on('click', function() {
         window.location.href = home_url + '/nuovo';
     })
 
@@ -415,9 +418,9 @@ $(function() {
 
     //ORDER SELECT TRIGGER
     $('#order').on('change', () => {
-        compile_filter_url();
-    })
-    //TRIGGER FILTERS PAGINA RICERCA
+            compile_filter_url();
+        })
+        //TRIGGER FILTERS PAGINA RICERCA
     $('.live-filter').on('change', () => { compile_filter_url() });
 
     // CAR IMG SLIDER

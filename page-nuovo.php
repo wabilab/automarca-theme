@@ -208,7 +208,7 @@ get_header();
 												<option value="<?=$_SESSION['modello']?>"><?= $_SESSION['modello']?></option>
 												<?php endif; ?>
  											   <option value="">Tutti</option>
-												<option value="fiesta">Fiesta</option>
+												<option class="" value="fiesta">Fiesta</option>
 											</select>
 										</div>
 										<div class="col-12 form-col">
