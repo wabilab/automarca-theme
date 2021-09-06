@@ -18,9 +18,9 @@ $args = array(
 
 $query = get_posts($args);
 
-foreach($query as $post){
+/* foreach($query as $post){
     wp_delete_post($post -> ID , true);
-}; 
+};  */
 
 $spreadsheet = PhpOffice\PhpSpreadsheet\IOFactory::load(__DIR__ . '/test.xls');
 $spreadsheet -> setActiveSheetIndex(0);

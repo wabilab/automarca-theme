@@ -85,7 +85,17 @@ get_header(); ?>
 								</select>
 							</div>
 							<div class="col-12 form-col">
-								<input type="text" class="form-control" placeholder="anno" name="year" id="year">
+								<!-- <input type="text" class="form-control" placeholder="anno" name="year" id="year"> -->
+								<select class="form-select" name="year" id="year" aria-label="Anno">
+									<?php 
+										for($i = 1990 ; $i <= 2021 ; $i++){
+									?>
+										<option value="<?= $i; ?>"><?= $i; ?></option>
+
+									<?php
+										}
+									?>
+								</select>
 							</div>
 							<div class="col-12 form-col">
 								<select class="form-select" name="fuel_type" id="fuel_type">

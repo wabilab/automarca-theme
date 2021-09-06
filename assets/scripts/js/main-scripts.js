@@ -284,11 +284,14 @@ $(function() {
         yearInput = $('#year'),
         transmissioninput = $('#transmission'),
         noviceInput = $('#novice-drivers');
-
+        yearInput.on('change' , () => {
+            console.log('ciao');
+        })
     // TRIGGER
     filterInput.on('change', () => { set_filters() });
     noviceInput.on('click', () => { set_filters() });
     radioInput.on('click', () => { set_filters() });
+    yearInput.on('change' , () => { set_filters() });
     // SUBMIT 
     var filterSubmit = $('#filter-submit');
     filterSubmit.on('click', () => { compile_filter_url() });
