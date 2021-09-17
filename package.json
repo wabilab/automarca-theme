@@ -69,11 +69,7 @@
     "tilde-sass": "^1.0.2",
     "yarn": "^1.22.10"
   },
-  "browser": {
-    "net": false,
-    "fs": false,
-    "console": false,
-    "is-wsl": false,
-    "child_process": false
-  }
+  "browserslist": [
+    "defaults"
+  ]
 }
