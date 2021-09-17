@@ -4,12 +4,14 @@ import * as selectric from "selectric";
 import * as slick from "slick-carousel"
 /* import 'lazysizes';
 import 'lazysizes/plugins/unveilhooks/ls.unveilhooks'; */
-import { Loader } from "@googlemaps/js-api-loader";
+import {
+    Loader
+} from "@googlemaps/js-api-loader";
 const Modernizr = require("modernizr");
 
-window.mobileAndTabletCheck = function() {
+window.mobileAndTabletCheck = function () {
     let check = false;
-    (function(a) {
+    (function (a) {
         if (
             /(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows ce|xda|xiino|android|ipad|playbook|silk/i.test(
                 a
@@ -24,458 +26,463 @@ window.mobileAndTabletCheck = function() {
 };
 
 
-$(function() {
+$(function () {
 
-            $("html").addClass(mobileAndTabletCheck() ? "mobile" : "desktop");
+    $("html").addClass(mobileAndTabletCheck() ? "mobile" : "desktop");
 
-            $("select").selectric();
+    $("select").selectric();
 
-            // var automarcaSelect = new Selectric('select')
+    // var automarcaSelect = new Selectric('select')
 
-            $(".home-slider").slick({
-                lazyLoad: "ondemand",
-                slidesToShow: 1,
-                dots: true,
-                arrows: false,
-                infinite: true,
-                responsive: [],
+    $(".home-slider").slick({
+        lazyLoad: "ondemand",
+        slidesToShow: 1,
+        dots: true,
+        arrows: false,
+        infinite: true,
+        responsive: [],
+    });
+
+    // $('#menu-open-button').on('click', function (e) {
+    //   e.preventDefault();
+    //   $("#menu-collapse").collapse("toggle");
+    // })
+
+    var menuCollapse = document.getElementById("menu-collapse");
+    // console.log(menuCollapse);
+    menuCollapse.addEventListener("shown.bs.collapse", function () {
+        // console.log("QUI");
+        $("#menu-open-button").addClass("is-active");
+    });
+
+    menuCollapse.addEventListener("hidden.bs.collapse", function () {
+        // console.log("QUI");
+        $("#menu-open-button").removeClass("is-active");
+    });
+
+
+    var checkFiltersCollapse = function () {
+        if (window.innerWidth >= 992) {
+            // console.log(window.innerWidth);
+
+            var collapseElementList = [].slice.call(
+                document.querySelectorAll(".collapse")
+            );
+
+            var collapseList = collapseElementList.map(function (collapseEl) {
+                return new bootstrap.Collapse(collapseEl, {
+                    toggle: (collapseEl.id == 'filter-collapse'),
+                });
             });
 
-            // $('#menu-open-button').on('click', function (e) {
-            //   e.preventDefault();
-            //   $("#menu-collapse").collapse("toggle");
-            // })
+            var filterCollapse;
+            $.each(collapseList, function (idx, collapseEl) {
+                // console.log(collapseEl._selector);
+                if (collapseEl._selector == "#filter-collapse") {
+                    collapseEl.show();
 
-            var menuCollapse = document.getElementById("menu-collapse");
-            // console.log(menuCollapse);
-            menuCollapse.addEventListener("shown.bs.collapse", function() {
-                // console.log("QUI");
-                $("#menu-open-button").addClass("is-active");
-            });
-
-            menuCollapse.addEventListener("hidden.bs.collapse", function() {
-                // console.log("QUI");
-                $("#menu-open-button").removeClass("is-active");
-            });
-
-
-            var checkFiltersCollapse = function() {
-                if (window.innerWidth >= 992) {
-                    // console.log(window.innerWidth);
-
-                    var collapseElementList = [].slice.call(
-                        document.querySelectorAll(".collapse")
-                    );
-
-                    var collapseList = collapseElementList.map(function(collapseEl) {
-                        return new bootstrap.Collapse(collapseEl, {
-                            toggle: (collapseEl.id == 'filter-collapse'),
-                        });
-                    });
-
-                    var filterCollapse;
-                    $.each(collapseList, function(idx, collapseEl) {
-                        // console.log(collapseEl._selector);
-                        if (collapseEl._selector == "#filter-collapse") {
-                            collapseEl.show();
-
-                            setTimeout(() => {
-                                collapseEl.dispose();
-                                $("#filter-title-btn").removeAttr("data-bs-toggle");
-                                $("#filter-title-btn").removeAttr("data-bs-target");
-                                $("#filter-title-btn").off("click");
-                            }, 500);
-                        }
-                    });
-
-                } else {
-
-                    var filterCollapse = document.getElementById("filter-collapse");
-                    new bootstrap.Collapse(filterCollapse, {
-                        toggle: false,
-                    });
-
+                    setTimeout(() => {
+                        collapseEl.dispose();
+                        $("#filter-title-btn").removeAttr("data-bs-toggle");
+                        $("#filter-title-btn").removeAttr("data-bs-target");
+                        $("#filter-title-btn").off("click");
+                    }, 500);
                 }
+            });
+
+        } else {
+
+            var filterCollapse = document.getElementById("filter-collapse");
+            new bootstrap.Collapse(filterCollapse, {
+                toggle: false,
+            });
+
+        }
+    }
+
+    if ($('#filter-collapse').length != 0) {
+        checkFiltersCollapse();
+
+        $(window).on('resize', function () {
+            checkFiltersCollapse();
+        });
+    }
+
+    if ($('#map').length != 0) {
+
+        var data = $('#map').data('branchOfficeData');
+
+        // var branch_office = {
+        //   name: "Automarca Spa",
+        //   address: "Via Calzavara, 1<br>31057, Silea(TV)",
+        //   contact: "info@automarca.it<br>+39 0422 3020",
+        //   link: "https://goo.gl/maps/V9zxGJXrEtHYdqRJ7",
+        //   center: {
+        //     lat: 45.6534101007297,
+        //     lng: 12.290490566933483
+        //   }
+        // }
+
+        // console.log(JSON.stringify(branch_office));
+        // console.log(data);
+
+        const loader = new Loader({
+            apiKey: "AIzaSyDFw5CdHkrCNR5VDKZzm3u28zJUgHUVT98",
+            version: "weekly"
+        });
+
+        // m8,16c0,0 6,-5.582 6,-10s-2.686,-6 -6,-6s-6,1.582 -6,6s6,10 6,10zm-3,-11c0,-1.657 1.343,-3 3,-3s3,1.343 3,3s-1.343,3 -3,3s-3,-1.343 -3,-3z
+
+        loader.load().then(() => {
+
+            var pin = {
+                path: "m8,16c0,0 6,-5.582 6,-10s-2.686,-6 -6,-6s-6,1.582 -6,6s6,10 6,10zm-3,-11c0,-1.657 1.343,-3 3,-3s3,1.343 3,3s-1.343,3 -3,3s-3,-1.343 -3,-3z",
+                fillColor: '#0B2133',
+                fillOpacity: 1,
+                strokeWeight: 0,
+                rotation: 0,
+                scale: 5,
+                anchor: new google.maps.Point(8, 16),
             }
 
-            if ($('#filter-collapse').length != 0) {
-                checkFiltersCollapse();
-
-                $(window).on('resize', function() {
-                    checkFiltersCollapse();
-                });
-            }
-
-            if ($('#map').length != 0) {
-
-                var data = $('#map').data('branchOfficeData');
-
-                // var branch_office = {
-                //   name: "Automarca Spa",
-                //   address: "Via Calzavara, 1<br>31057, Silea(TV)",
-                //   contact: "info@automarca.it<br>+39 0422 3020",
-                //   link: "https://goo.gl/maps/V9zxGJXrEtHYdqRJ7",
-                //   center: {
-                //     lat: 45.6534101007297,
-                //     lng: 12.290490566933483
-                //   }
-                // }
-
-                // console.log(JSON.stringify(branch_office));
-                // console.log(data);
-
-                const loader = new Loader({
-                    apiKey: "AIzaSyDFw5CdHkrCNR5VDKZzm3u28zJUgHUVT98",
-                    version: "weekly"
-                });
-
-                // m8,16c0,0 6,-5.582 6,-10s-2.686,-6 -6,-6s-6,1.582 -6,6s6,10 6,10zm-3,-11c0,-1.657 1.343,-3 3,-3s3,1.343 3,3s-1.343,3 -3,3s-3,-1.343 -3,-3z
-
-                loader.load().then(() => {
-
-                    var pin = {
-                        path: "m8,16c0,0 6,-5.582 6,-10s-2.686,-6 -6,-6s-6,1.582 -6,6s6,10 6,10zm-3,-11c0,-1.657 1.343,-3 3,-3s3,1.343 3,3s-1.343,3 -3,3s-3,-1.343 -3,-3z",
-                        fillColor: '#0B2133',
-                        fillOpacity: 1,
-                        strokeWeight: 0,
-                        rotation: 0,
-                        scale: 5,
-                        anchor: new google.maps.Point(8, 16),
-                    }
-
-                    map = new google.maps.Map(document.getElementById("map"), {
-                        center: data.center,
-                        zoom: 17,
-                        styles: [{
-                                "elementType": "geometry",
-                                "stylers": [{
-                                    "color": "#f5f5f5"
-                                }]
-                            },
-                            {
-                                "elementType": "labels.icon",
-                                "stylers": [{
-                                    "visibility": "off"
-                                }]
-                            },
-                            {
-                                "elementType": "labels.text.fill",
-                                "stylers": [{
-                                    "color": "#616161"
-                                }]
-                            },
-                            {
-                                "elementType": "labels.text.stroke",
-                                "stylers": [{
-                                    "color": "#f5f5f5"
-                                }]
-                            },
-                            {
-                                "featureType": "administrative.land_parcel",
-                                "elementType": "labels.text.fill",
-                                "stylers": [{
-                                    "color": "#bdbdbd"
-                                }]
-                            },
-                            {
-                                "featureType": "landscape.man_made",
-                                "elementType": "geometry.fill",
-                                "stylers": [{
-                                    "color": "#ededed"
-                                }]
-                            },
-                            {
-                                "featureType": "landscape.man_made",
-                                "elementType": "geometry.stroke",
-                                "stylers": [{
-                                    "color": "#ededed"
-                                }]
-                            },
-                            {
-                                "featureType": "poi",
-                                "elementType": "geometry",
-                                "stylers": [{
-                                    "color": "#e3e3e3"
-                                }]
-                            },
-                            {
-                                "featureType": "poi",
-                                "elementType": "labels.text.fill",
-                                "stylers": [{
-                                    "color": "#757575"
-                                }]
-                            },
-                            {
-                                "featureType": "poi.park",
-                                "elementType": "geometry",
-                                "stylers": [{
-                                    "color": "#e5e5e5"
-                                }]
-                            },
-                            {
-                                "featureType": "poi.park",
-                                "elementType": "labels.text.fill",
-                                "stylers": [{
-                                    "color": "#9e9e9e"
-                                }]
-                            },
-                            {
-                                "featureType": "road",
-                                "elementType": "geometry",
-                                "stylers": [{
-                                    "color": "#ffffff"
-                                }]
-                            },
-                            {
-                                "featureType": "road.arterial",
-                                "elementType": "labels.text.fill",
-                                "stylers": [{
-                                    "color": "#757575"
-                                }]
-                            },
-                            {
-                                "featureType": "road.highway",
-                                "elementType": "geometry",
-                                "stylers": [{
-                                    "color": "#dadada"
-                                }]
-                            },
-                            {
-                                "featureType": "road.highway",
-                                "elementType": "labels.text.fill",
-                                "stylers": [{
-                                    "color": "#616161"
-                                }]
-                            },
-                            {
-                                "featureType": "road.local",
-                                "elementType": "labels.text.fill",
-                                "stylers": [{
-                                    "color": "#9e9e9e"
-                                }]
-                            },
-                            {
-                                "featureType": "transit.line",
-                                "elementType": "geometry",
-                                "stylers": [{
-                                    "color": "#e5e5e5"
-                                }]
-                            },
-                            {
-                                "featureType": "transit.station",
-                                "elementType": "geometry",
-                                "stylers": [{
-                                    "color": "#eeeeee"
-                                }]
-                            },
-                            {
-                                "featureType": "water",
-                                "elementType": "geometry",
-                                "stylers": [{
-                                    "color": "#bcd9e4"
-                                }]
-                            },
-                            {
-                                "featureType": "water",
-                                "elementType": "labels.text.fill",
-                                "stylers": [{
-                                    "color": "#9e9e9e"
-                                }]
-                            }
-                        ]
-                    });
-
-                    var marker = new google.maps.Marker({
-                        position: map.getCenter(),
-                        icon: pin,
-                        map: map,
-                    });
-
-                    const infowindow = new google.maps.InfoWindow({
-                        content: "<div class='container-fluid'><div class='row'><div class='col-12'><h2 class='title-4'>" + data.name + "</h2><h6 class='title-6'>" + data.branch + "</h2><p style='margin-bottom: 10px'>" + data.address + "</p><p>" + data.contact + "</p><p><a href='" + data.link + "' target='_blank'>apri maps</a></p></div></div></div>",
-
-                    });
-
-                    marker.addListener("click", () => {
-                        infowindow.open({
-                            anchor: marker,
-                            map,
-                            shouldFocus: false,
-                        });
-                    });
-
-
-                });
-            }
-
-            var filterInput = $('.form-select'),
-                radioInput = $('.filterradio'),
-                brandInput = $('#brand'),
-                modelInput = $('#model'),
-                kmInput = $('#km-until'),
-                maxPriceInput = $('#max-price'),
-                fuelInput = $('#fuel_type'),
-                yearInput = $('#year'),
-                transmissioninput = $('#transmission'),
-                noviceInput = $('#novice-drivers');
-
-            function set_filters() {
-                let filter = {
-                    post_type: 'auto-in-vendita',
-                    filters: {
-                        /* tipologia : $('input[name="condition"]:checked').val(), */
-                        marca: brandInput.val(),
-                        modello: modelInput.val(),
-                        maxPrice: maxPriceInput.val(),
-                        km: kmInput.val(),
-                        anno: yearInput.val(),
-                        alimentazione: fuelInput.val(),
-                        cambio: transmissioninput.val(),
-                        novice: noviceInput.is(':checked') == true ? true : '',
-                    }
-                }
-                get_search_results_count(filter);
-            }
-
-            function get_search_results_count(filterObj) {
-                console.log(filterObj);
-                $.ajax({
-                    method: "GET",
-                    data: filterObj,
-                    url: home_url + '/wp-json/v2/get_search_results_count',
-                }).done(function(response) {
-                    console.log(response);
-                    $('#count-result').html(response);
-                })
-            }
-
-            get_search_results_count(filter);
-
-
-            function get_search_results_count(filterObj) {
-                / console.log('tipologia ' + $('input[name="condition"]:checked').val()), /
-                $.ajax({
-                    method: "GET",
-                    data: filterObj,
-                    url: home_url + '/wp-json/v2/get_search_results_count',
-                }).done(function(response) {
-                    console.log(response);
-                    $('#count-result').html(response);
-                })
-            }
-
-            function compile_filter_url() {
-                let filter = {
-                    /* tipologia : $('input[name="condition"]:checked').val(), */
-                    query_var: {
-                        marca: brandInput.val(),
-                        modello: modelInput.val(),
-                        alimentazione: fuelInput.val(),
+            map = new google.maps.Map(document.getElementById("map"), {
+                center: data.center,
+                zoom: 17,
+                styles: [{
+                        "elementType": "geometry",
+                        "stylers": [{
+                            "color": "#f5f5f5"
+                        }]
                     },
-                    get_params: {
-                        maxPrice: maxPriceInput.val(),
-                        km: kmInput.val(),
-                        anno: yearInput.val(),
-                        cambio: transmissioninput.val(),
-                        novice: noviceInput.is(':checked') == true ? true : '',
+                    {
+                        "elementType": "labels.icon",
+                        "stylers": [{
+                            "visibility": "off"
+                        }]
+                    },
+                    {
+                        "elementType": "labels.text.fill",
+                        "stylers": [{
+                            "color": "#616161"
+                        }]
+                    },
+                    {
+                        "elementType": "labels.text.stroke",
+                        "stylers": [{
+                            "color": "#f5f5f5"
+                        }]
+                    },
+                    {
+                        "featureType": "administrative.land_parcel",
+                        "elementType": "labels.text.fill",
+                        "stylers": [{
+                            "color": "#bdbdbd"
+                        }]
+                    },
+                    {
+                        "featureType": "landscape.man_made",
+                        "elementType": "geometry.fill",
+                        "stylers": [{
+                            "color": "#ededed"
+                        }]
+                    },
+                    {
+                        "featureType": "landscape.man_made",
+                        "elementType": "geometry.stroke",
+                        "stylers": [{
+                            "color": "#ededed"
+                        }]
+                    },
+                    {
+                        "featureType": "poi",
+                        "elementType": "geometry",
+                        "stylers": [{
+                            "color": "#e3e3e3"
+                        }]
+                    },
+                    {
+                        "featureType": "poi",
+                        "elementType": "labels.text.fill",
+                        "stylers": [{
+                            "color": "#757575"
+                        }]
+                    },
+                    {
+                        "featureType": "poi.park",
+                        "elementType": "geometry",
+                        "stylers": [{
+                            "color": "#e5e5e5"
+                        }]
+                    },
+                    {
+                        "featureType": "poi.park",
+                        "elementType": "labels.text.fill",
+                        "stylers": [{
+                            "color": "#9e9e9e"
+                        }]
+                    },
+                    {
+                        "featureType": "road",
+                        "elementType": "geometry",
+                        "stylers": [{
+                            "color": "#ffffff"
+                        }]
+                    },
+                    {
+                        "featureType": "road.arterial",
+                        "elementType": "labels.text.fill",
+                        "stylers": [{
+                            "color": "#757575"
+                        }]
+                    },
+                    {
+                        "featureType": "road.highway",
+                        "elementType": "geometry",
+                        "stylers": [{
+                            "color": "#dadada"
+                        }]
+                    },
+                    {
+                        "featureType": "road.highway",
+                        "elementType": "labels.text.fill",
+                        "stylers": [{
+                            "color": "#616161"
+                        }]
+                    },
+                    {
+                        "featureType": "road.local",
+                        "elementType": "labels.text.fill",
+                        "stylers": [{
+                            "color": "#9e9e9e"
+                        }]
+                    },
+                    {
+                        "featureType": "transit.line",
+                        "elementType": "geometry",
+                        "stylers": [{
+                            "color": "#e5e5e5"
+                        }]
+                    },
+                    {
+                        "featureType": "transit.station",
+                        "elementType": "geometry",
+                        "stylers": [{
+                            "color": "#eeeeee"
+                        }]
+                    },
+                    {
+                        "featureType": "water",
+                        "elementType": "geometry",
+                        "stylers": [{
+                            "color": "#bcd9e4"
+                        }]
+                    },
+                    {
+                        "featureType": "water",
+                        "elementType": "labels.text.fill",
+                        "stylers": [{
+                            "color": "#9e9e9e"
+                        }]
                     }
-                };
-                var searchUrl = home_url + '/nuovo/';
-                var paramsArr = [];
-                let index = 0;
-                for (const [key, value] of Object.entries(filter.query_var)) {
-                    if (value != '') {
-                        if (filter.query_var.lenght < 2) {
-                            searchUrl += value
-                        } else if (index == 0) {
-                            searchUrl += value
-                            index++
-                        } else {
-                            searchUrl += '-' + value;
-                        }
-                    }
-                }
-                let params_index = 0;
-                for (const [key, value] of Object.entries(filter.get_params)) {
-                    if (value != '' && params_index == 0) {
-                        let newParam = '?' + key + '=' + value;
-                        paramsArr.push(newParam);
-                        params_index++;
-                    } else if (value != '') {
-                        let newParam = '&' + key + '=' + value;
-                        paramsArr.push(newParam);
-                    }
-                }
-                paramsArr.forEach(el => {
-                    searchUrl += el;
+                ]
+            });
+
+            var marker = new google.maps.Marker({
+                position: map.getCenter(),
+                icon: pin,
+                map: map,
+            });
+
+            const infowindow = new google.maps.InfoWindow({
+                content: "<div class='container-fluid'><div class='row'><div class='col-12'><h2 class='title-4'>" + data.name + "</h2><h6 class='title-6'>" + data.branch + "</h2><p style='margin-bottom: 10px'>" + data.address + "</p><p>" + data.contact + "</p><p><a href='" + data.link + "' target='_blank'>apri maps</a></p></div></div></div>",
+
+            });
+
+            marker.addListener("click", () => {
+                infowindow.open({
+                    anchor: marker,
+                    map,
+                    shouldFocus: false,
                 });
+            });
 
-                function compile_filter_url() {
-                    let filter = get_filters();
 
-                    set_filters();
+        });
+    }
 
-                    $('#reset-search').on('click', function() {
-                        window.location.href = home_url + '/nuovo';
-                    })
-                    $('.remove-filter').on('click', function() {
-                        switch ($(this).data('type')) {
-                            case 'marca':
-                                brandInput.val('');
-                                compile_filter_url();
-                                break;
-                            case 'model':
-                                modelInput.val('');
-                                compile_filter_url();
-                                break;
-                            case 'alimentazione':
-                                fuelInput.val('');
-                                compile_filter_url()
-                                break;
-                            case 'prezzo':
-                                maxPriceInput.val('');
-                                compile_filter_url();
-                                break;
-                            case 'km':
-                                kmInput.val('');
-                                compile_filter_url();
-                                break;
-                            case 'anno_immatricolazione':
-                                yearInput.val('');
-                                compile_filter_url();
-                                break;
-                        }
-                    })
+    var filterInput = $('.form-select'),
+        radioInput = $('.filterradio'),
+        brandInput = $('#brand'),
+        modelInput = $('#model'),
+        kmInput = $('#km-until'),
+        maxPriceInput = $('#max-price'),
+        fuelInput = $('#fuel_type'),
+        yearInput = $('#year'),
+        transmissioninput = $('#transmission'),
+        noviceInput = $('#novice-drivers');
 
-                    $('#order').on('change', () => {
-                        /* let order = $('#order').val(); */
-                        console.log('yo');
-                        /* window.location.href += '&' + order; */
-                    })
+    function set_filters() {
+        let filter = {
+            post_type: 'auto-in-vendita',
+            filters: {
+                /* tipologia : $('input[name="condition"]:checked').val(), */
+                marca: brandInput.val(),
+                modello: modelInput.val(),
+                maxPrice: maxPriceInput.val(),
+                km: kmInput.val(),
+                anno: yearInput.val(),
+                alimentazione: fuelInput.val(),
+                cambio: transmissioninput.val(),
+                novice: noviceInput.is(':checked') == true ? true : '',
+            }
+        }
+        get_search_results_count(filter);
+    }
 
-                    $('.live-filter').on('change', () => { compile_filter_url() });
+    function get_search_results_count(filterObj) {
+        console.log(filterObj);
+        $.ajax({
+            method: "GET",
+            data: filterObj,
+            url: home_url + '/wp-json/v2/get_search_results_count',
+        }).done(function (response) {
+            console.log(response);
+            $('#count-result').html(response);
+        })
+    }
 
-                    // CAR IMG SLIDER
-                    $(".car-img-slider").slick({
-                        lazyLoad: "ondemand",
-                        slidesToShow: 1,
-                        slidesToScroll: 1,
-                        dots: false,
-                        arrows: false,
-                        infinite: true,
-                        responsive: [],
-                        asNavFor: '.car-thumb-slider'
-                    });
+    get_search_results_count(filter);
 
-                    $(".car-thumb-slider").slick({
-                        lazyLoad: "ondemand",
-                        slidesToShow: 4,
-                        slidesToScroll: 1,
-                        dots: false,
-                        arrows: true,
-                        infinite: true,
-                        responsive: [],
-                        asNavFor: '.car-img-slider'
-                    });
 
-                });
+    function get_search_results_count(filterObj) {
+        / console.log('tipologia ' + $('input[name="condition"]:checked').val()), /
+        $.ajax({
+            method: "GET",
+            data: filterObj,
+            url: home_url + '/wp-json/v2/get_search_results_count',
+        }).done(function (response) {
+            console.log(response);
+            $('#count-result').html(response);
+        })
+    }
+
+    function compile_filter_url() {
+        let filter = {
+            /* tipologia : $('input[name="condition"]:checked').val(), */
+            query_var: {
+                marca: brandInput.val(),
+                modello: modelInput.val(),
+                alimentazione: fuelInput.val(),
+            },
+            get_params: {
+                maxPrice: maxPriceInput.val(),
+                km: kmInput.val(),
+                anno: yearInput.val(),
+                cambio: transmissioninput.val(),
+                novice: noviceInput.is(':checked') == true ? true : '',
+            }
+        };
+        var searchUrl = home_url + '/nuovo/';
+        var paramsArr = [];
+        let index = 0;
+        for (const [key, value] of Object.entries(filter.query_var)) {
+            if (value != '') {
+                if (filter.query_var.lenght < 2) {
+                    searchUrl += value
+                } else if (index == 0) {
+                    searchUrl += value
+                    index++
+                } else {
+                    searchUrl += '-' + value;
+                }
+            }
+        }
+        let params_index = 0;
+        for (const [key, value] of Object.entries(filter.get_params)) {
+            if (value != '' && params_index == 0) {
+                let newParam = '?' + key + '=' + value;
+                paramsArr.push(newParam);
+                params_index++;
+            } else if (value != '') {
+                let newParam = '&' + key + '=' + value;
+                paramsArr.push(newParam);
+            }
+        }
+        paramsArr.forEach(el => {
+            searchUrl += el;
+        });
+    }
+
+    function compile_filter_url() {
+        let filter = get_filters();
+
+        set_filters();
+    }
+
+    $('#reset-search').on('click', function () {
+        window.location.href = home_url + '/nuovo';
+    })
+    
+    $('.remove-filter').on('click', function () {
+        switch ($(this).data('type')) {
+            case 'marca':
+                brandInput.val('');
+                compile_filter_url();
+                break;
+            case 'model':
+                modelInput.val('');
+                compile_filter_url();
+                break;
+            case 'alimentazione':
+                fuelInput.val('');
+                compile_filter_url()
+                break;
+            case 'prezzo':
+                maxPriceInput.val('');
+                compile_filter_url();
+                break;
+            case 'km':
+                kmInput.val('');
+                compile_filter_url();
+                break;
+            case 'anno_immatricolazione':
+                yearInput.val('');
+                compile_filter_url();
+                break;
+        }
+    })
+
+    $('#order').on('change', () => {
+        /* let order = $('#order').val(); */
+        console.log('yo');
+        /* window.location.href += '&' + order; */
+    })
+
+    $('.live-filter').on('change', () => {
+        compile_filter_url()
+    });
+
+    // CAR IMG SLIDER
+    $(".car-img-slider").slick({
+        lazyLoad: "ondemand",
+        slidesToShow: 1,
+        slidesToScroll: 1,
+        dots: false,
+        arrows: false,
+        infinite: true,
+        responsive: [],
+        asNavFor: '.car-thumb-slider'
+    });
+
+    $(".car-thumb-slider").slick({
+        lazyLoad: "ondemand",
+        slidesToShow: 4,
+        slidesToScroll: 1,
+        dots: false,
+        arrows: true,
+        infinite: true,
+        responsive: [],
+        asNavFor: '.car-img-slider'
+    });
+
+});
