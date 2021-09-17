@@ -122,21 +122,21 @@
 						<div class="collapse navbar-collapse ms-lg-5" id="menu-collapse">
 							<ul class="navbar-nav ms-auto">
 								<li class="nav-item dropdown">
-									<a class="nav-link menu-link <?= $pagename == 'nuovo' ? 'active' : '' ?>" href="<?= get_permalink(get_page_by_path('nuovo')) ?>" data-text="nuovo" data-bs-offset="50,50">nuovo</a>
+									<a class="nav-link menu-link dropdown-toggle <?= $pagename == 'nuovo' ? 'active' : '' ?>" data-text="nuovo" href="<?= get_permalink(get_page_by_path('nuovo')) ?>" tabindex="-1">nuovo</a>
 								</li>
 								<li class="nav-item dropdown">
-									<a class="nav-link menu-link <?= $pagename == 'km0' ? 'active' : '' ?>" href="<?= get_permalink(get_page_by_path('km0')) ?>" data-text="km0">KM0</a>
+									<a class="nav-link menu-link dropdown-toggle <?= $pagename == 'km0' ? 'active' : '' ?>" data-text="km0" href="<?= get_permalink(get_page_by_path('km0')) ?>" tabindex="-1">km0</a>
 								</li>
 								<li class="nav-item dropdown">
-									<a class="nav-link menu-link <?= $pagename == 'usato' ? 'active' : '' ?>" href="<?= get_permalink(get_page_by_path('usato')) ?>" data-text="usato">usato</a>
+									<a class="nav-link menu-link dropdown-toggle <?= $pagename == 'usato' ? 'active' : '' ?>" data-text="usato" href="<?= get_permalink(get_page_by_path('usato')) ?>" tabindex="-1">usato</a>
 								</li>
-								<!-- <li class="nav-item dropdown">
+								<li class="nav-item dropdown">
 									<a class="nav-link menu-link dropdown-toggle <?= $pagename == 'noleggio' ? 'active' : '' ?>" role="button" id="dropdown-rent" data-bs-toggle="dropdown" aria-expanded="false" data-text="noleggio" href="#" tabindex="-1">noleggio</a>
 									<ul class="dropdown-menu" aria-labelledby="dropdown-rent">
-										<li><a class="dropdown-item" href="#">Lungo Termine</a></li>
-										<li><a class="dropdown-item" href="#">Breve Termine</a></li>
+										<li><a class="dropdown-item" href="<?= get_permalink(get_page_by_path('noleggio-lungo-termine')) ?>">Lungo Termine</a></li>
+										<li><a class="dropdown-item" href="<?= get_permalink(get_page_by_path('noleggio-breve-termine')) ?>">Breve Termine</a></li>
 									</ul>
-								</li> -->
+								</li>
 								<li class="nav-item">
 									<a class="nav-link menu-link <?= $pagename == 'business' ? 'active' : '' ?>" data-text="business" href="<?= get_permalink(get_page_by_path('business')) ?>" tabindex="-1">business</a>
 								</li>
