@@ -4,7 +4,9 @@ import * as selectric from "selectric";
 import * as slick from "slick-carousel"
 /* import 'lazysizes';
 import 'lazysizes/plugins/unveilhooks/ls.unveilhooks'; */
-import { Loader } from "@googlemaps/js-api-loader";
+import {
+    Loader
+} from "@googlemaps/js-api-loader";
 const Modernizr = require("modernizr");
 
 window.mobileAndTabletCheck = function () {
@@ -24,7 +26,7 @@ window.mobileAndTabletCheck = function () {
 };
 
 
-$(function() {
+$(function () {
 
     $("html").addClass(mobileAndTabletCheck() ? "mobile" : "desktop");
 
@@ -449,7 +451,4 @@ $(function() {
         responsive: [],
         // asNavFor: '.car-img-slider'
     });
-
-    
-
 });
