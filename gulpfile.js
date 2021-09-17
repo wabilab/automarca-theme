@@ -18,7 +18,7 @@ var gulp = require("gulp"),
 // Modify these variables to match your project needs
 
 // Set local URL if using Browser-Sync
-const LOCAL_URL = "https://demo.wabi.it/automarca";
+const LOCAL_URL = "https://localhost:8888/automarca";
 
 // Select Foundation components, remove components project will not use
 const SOURCE = {
