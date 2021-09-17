@@ -4,19 +4,20 @@
  * Pagina Usato
  */
 
-use PhpOffice\PhpSpreadsheet\Shared\Date;
-session_start();
 
+session_start();
+ // INITIALIZE QUERY VARS
 $marca = get_query_var('param1');
 $modello = substr(get_query_var('param2') , 1 , strlen(get_query_var('param2')));
 $alimentazione = substr(get_query_var('param3') , 1 , strlen(get_query_var('param3')));
 
+// SANITIZE QUERY VARS
 $filtri = array(
 	'marca' => str_replace('_', ' ' , $marca),
 	'modello' => str_replace('_', ' ' , $modello),
 	'alimentazione' => str_replace('_', ' ' , $alimentazione),
 );
-
+//CHECK QUERY VARS POSITION IN URL
 if($filtri['marca'] == 'benzina verde' || $filtri['marca'] == 'diesel' || $filtri['marca'] == 'gpl' || $filtri['marca'] == 'ibrida' || $filtri['marca'] == 'metano' || $filtri['marca'] == 'elettrica') {
 	$filtri['alimentazione'] = $filtri['marca'];
 	$filtri['marca'] = '';
@@ -25,16 +26,21 @@ if($filtri['marca'] == 'benzina verde' || $filtri['marca'] == 'diesel' || $filtr
 	$filtri['alimentazione'] = $filtri['modello'];
 	$filtri['modello'] = '';
 }
+if($filtri['marca'] != 'Ford' && $filtri['marca'] != 'Mazda' && $filtri['marca'] != 'Volkswagen'){
+	$filtri['modello'] = $filtri['marca'];
+	$filtri['marca'] = '';
+}
 
-
+// SESSION VARIABLES
 $_SESSION['marca'] = $filtri['marca'];
 $_SESSION['modello'] = $filtri['modello'];
 $_SESSION['alimentazione'] = $filtri['alimentazione'];
 $_SESSION['prezzo'] = $_GET['maxPrice'];
 $_SESSION['km'] = $_GET['km'];
 $_SESSION['anno'] = $_GET['anno'];
+$_SESSION['order'] = $_GET['order'];
 
-
+//COMPILE QUERY ARRAY 
 $queryArr = ['relation' => 'AND'];
 
 foreach($filtri as $k => $q){
@@ -85,6 +91,7 @@ foreach($_GET as $k => $v){
 	}
 } 
 
+//COMPILE URL WITH $_GET VARIABLES
 $url_params = '';
 
 $params_index = 0; 
@@ -105,27 +112,40 @@ if((count($_GET) == 1 && isset($_GET['pagina'])) || count($_GET) == 0 ){
 	$concat = '&';
 }
 
-
+// COMPILE ORDER VARIABLE
 if(isset($_GET['order'])){
 	$orderarr = explode('_' , $_GET['order']);
 }else{
 	$orderarr[] = 'prezzo';
-	$orderarr[] = 'desc';
+	$orderarr[] = 'asc';
 }
 
+if($orderarr[0] == 'prezzo' || $orderarr[0] == 'km'){
+	$orderby = 'meta_value_num';
+} else {
+	$orderby = 'meta_value';
+}
 
+//PAGE VARIABLE
 $paged = isset($_GET['pagina']) ? $_GET['pagina'] : 1;
+
+//POSTS PER PAGE
+$posts_per_page  = 6;
+
+//QUERY ARGS
 $args = array(
 	'post_type' => 'auto-in-vendita',
-	'posts_per_page' => '6',
-	'paged' => $paged,
 	'meta_query' => $queryArr,
 	'meta_key' =>$orderarr[0],
-	'orderby' => 'meta_value',
-	'order' => strtoupper($orderarr[1])
+	'orderby' => $orderby,
+	'order' => strtoupper($orderarr[1]),
+	'posts_per_page' => $posts_per_page,
+	'paged' => $paged
 );
-$cars = new WP_Query($args);
 
+//GET FILTERED CARS
+$cars = new WP_Query($args);
+//GET PAGE
 $page_num = $cars -> max_num_pages;
 
 get_header(); 
@@ -168,7 +188,6 @@ get_header();
 							<div class="collapse filters-collapse-container" id="filter-collapse">
 								<div class="filters-container">
 									<form class="row search-form" action="<?php echo home_url('/'); ?>">
-										<input type="hidden" name="order" value="price_asc" id="order">
 										<input type="hidden" name="condition" value="usato" id="condition">
 										<div class="col-12 form-col">
 											<label class="form-label" for="brand">Marca</label>
@@ -188,8 +207,8 @@ get_header();
 												<?php if($_SESSION['modello'] != '' && $_SESSION['modello'] != NULL) : ?>
 												<option value="<?=$_SESSION['modello']?>"><?= $_SESSION['modello']?></option>
 												<?php endif; ?>
- 												<option value="">Tutti</option>
-												<option value="fiesta">Fiesta</option>
+ 											   <option value="">Tutti</option>
+												<option class="" value="fiesta">Fiesta</option>
 											</select>
 										</div>
 										<div class="col-12 form-col">
@@ -272,7 +291,7 @@ get_header();
 											</div>
 										</div>
 									</form>
-									<p class="text-end"><a href="#" class="reset-link" id="reset-search">reimposta ricerca</a></p>
+									<p class="text-end"><a class="reset-link" id="reset-search">reimposta ricerca</a></p>
 								</div>
 							</div>
 						</div>
@@ -283,6 +302,11 @@ get_header();
 							<div class="cars-order d-flex">
 								<p>Ordina:</p>
 								<select class="form-select-2 order-select" name="order" id="order" aria-label="Ordina">
+									<?php if($_SESSION['order'] != '' && $_SESSION['order'] != NULL) { ?>
+										<option selected value="<?= $_SESSION['order']; ?>"> <?= str_replace('_', ' ' , $_SESSION['order']); ?></option>
+									<?php } else { ?>
+										<option selected value="">Ordina</option>
+									<?php  } ?>
 									<option value="prezzo_asc">prezzo-crescente</option>
 									<option value="prezzo_desc">prezzo-decrescente</option>
 									<option value="modello_asc">Modello (A - Z)</option>

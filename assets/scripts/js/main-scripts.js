@@ -32,8 +32,6 @@ $(function () {
 
     $("select").selectric();
 
-    // var automarcaSelect = new Selectric('select')
-
     $(".home-slider").slick({
         lazyLoad: "ondemand",
         slidesToShow: 1,
@@ -43,44 +41,31 @@ $(function () {
         responsive: [],
     });
 
-    // $('#menu-open-button').on('click', function (e) {
-    //   e.preventDefault();
-    //   $("#menu-collapse").collapse("toggle");
-    // })
-
     var menuCollapse = document.getElementById("menu-collapse");
-    // console.log(menuCollapse);
-    menuCollapse.addEventListener("shown.bs.collapse", function () {
-        // console.log("QUI");
+    menuCollapse.addEventListener("shown.bs.collapse", function() {
         $("#menu-open-button").addClass("is-active");
     });
 
-    menuCollapse.addEventListener("hidden.bs.collapse", function () {
-        // console.log("QUI");
+    menuCollapse.addEventListener("hidden.bs.collapse", function() {
         $("#menu-open-button").removeClass("is-active");
     });
 
-
-    var checkFiltersCollapse = function () {
+    var checkFiltersCollapse = function() {
         if (window.innerWidth >= 992) {
-            // console.log(window.innerWidth);
-
             var collapseElementList = [].slice.call(
                 document.querySelectorAll(".collapse")
             );
 
-            var collapseList = collapseElementList.map(function (collapseEl) {
+            var collapseList = collapseElementList.map(function(collapseEl) {
                 return new bootstrap.Collapse(collapseEl, {
                     toggle: (collapseEl.id == 'filter-collapse'),
                 });
             });
 
             var filterCollapse;
-            $.each(collapseList, function (idx, collapseEl) {
-                // console.log(collapseEl._selector);
+            $.each(collapseList, function(idx, collapseEl) {
                 if (collapseEl._selector == "#filter-collapse") {
                     collapseEl.show();
-
                     setTimeout(() => {
                         collapseEl.dispose();
                         $("#filter-title-btn").removeAttr("data-bs-toggle");
@@ -89,52 +74,29 @@ $(function () {
                     }, 500);
                 }
             });
-
         } else {
-
             var filterCollapse = document.getElementById("filter-collapse");
             new bootstrap.Collapse(filterCollapse, {
                 toggle: false,
             });
-
         }
     }
 
     if ($('#filter-collapse').length != 0) {
         checkFiltersCollapse();
-
-        $(window).on('resize', function () {
+        $(window).on('resize', function() {
             checkFiltersCollapse();
         });
     }
 
     if ($('#map').length != 0) {
-
         var data = $('#map').data('branchOfficeData');
-
-        // var branch_office = {
-        //   name: "Automarca Spa",
-        //   address: "Via Calzavara, 1<br>31057, Silea(TV)",
-        //   contact: "info@automarca.it<br>+39 0422 3020",
-        //   link: "https://goo.gl/maps/V9zxGJXrEtHYdqRJ7",
-        //   center: {
-        //     lat: 45.6534101007297,
-        //     lng: 12.290490566933483
-        //   }
-        // }
-
-        // console.log(JSON.stringify(branch_office));
-        // console.log(data);
-
         const loader = new Loader({
             apiKey: "AIzaSyDFw5CdHkrCNR5VDKZzm3u28zJUgHUVT98",
             version: "weekly"
         });
 
-        // m8,16c0,0 6,-5.582 6,-10s-2.686,-6 -6,-6s-6,1.582 -6,6s6,10 6,10zm-3,-11c0,-1.657 1.343,-3 3,-3s3,1.343 3,3s-1.343,3 -3,3s-3,-1.343 -3,-3z
-
         loader.load().then(() => {
-
             var pin = {
                 path: "m8,16c0,0 6,-5.582 6,-10s-2.686,-6 -6,-6s-6,1.582 -6,6s6,10 6,10zm-3,-11c0,-1.657 1.343,-3 3,-3s3,1.343 3,3s-1.343,3 -3,3s-3,-1.343 -3,-3z",
                 fillColor: '#0B2133',
@@ -305,10 +267,14 @@ $(function () {
                     shouldFocus: false,
                 });
             });
-
-
         });
     }
+
+    //*****************************************// 
+    //*****************************************//
+    //******* FILTRI E REDIRECT ***************//
+    //*****************************************//
+    //*****************************************//
 
     var filterInput = $('.form-select'),
         radioInput = $('.filterradio'),
@@ -320,7 +286,19 @@ $(function () {
         yearInput = $('#year'),
         transmissioninput = $('#transmission'),
         noviceInput = $('#novice-drivers');
+        yearInput.on('change' , () => {
+            console.log('ciao');
+        })
+    // TRIGGER
+    filterInput.on('change', () => { set_filters() });
+    noviceInput.on('click', () => { set_filters() });
+    radioInput.on('click', () => { set_filters() });
+    yearInput.on('change' , () => { set_filters() });
+    // SUBMIT 
+    var filterSubmit = $('#filter-submit');
+    filterSubmit.on('click', () => { compile_filter_url() });
 
+    // SET FILTERS AND GET POSTS COUNT
     function set_filters() {
         let filter = {
             post_type: 'auto-in-vendita',
@@ -338,34 +316,18 @@ $(function () {
         }
         get_search_results_count(filter);
     }
-
+    // GET POSTS COUNT AJAX CALL
     function get_search_results_count(filterObj) {
-        console.log(filterObj);
         $.ajax({
             method: "GET",
             data: filterObj,
             url: home_url + '/wp-json/v2/get_search_results_count',
-        }).done(function (response) {
+        }).done(function(response) {
             console.log(response);
             $('#count-result').html(response);
         })
     }
-
-    get_search_results_count(filter);
-
-
-    function get_search_results_count(filterObj) {
-        / console.log('tipologia ' + $('input[name="condition"]:checked').val()), /
-        $.ajax({
-            method: "GET",
-            data: filterObj,
-            url: home_url + '/wp-json/v2/get_search_results_count',
-        }).done(function (response) {
-            console.log(response);
-            $('#count-result').html(response);
-        })
-    }
-
+    //COMPILE URL AND REDIRECT
     function compile_filter_url() {
         let filter = {
             /* tipologia : $('input[name="condition"]:checked').val(), */
@@ -380,11 +342,13 @@ $(function () {
                 anno: yearInput.val(),
                 cambio: transmissioninput.val(),
                 novice: noviceInput.is(':checked') == true ? true : '',
+                order: $('#order').val() == undefined ? '' : $('#order').val()
             }
         };
         var searchUrl = home_url + '/nuovo/';
         var paramsArr = [];
         let index = 0;
+        // COMPILE QUERY_VARS
         for (const [key, value] of Object.entries(filter.query_var)) {
             if (value != '') {
                 if (filter.query_var.lenght < 2) {
@@ -398,6 +362,7 @@ $(function () {
             }
         }
         let params_index = 0;
+        // COMPILE $_GET VARIABLES
         for (const [key, value] of Object.entries(filter.get_params)) {
             if (value != '' && params_index == 0) {
                 let newParam = '?' + key + '=' + value;
@@ -409,27 +374,31 @@ $(function () {
             }
         }
         paramsArr.forEach(el => {
-            searchUrl += el;
-        });
+                searchUrl += el;
+            })
+            // REDIRECT
+        window.location.href = searchUrl;
     }
 
-    function compile_filter_url() {
-        let filter = get_filters();
+    set_filters();
 
-        set_filters();
-    }
-
-    $('#reset-search').on('click', function () {
+    //RESET FILTERS
+    $('#reset-search').on('click', function() {
         window.location.href = home_url + '/nuovo';
     })
-    
-    $('.remove-filter').on('click', function () {
+    $('#reset-filters').on('click', function() {
+        window.location.href = home_url + '/nuovo';
+    })
+
+    //REMOVE SINGLE FILTER PROP BUTTONS
+    $('.remove-filter').on('click', function() {
+        console.log($(this).data('type'));
         switch ($(this).data('type')) {
             case 'marca':
                 brandInput.val('');
                 compile_filter_url();
                 break;
-            case 'model':
+            case 'modello':
                 modelInput.val('');
                 compile_filter_url();
                 break;
@@ -452,15 +421,12 @@ $(function () {
         }
     })
 
+    //ORDER SELECT TRIGGER
     $('#order').on('change', () => {
-        /* let order = $('#order').val(); */
-        console.log('yo');
-        /* window.location.href += '&' + order; */
-    })
-
-    $('.live-filter').on('change', () => {
-        compile_filter_url()
-    });
+            compile_filter_url();
+        })
+        //TRIGGER FILTERS PAGINA RICERCA
+    $('.live-filter').on('change', () => { compile_filter_url() });
 
     // CAR IMG SLIDER
     $(".car-img-slider").slick({
@@ -471,8 +437,9 @@ $(function () {
         arrows: false,
         infinite: true,
         responsive: [],
-        asNavFor: '.car-thumb-slider'
+        // asNavFor: '.car-thumb-slider'
     });
+    // car-img-slider
 
     $(".car-thumb-slider").slick({
         lazyLoad: "ondemand",
@@ -482,7 +449,6 @@ $(function () {
         arrows: true,
         infinite: true,
         responsive: [],
-        asNavFor: '.car-img-slider'
+        // asNavFor: '.car-img-slider'
     });
-
 });
