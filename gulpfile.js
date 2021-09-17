@@ -169,7 +169,7 @@ gulp.task("images", function () {
 
 gulp.task("webp", function () {
   return gulp
-    .src(SOURCE.images)
+    .src(SOURCE.images + "/**/*.{gif,png,jpg}")
     .pipe(
       plugin.webp({
         quality: 80,
@@ -180,17 +180,17 @@ gulp.task("webp", function () {
     .pipe(touch());
 });
 
-gulp.task("translate", function () {
-  return gulp
-    .src(SOURCE.php)
-    .pipe(
-      plugin.wpPot({
-        domain: "jointswp",
-        package: "Example project",
-      })
-    )
-    .pipe(gulp.dest("file.pot"));
-});
+// gulp.task("translate", function () {
+//   return gulp
+//     .src(SOURCE.php)
+//     .pipe(
+//       plugin.wpPot({
+//         domain: "jointswp",
+//         package: "Example project",
+//       })
+//     )
+//     .pipe(gulp.dest("file.pot"));
+// });
 
 // Browser-Sync watch files and inject changes
 /* gulp.task("browsersync", function () {

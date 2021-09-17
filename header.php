@@ -122,33 +122,21 @@
 						<div class="collapse navbar-collapse ms-lg-5" id="menu-collapse">
 							<ul class="navbar-nav ms-auto">
 								<li class="nav-item dropdown">
-									<a class="nav-link menu-link dropdown-toggle <?= $pagename == 'nuovo' ? 'active' : '' ?>" role="button" id="dropdown-new" data-bs-toggle="dropdown" aria-expanded="false" data-text="nuovo" data-bs-offset="50,50" href="#">nuovo</a>
-									<ul class="dropdown-menu" aria-labelledby="dropdown-new">
-										<li><a class="dropdown-item" href="#">Ford</a></li>
-										<li><a class="dropdown-item" href="#">Mazda</a></li>
-									</ul>
+									<a class="nav-link menu-link <?= $pagename == 'nuovo' ? 'active' : '' ?>" href="<?= get_permalink(get_page_by_path('nuovo')) ?>" data-text="nuovo" data-bs-offset="50,50">nuovo</a>
 								</li>
 								<li class="nav-item dropdown">
-									<a class="nav-link menu-link dropdown-toggle <?= $pagename == 'km0' ? 'active' : '' ?>" role="button" id="dropdown-km0" data-bs-toggle="dropdown" aria-expanded="false" data-text="km0" href="#">KM0</a>
-									<ul class="dropdown-menu" aria-labelledby="dropdown-km0">
-										<li><a class="dropdown-item" href="#">Auto</a></li>
-										<li><a class="dropdown-item" href="#">Veicoli Commerciali</a></li>
-									</ul>
+									<a class="nav-link menu-link <?= $pagename == 'km0' ? 'active' : '' ?>" href="<?= get_permalink(get_page_by_path('km0')) ?>" data-text="km0">KM0</a>
 								</li>
 								<li class="nav-item dropdown">
-									<a class="nav-link menu-link dropdown-toggle <?= $pagename == 'usato' ? 'active' : '' ?>" role="button" id="dropdown-used" data-bs-toggle="dropdown" aria-expanded="false" data-text="usato" href="#">usato</a>
-									<ul class="dropdown-menu" aria-labelledby="dropdown-used">
-										<li><a class="dropdown-item" href="#">Auto</a></li>
-										<li><a class="dropdown-item" href="#">Veicoli Commerciali</a></li>
-									</ul>
+									<a class="nav-link menu-link <?= $pagename == 'usato' ? 'active' : '' ?>" href="<?= get_permalink(get_page_by_path('usato')) ?>" data-text="usato">usato</a>
 								</li>
-								<li class="nav-item dropdown">
+								<!-- <li class="nav-item dropdown">
 									<a class="nav-link menu-link dropdown-toggle <?= $pagename == 'noleggio' ? 'active' : '' ?>" role="button" id="dropdown-rent" data-bs-toggle="dropdown" aria-expanded="false" data-text="noleggio" href="#" tabindex="-1">noleggio</a>
 									<ul class="dropdown-menu" aria-labelledby="dropdown-rent">
 										<li><a class="dropdown-item" href="#">Lungo Termine</a></li>
 										<li><a class="dropdown-item" href="#">Breve Termine</a></li>
 									</ul>
-								</li>
+								</li> -->
 								<li class="nav-item">
 									<a class="nav-link menu-link <?= $pagename == 'business' ? 'active' : '' ?>" data-text="business" href="<?= get_permalink(get_page_by_path('business')) ?>" tabindex="-1">business</a>
 								</li>
