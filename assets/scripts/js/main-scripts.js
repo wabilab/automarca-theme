@@ -2,11 +2,12 @@ import $ from 'jquery';
 import * as bootstrap from "bootstrap";
 import * as selectric from "selectric";
 import * as slick from "slick-carousel"
-/* import 'lazysizes';
-import 'lazysizes/plugins/unveilhooks/ls.unveilhooks'; */
+import 'lazysizes';
+import 'lazysizes/plugins/unveilhooks/ls.unveilhooks';
 import {
     Loader
 } from "@googlemaps/js-api-loader";
+
 const Modernizr = require("modernizr");
 
 window.mobileAndTabletCheck = function () {

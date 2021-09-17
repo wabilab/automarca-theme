@@ -1285,7 +1285,7 @@ strong {
             margin-bottom: 5px;
 
             .single-auto-in-vendita & {
-                margin-bottom: 0
+                margin-bottom: 0;
             }
         }
     }
@@ -1735,6 +1735,11 @@ footer {
         li {
             border-top: 1px solid #FFF;
         }
+    }
+
+    .dropdown:hover .dropdown-menu {
+        display: block;
+        margin-top: 0; // remove the gap so it doesn't close
     }
 
     // .dropdown-toggle {
