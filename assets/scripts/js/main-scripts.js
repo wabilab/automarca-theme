@@ -284,9 +284,6 @@ $(function() {
         yearInput = $('#year'),
         transmissioninput = $('#transmission'),
         noviceInput = $('#novice-drivers');
-        yearInput.on('change' , () => {
-            console.log('ciao');
-        })
     // TRIGGER
     filterInput.on('change', () => { set_filters() });
     noviceInput.on('click', () => { set_filters() });
@@ -422,7 +419,7 @@ $(function() {
     //ORDER SELECT TRIGGER
     $('#order').on('change', () => {
             compile_filter_url();
-        })
+    })
         //TRIGGER FILTERS PAGINA RICERCA
     $('.live-filter').on('change', () => { compile_filter_url() });
 

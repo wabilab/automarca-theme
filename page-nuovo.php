@@ -6,27 +6,27 @@
 
 
 session_start();
- // INITIALIZE QUERY VARS
+// INITIALIZE QUERY VARS
 $marca = get_query_var('param1');
-$modello = substr(get_query_var('param2') , 1 , strlen(get_query_var('param2')));
-$alimentazione = substr(get_query_var('param3') , 1 , strlen(get_query_var('param3')));
+$modello = substr(get_query_var('param2'), 1, strlen(get_query_var('param2')));
+$alimentazione = substr(get_query_var('param3'), 1, strlen(get_query_var('param3')));
 
 // SANITIZE QUERY VARS
 $filtri = array(
-	'marca' => str_replace('_', ' ' , $marca),
-	'modello' => str_replace('_', ' ' , $modello),
-	'alimentazione' => str_replace('_', ' ' , $alimentazione),
+	'marca' => str_replace('_', ' ', $marca),
+	'modello' => str_replace('_', ' ', $modello),
+	'alimentazione' => str_replace('_', ' ', $alimentazione),
 );
 //CHECK QUERY VARS POSITION IN URL
-if($filtri['marca'] == 'benzina verde' || $filtri['marca'] == 'diesel' || $filtri['marca'] == 'gpl' || $filtri['marca'] == 'ibrida' || $filtri['marca'] == 'metano' || $filtri['marca'] == 'elettrica') {
+if ($filtri['marca'] == 'benzina verde' || $filtri['marca'] == 'diesel' || $filtri['marca'] == 'gpl' || $filtri['marca'] == 'ibrida' || $filtri['marca'] == 'metano' || $filtri['marca'] == 'elettrica') {
 	$filtri['alimentazione'] = $filtri['marca'];
 	$filtri['marca'] = '';
 	$filtri['modello'] = '';
-}else if($filtri['modello'] == 'benzina verde' || $filtri['modello'] == 'diesel' || $filtri['modello'] == 'gpl' || $filtri['modello'] == 'ibrida' || $filtri['modello'] == 'metano'){
+} else if ($filtri['modello'] == 'benzina verde' || $filtri['modello'] == 'diesel' || $filtri['modello'] == 'gpl' || $filtri['modello'] == 'ibrida' || $filtri['modello'] == 'metano') {
 	$filtri['alimentazione'] = $filtri['modello'];
 	$filtri['modello'] = '';
 }
-if($filtri['marca'] != 'Ford' && $filtri['marca'] != 'Mazda' && $filtri['marca'] != 'Volkswagen'){
+if ($filtri['marca'] != 'Ford' && $filtri['marca'] != 'Mazda' && $filtri['marca'] != 'Volkswagen') {
 	$filtri['modello'] = $filtri['marca'];
 	$filtri['marca'] = '';
 }
@@ -43,44 +43,44 @@ $_SESSION['order'] = $_GET['order'];
 //COMPILE QUERY ARRAY 
 $queryArr = ['relation' => 'AND'];
 
-foreach($filtri as $k => $q){
-	if($q != 'all'){
-	$arr = array(
-		'key' => $k,
-		'value' => $q,
-		'compare' => 'LIKE'
-	);
-	$queryArr[]=$arr;
+foreach ($filtri as $k => $q) {
+	if ($q != 'all') {
+		$arr = array(
+			'key' => $k,
+			'value' => $q,
+			'compare' => 'LIKE'
+		);
+		$queryArr[] = $arr;
 	}
 }
 
-foreach($_GET as $k => $v){
-	if($v != 'all' && $v != '' && $k != 'order'){
-		if($k == 'maxPrice'){
+foreach ($_GET as $k => $v) {
+	if ($v != 'all' && $v != '' && $k != 'order') {
+		if ($k == 'maxPrice') {
 			$arr = array(
 				'key' => 'prezzo',
 				'value' => $v,
 				'compare' => '<',
 				'type' => 'NUMERIC'
 			);
-		} else if($k == 'km'){
+		} else if ($k == 'km') {
 			$arr = array(
 				'key' => $k,
 				'value' => $v,
 				'compare' => '<',
 				'type' => 'NUMERIC'
 			);
-		} else if($k == 'anno') {
+		} else if ($k == 'anno') {
 			$arr = array(
 				'key' => 'anno_immatricolazione',
 				'value' => $v,
-				'compare' =>'>=',
+				'compare' => '>=',
 				'type' => 'NUMERIC'
 			);
-		} else if($k == 'novice'){
-			if($v == 'true'){
+		} else if ($k == 'novice') {
+			if ($v == 'true') {
 				$arr = array(
-					'key' => 'cv',
+					'key' => 'kw',
 					'value' => 95,
 					'compare' => '<',
 					'type' => 'NUMERIC'
@@ -89,38 +89,38 @@ foreach($_GET as $k => $v){
 		}
 		$queryArr[] = $arr;
 	}
-} 
+}
 
 //COMPILE URL WITH $_GET VARIABLES
 $url_params = '';
 
-$params_index = 0; 
-foreach($_GET as $k => $v){
-	if($k != 'pagina'){
-		if($params_index == 0){
-			$url_params .= '?'. $k .'='.$v; 
-		} else{
+$params_index = 0;
+foreach ($_GET as $k => $v) {
+	if ($k != 'pagina') {
+		if ($params_index == 0) {
+			$url_params .= '?' . $k . '=' . $v;
+		} else {
 			$url_params .= '&' . $k . '=' . $v;
 		}
 		$params_index++;
 	}
-} 
+}
 
-if((count($_GET) == 1 && isset($_GET['pagina'])) || count($_GET) == 0 ){
+if ((count($_GET) == 1 && isset($_GET['pagina'])) || count($_GET) == 0) {
 	$concat = '?';
 } else {
 	$concat = '&';
 }
 
 // COMPILE ORDER VARIABLE
-if(isset($_GET['order'])){
-	$orderarr = explode('_' , $_GET['order']);
-}else{
+if (isset($_GET['order'])) {
+	$orderarr = explode('_', $_GET['order']);
+} else {
 	$orderarr[] = 'prezzo';
 	$orderarr[] = 'asc';
 }
 
-if($orderarr[0] == 'prezzo' || $orderarr[0] == 'km'){
+if ($orderarr[0] == 'prezzo' || $orderarr[0] == 'km') {
 	$orderby = 'meta_value_num';
 } else {
 	$orderby = 'meta_value';
@@ -136,7 +136,7 @@ $posts_per_page  = 6;
 $args = array(
 	'post_type' => 'auto-in-vendita',
 	'meta_query' => $queryArr,
-	'meta_key' =>$orderarr[0],
+	'meta_key' => $orderarr[0],
 	'orderby' => $orderby,
 	'order' => strtoupper($orderarr[1]),
 	'posts_per_page' => $posts_per_page,
@@ -146,9 +146,9 @@ $args = array(
 //GET FILTERED CARS
 $cars = new WP_Query($args);
 //GET PAGE
-$page_num = $cars -> max_num_pages;
+$page_num = $cars->max_num_pages;
 
-get_header(); 
+get_header();
 
 ?>
 
@@ -172,7 +172,7 @@ get_header();
 			</div>
 		</div>
 	</header>
-	<?php 
+	<?php
 	?>
 	<section class="container-fluid section section-padding-sm cars-search-grid-container">
 		<div class="row justify-content-center">
@@ -192,8 +192,8 @@ get_header();
 										<div class="col-12 form-col">
 											<label class="form-label" for="brand">Marca</label>
 											<select class="form-select live-filter" name="make" id="brand" aria-label="Marca">
-												<?php if($_SESSION['marca'] != '' && $_SESSION['marca'] != NULL) : ?>
-												<option selected value="<?=$_SESSION['marca']?>"><?= $_SESSION['marca']?></option>
+												<?php if ($_SESSION['marca'] != '' && $_SESSION['marca'] != NULL) : ?>
+													<option selected value="<?= $_SESSION['marca'] ?>"><?= $_SESSION['marca'] ?></option>
 												<?php endif; ?>
 												<option value="">Tutti</option>
 												<option value="Ford">Ford</option>
@@ -204,10 +204,10 @@ get_header();
 										<div class="col-12 form-col">
 											<label class="form-label" for="model">Modello</label>
 											<select class="form-select live-filter" name="model" id="model" aria-label="Modello">
-												<?php if($_SESSION['modello'] != '' && $_SESSION['modello'] != NULL) : ?>
-												<option value="<?=$_SESSION['modello']?>"><?= $_SESSION['modello']?></option>
+												<?php if ($_SESSION['modello'] != '' && $_SESSION['modello'] != NULL) : ?>
+													<option value="<?= $_SESSION['modello'] ?>"><?= $_SESSION['modello'] ?></option>
 												<?php endif; ?>
- 											   <option value="">Tutti</option>
+												<option value="">Tutti</option>
 												<option class="" value="fiesta">Fiesta</option>
 											</select>
 										</div>
@@ -215,10 +215,10 @@ get_header();
 											<label class="form-label" for="max-price">Prezzo fino a</label>
 											<select class="form-select live-filter" name="max_price" id="max-price" aria-label="Marca">
 												<option value="">prezzo fino a ...</option>
-												<?php if($_SESSION['prezzo'] != '' && $_SESSION['prezzo'] != NULL) : ?>
-												<option selected value="<?= $_SESSION['prezzo']?>"><?= $_SESSION['prezzo']?> €</option>
-												<?php 
-												endif; 
+												<?php if ($_SESSION['prezzo'] != '' && $_SESSION['prezzo'] != NULL) : ?>
+													<option selected value="<?= $_SESSION['prezzo'] ?>"><?= $_SESSION['prezzo'] ?> €</option>
+												<?php
+												endif;
 												echo "<option value='500'>500 €</option>";
 												for ($i = 1000; $i <= 500000; $i += 1000) {
 													$price = number_format($i, 0, ',', '.') . ' €';
@@ -231,8 +231,8 @@ get_header();
 											<label class="form-label" for="km-until">Km fino a</label>
 											<select class="form-select live-filter" name="km_until" id="km-until" aria-label="Marca">
 												<option value="">Qualsiasi</option>
-												<?php if($_SESSION['km'] != '' && $_SESSION['km'] != NULL) : ?>
-												<option selected value="<?= $_SESSION['km'] ?>"><?= $_SESSION['km'] . ' km'?></option>
+												<?php if ($_SESSION['km'] != '' && $_SESSION['km'] != NULL) : ?>
+													<option selected value="<?= $_SESSION['km'] ?>"><?= $_SESSION['km'] . ' km' ?></option>
 												<?php
 												endif;
 												echo "<option value='5000'>5.000 km</option>";
@@ -247,8 +247,8 @@ get_header();
 											<label class="form-label" for="year">Anno</label>
 											<select class="form-select live-filter" placeholder="anno" name="year" id="year">
 												<option value="">Qualsiasi</option>
-												<?php if($_SESSION['anno'] != '' && $_SESSION['anno'] != NULL) : ?>
-												<option selected value="<?= $_SESSION['anno']?>"><?= $_SESSION['anno'] ?></option>
+												<?php if ($_SESSION['anno'] != '' && $_SESSION['anno'] != NULL) : ?>
+													<option selected value="<?= $_SESSION['anno'] ?>"><?= $_SESSION['anno'] ?></option>
 												<?php
 												endif;
 												$year = date('Y');
@@ -262,8 +262,8 @@ get_header();
 											<label class="form-label" for="fuel_type">Alimentazione</label>
 											<select class="form-select live-filter" placeholder="alimentazione" name="fuel_type" id="fuel_type">
 												<option value="">Tutte</option>
-												<?php if($_SESSION['alimentazione'] != '' && $_SESSION['alimentazione'] != NULL) : ?>
-												<option selected value="<?= $_SESSION['alimentazione']?>"><?= $_SESSION['alimentazione'] ?></option>
+												<?php if ($_SESSION['alimentazione'] != '' && $_SESSION['alimentazione'] != NULL) : ?>
+													<option selected value="<?= $_SESSION['alimentazione'] ?>"><?= $_SESSION['alimentazione'] ?></option>
 												<?php endif; ?>
 												<option value="benzina_verde">Benzina</option>
 												<option value="diesel">Diesel</option>
@@ -298,12 +298,12 @@ get_header();
 					</div>
 					<div class="col-12 col-lg-8">
 						<div class="cars-search-title-container">
-							<div class="cars-search-title title-2"><?= count($cars -> posts) * $page_num; ?> Offerte per la tua ricerca</div>
+							<div class="cars-search-title title-2"><?= count($cars->posts) * $page_num; ?> Offerte per la tua ricerca</div>
 							<div class="cars-order d-flex">
 								<p>Ordina:</p>
 								<select class="form-select-2 order-select" name="order" id="order" aria-label="Ordina">
-									<?php if($_SESSION['order'] != '' && $_SESSION['order'] != NULL) { ?>
-										<option selected value="<?= $_SESSION['order']; ?>"> <?= str_replace('_', ' ' , $_SESSION['order']); ?></option>
+									<?php if ($_SESSION['order'] != '' && $_SESSION['order'] != NULL) { ?>
+										<option selected value="<?= $_SESSION['order']; ?>"> <?= str_replace('_', ' ', $_SESSION['order']); ?></option>
 									<?php } else { ?>
 										<option selected value="">Ordina</option>
 									<?php  } ?>
@@ -317,106 +317,102 @@ get_header();
 							</div>
 						</div>
 						<div class="active-filters-container">
-							<?php 
-							
+							<?php
+
 							?>
-							<?php foreach($queryArr as $k => $query) { 
-								if($query != 'AND' && $query['value'] != '') :
-								?>
-							<div class="automarca-active-filter">
-								<span class="filter-widged"><?= $query['value'] ?></span><span href="" class="remove-filter" data-filter="" data-type="<?= $query['key'] ?>" ></span>
-							</div>
-							<?php 
-						endif;
-						} 
-						?>
+							<?php foreach ($queryArr as $k => $query) {
+								if ($query != 'AND' && $query['value'] != '') :
+							?>
+									<div class="automarca-active-filter">
+										<span class="filter-widged"><?= $query['value'] ?></span><span href="" class="remove-filter" data-filter="" data-type="<?= $query['key'] ?>"></span>
+									</div>
+							<?php
+								endif;
+							}
+							?>
 						</div>
 						<div class="remove-all-container mt-3">
 							<p><a href="#" class="reset-link" id="reset-filters">Rimuovi tutti i filtri</a></p>
 						</div>
 						<div class="row mt-5 cars-grid">
 							<?php
-							if ( $cars->have_posts() ) { while ( $cars->have_posts() ) { 
-								$cars->the_post();
+							if ($cars->have_posts()) {
+								while ($cars->have_posts()) {
+									$cars->the_post();
 							?>
-							<div class="col-12 col-md-6 col-xxl-4 car-item">
-								<div class="title-container">
-									<div class="title-5">
-										<?= get_field('marca' , get_the_ID()) ?><br> <?= get_field('modello' , get_the_ID())?>
+									<div class="col-12 col-md-6 col-xxl-4 car-item">
+										<div class="title-container">
+											<div class="title-5">
+												<?= get_field('marca', get_the_ID()) ?><br> <?= get_field('modello', get_the_ID()) ?>
+											</div>
+											<p>
+												<?= get_field('descrizione', get_the_ID()) ?>
+											</p>
+										</div>
+										<img src="https://via.placeholder.com/800x600" class="car-img" alt="">
+										<div class="car-features">
+											<table class="table car-features-table">
+												<tbody>
+													<tr>
+														<td><img src="<?= get_template_directory_uri(); ?>/assets/images/home/icona-data.svg" class="feature-icon" alt=""> <?= get_field('field_610298b45151f', get_the_ID()); ?></td>
+														<td><img src="<?= get_template_directory_uri(); ?>/assets/images/home/icona-km.svg" class="feature-icon" alt=""> <?= get_field('km', get_the_ID()) ?> km</td>
+													</tr>
+													<tr>
+														<td><img src="<?= get_template_directory_uri(); ?>/assets/images/home/icona-alimentazione.svg" class="feature-icon" alt=""><?= get_field('alimentazione', get_the_ID()) ?></td>
+														<td><img src="<?= get_template_directory_uri(); ?>/assets/images/home/icona-cambio.svg" class="feature-icon" alt=""><?= get_field('cambio', get_the_ID()) ?></td>
+													</tr>
+												</tbody>
+											</table>
+										</div>
+										<div class="car-price">
+											<p class="price-content"><span><?= get_field('field_60ffc47b7d1cf', get_the_ID()) ?></span><?= get_field('field_60ffc47b7d1cf', get_the_ID()) ?></p>
+											<p class="button-container"><a class="btn btn-automarca-car" href="<?= get_the_permalink() ?>"><span>Scopri <span class="arrow"></span></span></a></p>
+										</div>
 									</div>
-									<p>
-										<?= get_field('descrizione' , get_the_ID()) ?>
-									</p>
-								</div>
-								<img src="https://via.placeholder.com/800x600" class="car-img" alt="">
-								<div class="car-features">
-									<table class="table car-features-table">
-										<tbody>
-											<tr>
-												<?php 
-												$datatmp = get_field('data_immatricolazione' ,get_the_ID());
-												$data = $datatmp -> format('m/Y');
-
-												?>
-												<td><img src="<?= get_template_directory_uri(); ?>/assets/images/home/icona-data.svg" class="feature-icon" alt=""> <?= $data ?></td>
-												<td><img src="<?= get_template_directory_uri(); ?>/assets/images/home/icona-km.svg" class="feature-icon" alt=""> <?= get_field('km',get_the_ID()) ?> km</td>
-											</tr>
-											<tr>
-												<td><img src="<?= get_template_directory_uri(); ?>/assets/images/home/icona-alimentazione.svg" class="feature-icon" alt=""><?= get_field('alimentazione' , get_the_ID())?></td>
-												<td><img src="<?= get_template_directory_uri(); ?>/assets/images/home/icona-cambio.svg" class="feature-icon" alt=""><?= get_field('cambio' , get_the_ID())?></td>
-											</tr>
-										</tbody>
-									</table>
-								</div>
-								<div class="car-price">
-									<p class="price-content"><span><?= get_field('prezzo' , get_the_ID()) ?></span><?=get_field('prezzo' , get_the_ID())?></p>
-									<p class="button-container"><a class="btn btn-automarca-car" href="<?= get_the_permalink() ?>"><span>Scopri <span class="arrow"></span></span></a></p>
-								</div>
-							</div>
 							<?php
+								};
 							};
-							};	
-							
+
 							?>
 						</div>
 						<?php if ($page_num > 1) : ?>
-						<div class="row pt-5 mt-5">
-							<div class="col-12">
-								<nav aria-label="Page navigation example">
-									<ul class="pagination automarca-pagination justify-content-center d-none d-xl-flex">
-										<?php if($paged != 1) : ?>
-										<li class="page-item flex-grow-1">
-											<a class="page-link text-link prev" href="<?= $url_params .$concat ?>pagina=<?= $paged - 1?>" aria-label="Previous">
-												<span class="arrow"></span><span class="d-none d-sm-inline">Precedente</span>
-											</a>
-										</li>
-										<?php
+							<div class="row pt-5 mt-5">
+								<div class="col-12">
+									<nav aria-label="Page navigation example">
+										<ul class="pagination automarca-pagination justify-content-center d-none d-xl-flex">
+											<?php if ($paged != 1) : ?>
+												<li class="page-item flex-grow-1">
+													<a class="page-link text-link prev" href="<?= $url_params . $concat ?>pagina=<?= $paged - 1 ?>" aria-label="Previous">
+														<span class="arrow"></span><span class="d-none d-sm-inline">Precedente</span>
+													</a>
+												</li>
+												<?php
 											endif;
-											for($y = $paged - 3 ; $y < $paged ; $y++){
-												if($y > 0) : 
+											for ($y = $paged - 3; $y < $paged; $y++) {
+												if ($y > 0) :
 												?>
-												<li class="page-item"><a class="page-link" href="<?= $url_params . $concat ?>pagina=<?= $y?>"><?= $y ?></a></li>
+													<li class="page-item"><a class="page-link" href="<?= $url_params . $concat ?>pagina=<?= $y ?>"><?= $y ?></a></li>
+											<?php
+												endif;
+											} ?>
+											<li class="page-item active"><a class="page-link" href="<?= $url_params . $concat ?>pagina=<?= $paged ?>"><?= $paged  ?></a></li>
+											<?php
+											for ($i = $paged + 1; $i < $paged + 4 && $i <= $page_num; $i++) { ?>
+												<li class="page-item"><a class="page-link" href="<?= $url_params . $concat ?>pagina=<?= $i ?>"><?= $i  ?></a></li>
+											<?php
+											}
+											if ($paged < $page_num) :
+											?>
+												<li class="page-item flex-grow-1 text-end">
+													<a class="page-link text-link next" href="<?= $url_params . $concat ?>pagina=<?= $paged + 1 ?>" aria-label="Next">
+														<span class="d-none d-sm-inline">Successiva</span><span class="arrow"></span>
+													</a>
+												</li>
 											<?php
 											endif;
-											} ?>
-												<li class="page-item active"><a class="page-link" href="<?= $url_params . $concat ?>pagina=<?= $paged?>"><?= $paged  ?></a></li>
-											<?php 
-											for($i = $paged + 1; $i < $paged + 4 && $i <= $page_num; $i++ ){ ?>
-												<li class="page-item"><a class="page-link" href="<?= $url_params . $concat ?>pagina=<?= $i ?>"><?= $i  ?></a></li>
-											<?php		
-											}
-											if($paged < $page_num) :
-											?>	
-										<li class="page-item flex-grow-1 text-end">
-											<a class="page-link text-link next" href="<?= $url_params .$concat ?>pagina=<?= $paged +1?>" aria-label="Next">
-												<span class="d-none d-sm-inline">Successiva</span><span class="arrow"></span>
-											</a>
-										</li>
-										<?php
-											endif;
-										?>
-									</ul>
-									<!-- <ul class="pagination automarca-pagination justify-content-center d-flex d-xl-none">
+											?>
+										</ul>
+										<!-- <ul class="pagination automarca-pagination justify-content-center d-flex d-xl-none">
 										<li class="page-item flex-grow-1">
 											<a class="page-link text-link prev" href="#" aria-label="Previous">
 												<span class="arrow"></span><span class="d-none d-sm-inline">Precedente</span>
@@ -429,18 +425,18 @@ get_header();
 											</a>
 										</li>
 									</ul> -->
-								</nav>
+									</nav>
+								</div>
 							</div>
-						</div>
 					</div>
-					<?php 
-					endif;
-					?>
+				<?php
+						endif;
+				?>
 				</div>
 			</div>
 		</div>
 	</section>
 </main>
 
-<?php 
+<?php
 get_footer(); ?>
