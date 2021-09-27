@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Pagina Usato
+ * Pagina Nuovo
  */
 
 
@@ -26,8 +26,8 @@ if ($filtri['marca'] == 'benzina verde' || $filtri['marca'] == 'diesel' || $filt
 	$filtri['alimentazione'] = $filtri['modello'];
 	$filtri['modello'] = '';
 }
-if ($filtri['marca'] != 'Ford' && $filtri['marca'] != 'Mazda' && $filtri['marca'] != 'Volkswagen') {
-	$filtri['modello'] = $filtri['marca'];
+if ($filtri['marca'] != 'ford' && $filtri['marca'] != 'mazda' && $filtri['marca'] != 'volkswagen') {
+	$filtri['modello'] = ucfirst($filtri['marca']);
 	$filtri['marca'] = '';
 }
 
@@ -39,6 +39,19 @@ $_SESSION['prezzo'] = str_replace('_','-',$_GET['maxPrice']);
 $_SESSION['km'] = $_GET['km'];
 $_SESSION['anno'] = $_GET['anno'];
 $_SESSION['order'] = $_GET['order'];
+
+if (isset($_GET['maxPrice'])) {
+	$_SESSION['prezzo'] = $_GET['maxPrice'];
+}
+if (isset($_GET['km'])) {
+	$_SESSION['km'] = $_GET['km'];
+}
+if (isset($_GET['anno'])) {
+	$_SESSION['anno'] = $_GET['anno'];
+}
+if (isset($_GET['order'])) {
+	$_SESSION['order'] = $_GET['order'];
+}
 
 //COMPILE QUERY ARRAY 
 $queryArr = ['relation' => 'AND'];
@@ -201,9 +214,9 @@ get_header();
 													<option selected value="<?= $_SESSION['marca'] ?>"><?= $_SESSION['marca'] ?></option>
 												<?php endif; ?>
 												<option value="">Tutti</option>
-												<option value="Ford">Ford</option>
-												<option value="Mazda">Mazda</option>
-												<option value="Volkswagen">Volkswagen</option>
+												<option value="ford" <?= isset($_SESSION['marca']) && $_SESSION['marca'] == 'ford' ? 'selected' : '' ?>>Ford</option>
+												<option value="mazda" <?= isset($_SESSION['marca']) && $_SESSION['marca'] == 'mazda' ? 'selected' : '' ?>>Mazda</option>
+												<option value="volkswagen" <?= isset($_SESSION['marca']) && $_SESSION['marca'] == 'volkswagen' ? 'selected' : '' ?>>Volkswagen</option>
 											</select>
 										</div>
 										<div class="col-12 form-col">

@@ -111,6 +111,10 @@ strong {
     background-color: lighten($color-4, 7%);
 }
 
+.bg-light-blue-4 {
+    background-color: $color-2;
+}
+
 .bg-orange {
     background-color: $color-5;
     color: #FFF;
@@ -203,6 +207,12 @@ strong {
 
     @media (max-width: 1199.99px) {
         font-size: 16px;
+    }
+
+    &.with-border-bottom {
+        padding-bottom: 10px;
+        margin-bottom: 20px;
+        border-bottom: 1px solid rgba(#707070, 0.12);
     }
 }
 
@@ -303,6 +313,10 @@ strong {
     position: relative;
     display: inline-block;
 
+    &.no-arrow {
+        padding: 12px 20px 12px 20px;
+    }
+
     span:not(.arrow) {
         display: inline-block;
 
@@ -313,6 +327,89 @@ strong {
     &:hover, &:active {
         color: #FFF;
         text-decoration: none;
+
+        .arrow {
+            transition: width .3s ease;
+            width: 35px;
+
+            &:after {
+                width: 35px;
+                transition: width .3s ease;
+            }
+        }
+    }
+
+    &:focus {
+        box-shadow: none;
+    }
+
+    .arrow {
+        display: inline-block;
+        position: absolute;
+        width: 25px;
+        height: 12px;
+        margin-left: 10px;
+        margin-bottom: -1px;
+        transition: width .3s ease;
+        left: 100%;
+        top: 50%;
+        transform: translateY(-50%);
+
+        // top: 50%;
+        // transform: translateY(-50%);
+        // left: 64%;
+
+        &:after {
+            content: "";
+            position: absolute;
+            background-color: #FFF;
+            width: 25px;
+            height: 1px;
+            top: 50%;
+            transform: translateY(-50%);
+            left: 0;
+            transition: width .3s ease;
+        }
+
+        &:before {
+            content: "";
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            border-right: 1px solid #FFF;
+            border-bottom: 1px solid #FFF;
+            transform: rotate(-45deg);
+            right: 1px;
+            top: 11%;
+        }
+    }
+}
+
+.btn-automarca-outline-sm {
+    background-color: transparent;
+    color: $color-1;
+    text-align: left;
+    padding: 12px 20px 12px 20px;
+    font-size: 13px;
+    font-weight: 700;
+    border-radius: 5px;
+    border: 1px solid rgba($color-1, 0.4);
+    position: relative;
+    display: inline-block;
+    transition: all .3s ease;
+
+    span:not(.arrow) {
+        display: inline-block;
+
+        // padding-right: 60px;
+        position: relative;
+    }
+
+    &:hover, &:active {
+        color: #FFF;
+        background-color: $color-1;
+        text-decoration: none;
+        transition: all .3s ease;
 
         .arrow {
             transition: width .3s ease;
@@ -810,6 +907,10 @@ strong {
             }
         }
     }
+
+    &.with-border-top {
+        border-top: 1px solid rgba(#707070, 0.12);
+    }
 }
 
 .home-prefooter {
@@ -1082,6 +1183,54 @@ strong {
     }
 }
 
+.contact-form {
+    @extend .search-form;
+
+    .form-check {
+        min-height: 10px;
+        margin-bottom: 0;
+        padding-left: 20px;
+        line-height: 1.2;
+
+        &:first-of-type {
+            margin-bottom: 5px;
+        }
+    }
+
+    .form-check-input[type="checkbox"] {
+        border-radius: 3px;
+    }
+
+    .form-check-input {
+        width: 13px;
+        height: 13px;
+        margin-top: 7px;
+        border: none;
+        margin-left: -20px;
+
+        &:checked {
+            background-color: $color-1;
+            border-color: $color-1;
+        }
+
+        &:focus {
+            border-color: transparent;
+            outline: 0;
+            box-shadow: none;
+        }
+    }
+
+    .form-check-label {
+        font-size: 12px;
+        font-weight: 400;
+        line-height: 1.1;
+
+        a {
+            font-size: 12px;
+        }
+    }
+}
+
 .home-header-slider-container {
     padding-top: 0;
     padding-bottom: 0;
@@ -1126,9 +1275,18 @@ strong {
         margin-bottom: 0;
         padding-left: 20px;
         line-height: 1.2;
+        text-align: left;
+
+        &.big {
+            padding-left: 25px;
+        }
 
         &:first-of-type {
             margin-bottom: 5px;
+
+            .single-auto-in-vendita & {
+                margin-bottom: 0;
+            }
         }
     }
 
@@ -1143,10 +1301,29 @@ strong {
         border: none;
         margin-left: -20px;
 
+        .single-auto-in-vendita & {
+            margin-top: 0;
+            width: 12px;
+            height: 12px;
+        }
+
         @media (max-width: 991.98px) {
             width: 12px;
             height: 12px;
             margin-top: 8px;
+        }
+
+        &.big {
+            width: 18px;
+            height: 18px;
+            margin-left: -25px;
+            margin-top: 2px;
+
+            @media (max-width: 991.98px) {
+                width: 15px;
+                height: 15px;
+                margin-top: 4px;
+            }
         }
 
         &:checked {
@@ -1165,6 +1342,11 @@ strong {
         font-size: 9px;
         font-weight: 400;
         line-height: 1.1;
+
+        &.big {
+            font-size: 12px;
+            font-weight: 700;
+        }
 
         @media (max-width: 991.98px) {
             font-size: 12px;
@@ -1288,6 +1470,7 @@ strong {
         p {
             margin-bottom: 0;
             line-height: 24px;
+            min-height: 50px;
         }
     }
 
@@ -1317,6 +1500,7 @@ strong {
 
         .feature-icon {
             width: 20px;
+            margin-right: 10px;
         }
     }
 
@@ -1551,6 +1735,11 @@ footer {
         li {
             border-top: 1px solid #FFF;
         }
+    }
+
+    .dropdown:hover .dropdown-menu {
+        display: block;
+        margin-top: 0; // remove the gap so it doesn't close
     }
 
     // .dropdown-toggle {
@@ -2655,6 +2844,29 @@ footer {
     }
 }
 
+// SINGLE CAR
+
+.single-car-content {
+    // padding-top: 50px;
+    // padding-bottom: 50px;
+
+    .title-container {
+        margin-bottom: 30px;
+
+        .title-1 {
+            margin-bottom: 10px;
+        }
+    }
+
+    .btn-container {
+        margin-top: 16px;
+
+        img {
+            margin-right: 10px;
+        }
+    }
+}
+
 .car-thumb-slider {
     margin-top: 20px;
     margin-left: -20px;
@@ -2677,4 +2889,122 @@ footer {
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
     }
+}
+
+.car-info {
+    .table > :not(caption) > * > * {
+        padding: 5px 0;
+    }
+
+    &:not(:first-of-type) {
+        margin-top: 40px;
+    }
+
+    table {
+        margin-top: 10px;
+
+        th {
+            font-weight: 400;
+            font-size: 13px;
+            border-bottom: 1px solid rgba(#707070, 0.12);
+        }
+
+        td {
+            font-weight: 400;
+            font-size: 13px;
+            text-align: right;
+            border-bottom: 1px solid rgba(#707070, 0.12);
+        }
+    }
+}
+
+.price-info {
+    border-radius: 5px;
+    text-align: center;
+    padding: 20px;
+
+    .title-6 {
+        margin-bottom: 10px;
+    }
+
+    .price-discounted {
+        font-size: 22px;
+        text-decoration: line-through;
+        font-weight: 400;
+        margin-bottom: 10px;
+    }
+
+    .price {
+        font-size: 35px;
+        font-weight: 700;
+    }
+}
+
+.form-info {
+    text-align: center;
+
+    .info-title {
+        background-color: $color-1;
+        color: #FFF;
+        font-size: 15px;
+        font-weight: 700;
+        text-align: center;
+        position: relative;
+        padding: 10px 30px;
+        border-radius: 5px;
+
+        img {
+            position: absolute;
+            top: 50%;
+            left: 30px;
+            transform: translateY(-50%);
+        }
+    }
+
+    .info-content {
+        padding: 20px 30px;
+
+        .title-6 {
+            margin-bottom: 20px;
+        }
+    }
+}
+
+.share-links {
+    margin-top: 50px;
+}
+
+.single-car-share-links {
+    .social-icon {
+        width: 20px;
+    }
+
+    .social-item:not(:last-child) {
+        margin-right: 10px;
+    }
+
+    .social-share-links {
+        padding: 10px;
+        border-radius: 50%;
+        text-align: center;
+        line-height: 1;
+        margin-top: 10px;
+
+        &.fb {
+            background-color: #1C4186;
+        }
+
+        &.wa {
+            background-color: #3C9C44;
+        }
+
+        &.in {
+            background-color: #286DB5;
+        }
+    }
+}
+
+.optionals-list {
+    font-size: 13px;
+    line-height: 2;
 }

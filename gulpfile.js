@@ -132,7 +132,6 @@ gulp.task("styles", function () {
     .pipe(
       plugin.autoprefixer({
         flexbox: true,
-        browsers: ["last 2 versions", "ie >= 9", "ios >= 7"],
         cascade: false,
       })
     )

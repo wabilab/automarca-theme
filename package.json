@@ -1,7 +1,7 @@
 {
-  "name": "jointswp-sass",
+  "name": "automarca-theme",
   "version": "5.0.0",
-  "description": "A WordPress starter theme using Foundation 6",
+  "description": "Automarca Website Theme",
   "repository": {
     "type": "git",
     "url": "https://github.com/JeremyEnglert/JointsWP.git"
@@ -13,21 +13,21 @@
     "babel-core": "^6.26.3",
     "babel-preset-env": "^1.7.0",
     "babel-preset-es2015": "^6.5.0",
-    "gulp": "github:gulpjs/gulp#v4.0.0",
-    "gulp-autoprefixer": "^2.3.1",
-    "gulp-babel": "^6.1.2",
+    "gulp": "^4.0.2",
+    "gulp-autoprefixer": "^8.0.0",
+    "gulp-babel": "^8.0.0",
     "gulp-concat": "^2.5.2",
     "gulp-cssnano": "^2.1.1",
-    "gulp-filter": "^5.0.0",
+    "gulp-filter": "^7.0.0",
     "gulp-imagemin": "^7.1.0",
     "gulp-jshint": "^2.1.0",
-    "gulp-load-plugins": "^1.6.0",
+    "gulp-load-plugins": "^2.0.0",
     "gulp-newer": "^1.3.0",
     "gulp-plumber": "^1.0.1",
     "gulp-sass": "^5.0.0",
-    "gulp-sourcemaps": "^1.6.0",
+    "gulp-sourcemaps": "^3.0.0",
     "gulp-touch-cmd": "^0.0.1",
-    "gulp-uglify": "^1.2.0",
+    "gulp-uglify": "^3.0.0",
     "gulp-util": "^3.0.5",
     "gulp-webp": "^4.0.1",
     "gulp-wp-pot": "^2.0.4",
@@ -35,7 +35,7 @@
     "json-loader": "^0.5.7",
     "modernizr": "^3.11.7",
     "modernizr-loader": "^1.0.1",
-    "motion-ui": "^1.2.2",
+    "motion-ui": "^2.0.0",
     "webpack-modernizr-loader": "^5.0.0",
     "webpack-stream": "^6.1.2",
     "what-input": "^5.1.3"
@@ -69,11 +69,7 @@
     "tilde-sass": "^1.0.2",
     "yarn": "^1.22.10"
   },
-  "browser": {
-    "net": false,
-    "fs": false,
-    "console": false,
-    "is-wsl": false,
-    "child_process": false
-  }
+  "browserslist": [
+    "defaults"
+  ]
 }

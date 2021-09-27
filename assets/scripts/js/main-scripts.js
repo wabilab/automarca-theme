@@ -2,14 +2,17 @@ import $ from 'jquery';
 import * as bootstrap from "bootstrap";
 import * as selectric from "selectric";
 import * as slick from "slick-carousel"
-/* import 'lazysizes';
-import 'lazysizes/plugins/unveilhooks/ls.unveilhooks'; */
-import { Loader } from "@googlemaps/js-api-loader";
+import 'lazysizes';
+import 'lazysizes/plugins/unveilhooks/ls.unveilhooks';
+import {
+    Loader
+} from "@googlemaps/js-api-loader";
+
 const Modernizr = require("modernizr");
 
-window.mobileAndTabletCheck = function() {
+window.mobileAndTabletCheck = function () {
     let check = false;
-    (function(a) {
+    (function (a) {
         if (
             /(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows ce|xda|xiino|android|ipad|playbook|silk/i.test(
                 a
@@ -24,7 +27,7 @@ window.mobileAndTabletCheck = function() {
 };
 
 
-$(function() {
+$(function () {
 
     $("html").addClass(mobileAndTabletCheck() ? "mobile" : "desktop");
 
@@ -432,8 +435,9 @@ $(function() {
         arrows: false,
         infinite: true,
         responsive: [],
-        asNavFor: '.car-thumb-slider'
+        // asNavFor: '.car-thumb-slider'
     });
+    // car-img-slider
 
     $(".car-thumb-slider").slick({
         lazyLoad: "ondemand",
@@ -443,7 +447,6 @@ $(function() {
         arrows: true,
         infinite: true,
         responsive: [],
-        asNavFor: '.car-img-slider'
+        // asNavFor: '.car-img-slider'
     });
-
 });
