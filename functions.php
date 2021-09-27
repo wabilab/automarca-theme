@@ -14,21 +14,6 @@ require_once(get_template_directory() . '/functions/cleanup.php');
 // Register scripts and stylesheets
 require_once(get_template_directory() . '/functions/enqueue-scripts.php');
 
-
-/* function automarca_get_paginated_links($query)
-{
-    $currentPage = max(1, get_query_var('paged', 1));
-    $pages = range(1, max(1, $query->max_num_pages));
-    return array_map(function ($page) use ($currentPage) {
-        return (object) array(
-            "is_current" => $page == $currentPage,
-            "page" => $page,
-            "url" => get_pagenum_link($page)
-        );
-    }, $pages);
-} */
-
-
 add_action('init', function () {
 
     add_rewrite_rule(
@@ -180,3 +165,9 @@ function admin_page_html()
 <?php
 }
 
+add_action( 'before_delete_post', function( $id ) {
+    $attachments = get_attached_media( '', $id );
+    foreach ($attachments as $attachment) {
+    wp_delete_attachment( $attachment->ID, 'true' );
+    }
+});

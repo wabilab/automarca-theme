@@ -35,7 +35,7 @@ if ($filtri['marca'] != 'Ford' && $filtri['marca'] != 'Mazda' && $filtri['marca'
 $_SESSION['marca'] = $filtri['marca'];
 $_SESSION['modello'] = $filtri['modello'];
 $_SESSION['alimentazione'] = $filtri['alimentazione'];
-$_SESSION['prezzo'] = $_GET['maxPrice'];
+$_SESSION['prezzo'] = str_replace('_','-',$_GET['maxPrice']);
 $_SESSION['km'] = $_GET['km'];
 $_SESSION['anno'] = $_GET['anno'];
 $_SESSION['order'] = $_GET['order'];
@@ -45,9 +45,14 @@ $queryArr = ['relation' => 'AND'];
 
 foreach ($filtri as $k => $q) {
 	if ($q != 'all') {
+		if($k == 'modello'){
+			$value = str_replace('_' , '-' , $filtri['modello']);
+		} else{
+			$value = $q;
+		}
 		$arr = array(
 			'key' => $k,
-			'value' => $q,
+			'value' => $value,
 			'compare' => 'LIKE'
 		);
 		$queryArr[] = $arr;
@@ -205,10 +210,28 @@ get_header();
 											<label class="form-label" for="model">Modello</label>
 											<select class="form-select live-filter" name="model" id="model" aria-label="Modello">
 												<?php if ($_SESSION['modello'] != '' && $_SESSION['modello'] != NULL) : ?>
-													<option value="<?= $_SESSION['modello'] ?>"><?= $_SESSION['modello'] ?></option>
+													<option value="<?= $_SESSION['modello'] ?>"><?= ucfirst($_SESSION['modello']) ?></option>
 												<?php endif; ?>
 												<option value="">Tutti</option>
-												<option class="" value="fiesta">Fiesta</option>
+												<option value="aerostar">Aerostar</option>
+												<option value="max">B-Max</option>
+												<option value="bronco">Bronco</option>
+												<option value="capri">Capri</option>
+												<option value="max">C-Max</option>
+												<option value="cortina">Cortina</option>
+												<option value="cougar">Cougar</option>
+												<option value="courier">Courier</option>
+												<option value="escape">Escape</option>
+												<option value="escort">Escort</option>
+												<option value="explorer">Explorer</option>
+												<option value="fiesta">Fiesta</option>
+												<option value="focus">Focus</option>
+												<option value="fusion">Fusion</option>
+												<option value="galaxy">Galaxy</option>
+												<option value="ka">Ka</option>
+												<option value="transit">Transit</option>
+												<option value="kuga">Kuga</option>
+												<option value="mustang">Mustang</option>
 											</select>
 										</div>
 										<div class="col-12 form-col">
@@ -412,19 +435,6 @@ get_header();
 											endif;
 											?>
 										</ul>
-										<!-- <ul class="pagination automarca-pagination justify-content-center d-flex d-xl-none">
-										<li class="page-item flex-grow-1">
-											<a class="page-link text-link prev" href="#" aria-label="Previous">
-												<span class="arrow"></span><span class="d-none d-sm-inline">Precedente</span>
-											</a>
-										</li> 
-											<li class="page-item"><a class="page-link" href="?pagina=</a></li>
-										<li class="page-item flex-grow-1 text-end">
-											<a class="page-link text-link next" href="#" aria-label="Next">
-												<span class="d-none d-sm-inline">Successiva</span><span class="arrow"></span>
-											</a>
-										</li>
-									</ul> -->
 									</nav>
 								</div>
 							</div>
