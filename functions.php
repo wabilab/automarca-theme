@@ -17,39 +17,20 @@ require_once(get_template_directory() . '/functions/enqueue-scripts.php');
 add_action('init', function () {
 
     add_rewrite_rule(
-        '^nuovo/page/([\d]*)',
-        'index.php?pagename=nuovo&paged=$matches[1]',
-        'top'
-    );
-
-
-    add_rewrite_rule(
         '^nuovo/([\w]*)([\-]{0,1}[\w]*)([\-]{0,1}[\w]*)',
         'index.php?pagename=nuovo&param1=$matches[1]&param2=$matches[2]&param3=$matches[3]',
         'top'
     );
 
     add_rewrite_rule(
-        '^usato/([\w]*)?([\-]{1}[\w]*)?([\-]{1}[\w]*)',
-        'index.php?pagename=nuovo&param1=$matches[1]&param2=$matches[2]&param3=$matches[3]',
+        '^usato/([\w]*)([\-]{0,1}[\w]*)([\-]{0,1}[\w]*)',
+        'index.php?pagename=usato&param1=$matches[1]&param2=$matches[2]&param3=$matches[3]',
         'top'
     );
 
     add_rewrite_rule(
-        '^km0/([\w]*)?([\-]{1}[\w]*)?([\-]{1}[\w]*)',
-        'index.php?pagename=nuovo&param1=$matches[1]&param2=$matches[2]&param3=$matches[3]',
-        'top'
-    );
-
-    add_rewrite_rule(
-        '^noleggio-a-breve-termine/([\w]*)?([\-]{1}[\w]*)?([\-]{1}[\w]*)',
-        'index.php?pagename=nuovo&param1=$matches[1]&param2=$matches[2]&param3=$matches[3]',
-        'top'
-    );
-
-    add_rewrite_rule(
-        '^noleggio-a-lungo-termine/([\w]*)?([\-]{1}[\w]*)?([\-]{1}[\w]*)',
-        'index.php?pagename=nuovo&param1=$matches[1]&param2=$matches[2]&param3=$matches[3]',
+        '^km0/([\w]*)([\-]{0,1}[\w]*)([\-]{0,1}[\w]*)',
+        'index.php?pagename=km0&param1=$matches[1]&param2=$matches[2]&param3=$matches[3]',
         'top'
     );
 });
@@ -85,6 +66,18 @@ function get_search_results_count(WP_REST_Request $request)
                     'value' => $value,
                     'compare' => '<',
                     'type' => 'NUMERIC'
+                );
+            } else if($key == 'tipologia'){
+                $meta_query = array(
+                    'key' => 'tipologia_vendita',
+                    'value' => $value,
+                    'compare' => 'LIKE'
+                );
+            } else if($key == 'tipologia_veicolo'){
+                $meta_query = array(
+                    'key' => 'tipologia',
+                    'value' => $value,
+                    'compare' => 'LIKE'
                 );
             } else if ($key == 'km') {
                 $meta_query = array(
@@ -130,8 +123,8 @@ function get_search_results_count(WP_REST_Request $request)
 
     $count = count($query->posts);
 
-
     return json_encode($count);
+    /* return json_encode($count); */
 }
 
 

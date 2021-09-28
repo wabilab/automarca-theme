@@ -21,14 +21,14 @@ if (($handlefile = fopen("{$target_file}", "r")) !== false) {
 
 // UNCOMMENT FOR DELETE OLD TOOL POSTS
 
-/* $old_cars = get_posts(array(
+$old_cars = get_posts(array(
     'post_type' => 'auto-in-vendita',
     'numberposts' => -1
 ));
 
 foreach($old_cars as $old){
     wp_delete_post($old->ID , true);
-}; */
+}; 
 
 
 $keyArray = array_slice($my_big_array, 0, 1);
@@ -81,7 +81,16 @@ foreach ($valueArray as $index => $value) {
             // Kw
             update_field('field_614c57eb09afa', $value[7], $id);
             // Km
+            $km = intval($value[8]);
             update_field('field_60ffc3cd7d1c8', $value[8], $id);
+            // Tipologia vendita
+            if($km > 100){
+                update_field('field_6151b58a76a39' , 'usata' , $id);
+            } else if($km <= 100 && $km > 0){
+                update_field('field_6151b58a76a39' , 'zero' , $id);
+            } else{
+                update_field('field_6151b58a76a39' , 'new' , $id);
+            }
             // Data immatricolazione
             $date = $value[9];
             update_field('field_60ffc3e97d1c9', $date, $id);
@@ -110,5 +119,14 @@ foreach ($valueArray as $index => $value) {
             update_field('field_60ffc3747d1c5', $value[4], $id);
             // Interni
             update_field('field_6151702bb5417', $value[5], $id);
+            // Tipologia veicolo
+            update_field('field_6151ba3ba3109' , 'privato' , $id);
+            // search marca
+            $s_marca = str_replace('-','_' ,str_replace(' ' , '_' , $value[1]));
+            $s_modello = str_replace('-','_' ,str_replace(' ' , '_' , $value[2]));
+            $s_alimentazione = str_replace('-','_' ,str_replace(' ' , '_' , $alimentazione));
+            update_field('field_6151e1c1a16e5' , $s_marca , $id);
+            update_field('field_6151e1daa16e6' , $s_modello , $id);
+            update_field('field_6151e1eba16e7' , $s_alimentazione , $id);
     }
 }

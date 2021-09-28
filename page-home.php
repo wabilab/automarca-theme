@@ -20,35 +20,29 @@ get_header(); ?>
 							Lorem Ipsum is simply dummy text of the and typesetting industry. Lorem Ipsum has been
 						</p>
 						<form class="row search-form" action="<?php echo home_url('/'); ?>">
-							<div class="col-6 col-md-3 form-col">
+							<div class="col-6 col-md-4 form-col">
 								<div class="d-grid gap-2">
-									<input type="radio" class="btn-check filterradio" data-action="<?= get_permalink(get_page_by_path('nuovo')) ?>" name="condition" value="new" id="new" autocomplete="off" checked>
+									<input type="radio" class="btn-check filterradio" name="condition" value="new" id="new" checked>
 									<label class="btn btn-automarca-check" for="new">nuovo</label>
 								</div>
 							</div>
-							<div class="col-6 col-md-3 form-col">
+							<div class="col-6 col-md-4 form-col">
 								<div class="d-grid gap-2">
-									<input type="radio" class="btn-check filterradio" data-action="<?= get_permalink(get_page_by_path('usato')) ?>" name="condition" value="used" id="used" autocomplete="off">
+									<input type="radio" class="btn-check filterradio" name="condition" value="usata" id="used">
 									<label class="btn btn-automarca-check" for="used">usato</label>
 								</div>
 							</div>
-							<div class="col-6 col-md-3 form-col">
+							<div class="col-6 col-md-4 form-col">
 								<div class="d-grid gap-2">
-									<input type="radio" class="btn-check filterradio" data-action="<?= get_permalink(get_page_by_path('km0')) ?>" name="condition" value="km0" id="km0" autocomplete="off">
+									<input type="radio" class="btn-check filterradio" name="condition" value="zero" id="km0">
 									<label class="btn btn-automarca-check" for="km0">km0</label>
 								</div>
 							</div>
-							<div class="col-6 col-md-3 form-col">
-								<div class="d-grid gap-2">
-									<input type="radio" class="btn-check filterradio" data-action="<?= get_permalink(get_page_by_path('noleggio')) ?>" name="condition" value="rent" id="rent" autocomplete="off">
-									<label class="btn btn-automarca-check" for="rent">noleggio</label>
-								</div>
-							</div>
 							<div class="col-12 form-col">
-								<select class="form-select" name="make" id="" aria-label="Veicolo Commerciale" disabled>
-									<option selected>Veicolo commerciale</option>
-									<option value="1">Sì</option>
-									<option value="0">No</option>
+								<select class="form-select" name="" id="private" aria-label="Veicolo...">
+									<option selected value="">Veicolo...</option>
+									<option value="privato">Veicolo privato</option>
+									<option value="commerciale">Veicolo commerciale</option>
 								</select>
 							</div>
 							<div class="col-12 form-col">
@@ -87,6 +81,7 @@ get_header(); ?>
 							<div class="col-12 form-col">
 								<!-- <input type="text" class="form-control" placeholder="anno" name="year" id="year"> -->
 								<select class="form-select" name="year" id="year" aria-label="Anno">
+									<option value="">Anno</option>
 									<?php 
 										for($i = 1990 ; $i <= 2021 ; $i++){
 									?>

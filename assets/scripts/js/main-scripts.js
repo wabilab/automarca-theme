@@ -286,34 +286,37 @@ $(function () {
         fuelInput = $('#fuel_type'),
         yearInput = $('#year'),
         transmissioninput = $('#transmission'),
-        noviceInput = $('#novice-drivers');
-    // TRIGGER
+        noviceInput = $('#novice-drivers'),
+        commercial = $('#private');
+
+    
+        // TRIGGER
     filterInput.on('change', () => { set_filters() });
     noviceInput.on('click', () => { set_filters() });
-    radioInput.on('click', () => { set_filters() });
+    radioInput.on('change', () => { set_filters() });
     yearInput.on('change' , () => { set_filters() });
     // SUBMIT 
     var filterSubmit = $('#filter-submit');
     filterSubmit.on('click', () => { compile_filter_url() });
-
     // SET FILTERS AND GET POSTS COUNT
     function set_filters() {
         let filter = {
             post_type: 'auto-in-vendita',
             filters: {
-                /* tipologia : $('input[name="condition"]:checked').val(), */
-                marca: brandInput.val(),
+                tipologia : $('input[name="condition"]:checked').val(),
+                marca: brandInput.val().replace('-' , '_'),
                 modello: modelInput.val(),
                 maxPrice: maxPriceInput.val(),
                 km: kmInput.val(),
                 anno: yearInput.val(),
-                alimentazione: fuelInput.val(),
-                cambio: transmissioninput.val(),
+                alimentazione: fuelInput.val().replace(' ' ,'-'),
+                tipologia_veicolo : commercial.val(),
                 novice: noviceInput.is(':checked') == true ? true : '',
             }
         }
         get_search_results_count(filter);
     }
+
     // GET POSTS COUNT AJAX CALL
     function get_search_results_count(filterObj) {
         $.ajax({
@@ -325,14 +328,15 @@ $(function () {
             $('#count-result').html(response);
         })
     }
+
     //COMPILE URL AND REDIRECT
     function compile_filter_url() {
         let filter = {
-            /* tipologia : $('input[name="condition"]:checked').val(), */
+            tipologia : $('input[name="condition"]:checked').val(),
             query_var: {
                 marca: brandInput.val(),
-                modello: modelInput.val(),
-                alimentazione: fuelInput.val(),
+                modello: modelInput.val().replace('-' , '_'),
+                alimentazione: fuelInput.val().replace(' ' , '-'),
             },
             get_params: {
                 maxPrice: maxPriceInput.val(),
@@ -340,10 +344,26 @@ $(function () {
                 anno: yearInput.val(),
                 cambio: transmissioninput.val(),
                 novice: noviceInput.is(':checked') == true ? true : '',
-                order: $('#order').val() == undefined ? '' : $('#order').val()
+                order: $('#order').val() == undefined ? '' : $('#order').val(),
+                tipologia : commercial.val()
             }
         };
-        var searchUrl = home_url + '/nuovo/';
+        var pageUrl;
+        switch (filter.tipologia) {
+            case 'new':
+                pageUrl = '/nuovo/';
+                break;
+            case 'zero':
+                pageUrl = '/km0/';
+                break;
+            case 'usata' :
+                pageUrl = '/usato/';
+                break;
+            default:
+                pageUrl = '/usato/';
+                break;
+        }
+        var searchUrl = home_url + pageUrl;
         var paramsArr = [];
         let index = 0;
         // COMPILE QUERY_VARS
@@ -362,11 +382,11 @@ $(function () {
         let params_index = 0;
         // COMPILE $_GET VARIABLES
         for (const [key, value] of Object.entries(filter.get_params)) {
-            if (value != '' && params_index == 0) {
+            if (value != '' && params_index == 0 && value != undefined) {
                 let newParam = '?' + key + '=' + value;
                 paramsArr.push(newParam);
                 params_index++;
-            } else if (value != '') {
+            } else if (value != '' && value != undefined) {
                 let newParam = '&' + key + '=' + value;
                 paramsArr.push(newParam);
             }
@@ -392,18 +412,6 @@ $(function () {
     $('.remove-filter').on('click', function() {
         console.log($(this).data('type'));
         switch ($(this).data('type')) {
-            case 'marca':
-                brandInput.val('');
-                compile_filter_url();
-                break;
-            case 'modello':
-                modelInput.val('');
-                compile_filter_url();
-                break;
-            case 'alimentazione':
-                fuelInput.val('');
-                compile_filter_url()
-                break;
             case 'prezzo':
                 maxPriceInput.val('');
                 compile_filter_url();
@@ -416,6 +424,18 @@ $(function () {
                 yearInput.val('');
                 compile_filter_url();
                 break;
+            case 'search_model':
+                modelInput.val('');
+                compile_filter_url();
+                break;
+            case 'search_fuel':
+                fuelInput.val('');
+                compile_filter_url();
+                break;
+            case 'search_marca':
+                brandInput.val('');
+                compile_filter_url();
+                break;     
         }
     })
 

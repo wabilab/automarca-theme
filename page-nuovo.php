@@ -4,6 +4,8 @@
  * Pagina Nuovo
  */
 
+include 'array.php';
+
 
 session_start();
 // INITIALIZE QUERY VARS
@@ -13,28 +15,28 @@ $alimentazione = substr(get_query_var('param3'), 1, strlen(get_query_var('param3
 
 // SANITIZE QUERY VARS
 $filtri = array(
-	'marca' => str_replace('_', ' ', $marca),
-	'modello' => str_replace('_', ' ', $modello),
-	'alimentazione' => str_replace('_', ' ', $alimentazione),
+	'marca' => $marca,
+	'modello' => $modello,
+	'alimentazione' =>  $alimentazione
 );
 //CHECK QUERY VARS POSITION IN URL
-if ($filtri['marca'] == 'benzina verde' || $filtri['marca'] == 'diesel' || $filtri['marca'] == 'gpl' || $filtri['marca'] == 'ibrida' || $filtri['marca'] == 'metano' || $filtri['marca'] == 'elettrica') {
+if (in_array(strtolower($filtri['marca']) , $alimentazioniArr)) {
 	$filtri['alimentazione'] = $filtri['marca'];
 	$filtri['marca'] = '';
 	$filtri['modello'] = '';
-} else if ($filtri['modello'] == 'benzina verde' || $filtri['modello'] == 'diesel' || $filtri['modello'] == 'gpl' || $filtri['modello'] == 'ibrida' || $filtri['modello'] == 'metano') {
+} else if (in_array(strtolower($filtri['modello']) , $alimentazioniArr)) {
 	$filtri['alimentazione'] = $filtri['modello'];
 	$filtri['modello'] = '';
 }
-if ($filtri['marca'] != 'ford' && $filtri['marca'] != 'mazda' && $filtri['marca'] != 'volkswagen') {
+if (!in_array(ucfirst($filtri['marca']) , $marcheArr)) {
 	$filtri['modello'] = ucfirst($filtri['marca']);
 	$filtri['marca'] = '';
 }
 
 // SESSION VARIABLES
-$_SESSION['marca'] = $filtri['marca'];
-$_SESSION['modello'] = $filtri['modello'];
-$_SESSION['alimentazione'] = $filtri['alimentazione'];
+$_SESSION['marca'] = str_replace('_' , ' ' ,$filtri['marca']);
+$_SESSION['modello'] = str_replace('_' , '-' , $filtri['modello']);
+$_SESSION['alimentazione'] = str_replace('_',' ',$filtri['alimentazione']);
 $_SESSION['prezzo'] = str_replace('_','-',$_GET['maxPrice']);
 $_SESSION['km'] = $_GET['km'];
 $_SESSION['anno'] = $_GET['anno'];
@@ -57,15 +59,17 @@ if (isset($_GET['order'])) {
 $queryArr = ['relation' => 'AND'];
 
 foreach ($filtri as $k => $q) {
-	if ($q != 'all') {
+	if ($q != 'all' && $q != null && $q != '') {
 		if($k == 'modello'){
-			$value = str_replace('_' , '-' , $filtri['modello']);
-		} else{
-			$value = $q;
-		}
+			$key = 'search_model';
+		} else if($k == 'marca'){
+			$key = 'search_marca';
+		} else if($k == 'alimentazione'){
+			$key = 'search_fuel';
+		};
 		$arr = array(
-			'key' => $k,
-			'value' => $value,
+			'key' => $key,
+			'value' => $q,
 			'compare' => 'LIKE'
 		);
 		$queryArr[] = $arr;
@@ -73,7 +77,7 @@ foreach ($filtri as $k => $q) {
 }
 
 foreach ($_GET as $k => $v) {
-	if ($v != 'all' && $v != '' && $k != 'order') {
+	if ($v != 'all' && $v != '' && $k != 'order' && isset($v) ) {
 		if ($k == 'maxPrice') {
 			$arr = array(
 				'key' => 'prezzo',
@@ -104,10 +108,23 @@ foreach ($_GET as $k => $v) {
 					'type' => 'NUMERIC'
 				);
 			}
-		}
+		} else if($k == 'tipologia'){
+			$arr = array(
+				'key' => 'tipologia',
+				'value' => $v,
+				'compare' => 'LIKE'
+			);
+		};
 		$queryArr[] = $arr;
 	}
 }
+
+$queryArr[] = array(
+	'key' => 'tipologia_vendita',
+	'value' => 'new',
+	'compare' => 'LIKE'
+);
+
 
 //COMPILE URL WITH $_GET VARIABLES
 $url_params = '';
@@ -167,7 +184,6 @@ $cars = new WP_Query($args);
 $page_num = $cars->max_num_pages;
 
 get_header();
-
 ?>
 
 <main class="page-wrapper">
@@ -190,8 +206,10 @@ get_header();
 			</div>
 		</div>
 	</header>
-	<?php
+	<?php 
+		var_dump($queryArr);
 	?>
+	<input hidden type="radio" class="btn-check filterradio" name="condition" value="new" id="new" autocomplete="off" checked>
 	<section class="container-fluid section section-padding-sm cars-search-grid-container">
 		<div class="row justify-content-center">
 			<div class="col-12 col-xxl-10">
@@ -206,7 +224,6 @@ get_header();
 							<div class="collapse filters-collapse-container" id="filter-collapse">
 								<div class="filters-container">
 									<form class="row search-form" action="<?php echo home_url('/'); ?>">
-										<input type="hidden" name="condition" value="usato" id="condition">
 										<div class="col-12 form-col">
 											<label class="form-label" for="brand">Marca</label>
 											<select class="form-select live-filter" name="make" id="brand" aria-label="Marca">
@@ -226,25 +243,25 @@ get_header();
 													<option value="<?= $_SESSION['modello'] ?>"><?= ucfirst($_SESSION['modello']) ?></option>
 												<?php endif; ?>
 												<option value="">Tutti</option>
-												<option value="aerostar">Aerostar</option>
-												<option value="max">B-Max</option>
-												<option value="bronco">Bronco</option>
-												<option value="capri">Capri</option>
-												<option value="max">C-Max</option>
-												<option value="cortina">Cortina</option>
-												<option value="cougar">Cougar</option>
-												<option value="courier">Courier</option>
-												<option value="escape">Escape</option>
-												<option value="escort">Escort</option>
-												<option value="explorer">Explorer</option>
-												<option value="fiesta">Fiesta</option>
-												<option value="focus">Focus</option>
-												<option value="fusion">Fusion</option>
-												<option value="galaxy">Galaxy</option>
-												<option value="ka">Ka</option>
-												<option value="transit">Transit</option>
-												<option value="kuga">Kuga</option>
-												<option value="mustang">Mustang</option>
+												<option value="Aerostar">Aerostar</option>
+												<option value="B-Max">B-Max</option>
+												<option value="Bronco">Bronco</option>
+												<option value="Capri">Capri</option>
+												<option value="C-Max">C-Max</option>
+												<option value="Cortina">Cortina</option>
+												<option value="Cougar">Cougar</option>
+												<option value="Courier">Courier</option>
+												<option value="Escape">Escape</option>
+												<option value="Escort">Escort</option>
+												<option value="Explorer">Explorer</option>
+												<option value="Fiesta">Fiesta</option>
+												<option value="Focus">Focus</option>
+												<option value="Fusion">Fusion</option>
+												<option value="Galaxy">Galaxy</option>
+												<option value="Ka">Ka</option>
+												<option value="Transit">Transit</option>
+												<option value="Kuga">Kuga</option>
+												<option value="Mustang">Mustang</option>
 											</select>
 										</div>
 										<div class="col-12 form-col">
@@ -353,14 +370,12 @@ get_header();
 							</div>
 						</div>
 						<div class="active-filters-container">
-							<?php
-
-							?>
 							<?php foreach ($queryArr as $k => $query) {
-								if ($query != 'AND' && $query['value'] != '') :
+							
+								if ($query != 'AND' && $query['value'] != '' && $query['key'] != 'tipologia_vendita' && $query['key'] != 'tipologia') :
 							?>
 									<div class="automarca-active-filter">
-										<span class="filter-widged"><?= $query['value'] ?></span><span href="" class="remove-filter" data-filter="" data-type="<?= $query['key'] ?>"></span>
+										<span class="filter-widged"><?= str_replace('_', '-' , $query['value']) ?></span><span href="" class="remove-filter" data-filter="" data-type="<?= $query['key'] ?>"></span>
 									</div>
 							<?php
 								endif;
