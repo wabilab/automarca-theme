@@ -164,3 +164,30 @@ add_action( 'before_delete_post', function( $id ) {
     wp_delete_attachment( $attachment->ID, 'true' );
     }
 });
+
+
+function print_value_links(){
+    $cars = get_posts(array(
+        'post_type' => 'auto-in-vendita',
+        'numberposts' => -1,  
+    ));
+    $arr = array();
+    foreach($cars as $c){
+        $marca = get_field('field_60ffc3567d1c2' , $c -> ID);
+        $model = get_field('field_60ffc3607d1c3' , $c -> ID);
+        $fuel = get_field('field_60ffc3ac7d1c7' , $c -> ID);
+        
+        $arr[] = strtolower($marca) . '-' . explode(' ' , strtolower($model))[0] . '-' . explode(' ' , strtolower($fuel))[0];
+    }
+
+    $counted = array_count_values($arr);
+    $linkArr = array();
+    foreach($counted as $k => $v){
+        if($v > 5){
+            $linkArr[] = $k;
+        };
+    }
+    foreach($linkArr as $link){
+        echo '<a style="color:red;" href="' . get_home_url() . '/nuovo/'. $link . '"><li>' . str_replace('-' , ' ' , $link) . '</li</a>';
+    }
+}

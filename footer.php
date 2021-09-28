@@ -79,7 +79,7 @@
 			</div>
 		</div>
 	</div>
-
+	<?php print_value_links(); ?>
 </footer> <!-- end .footer -->
 
 <?php wp_footer(); ?>

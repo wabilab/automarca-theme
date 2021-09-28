@@ -321,7 +321,7 @@ $(function () {
                 maxPrice: maxPriceInput.val(),
                 km: kmInput.val(),
                 anno: yearInput.val(),
-                alimentazione: fuelInput.val().replace(' ' ,'-'),
+                alimentazione: fuelInput.val(),
                 tipologia_veicolo : commercial.val(),
                 novice: noviceInput.is(':checked') == true ? true : '',
             }
@@ -357,8 +357,8 @@ $(function () {
             tipologia : $('input[name="condition"]:checked').val(),
             query_var: {
                 marca: marca,
-                modello: model.replace('-' , '_'),
-                alimentazione: fuelInput.val().replace(' ' , '-'),
+                modello: model,
+                alimentazione: fuelInput.val(),
             },
             get_params: {
                 maxPrice: maxPriceInput.val(),
@@ -446,7 +446,7 @@ $(function () {
                 compile_filter_url();
                 break;
             case 'search_model':
-                modelInput.val('');
+                modelInput.val('all');
                 compile_filter_url();
                 break;
             case 'search_fuel':
@@ -454,7 +454,12 @@ $(function () {
                 compile_filter_url();
                 break;
             case 'search_marca':
-                brandInput.val('');
+                if(brandInputNew.is(':visible')){
+                    brandInputNew.val('all');
+                } else {
+                    brandInputUsato.val('all')
+                }
+                modelInput.val('all');
                 compile_filter_url();
                 break;     
         }
