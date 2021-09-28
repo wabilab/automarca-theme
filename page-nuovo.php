@@ -19,6 +19,7 @@ $filtri = array(
 	'modello' => $modello,
 	'alimentazione' =>  $alimentazione
 );
+
 //CHECK QUERY VARS POSITION IN URL
 if (in_array(strtolower($filtri['marca']) , $alimentazioniArr)) {
 	$filtri['alimentazione'] = $filtri['marca'];
@@ -206,9 +207,6 @@ get_header();
 			</div>
 		</div>
 	</header>
-	<?php 
-		var_dump($queryArr);
-	?>
 	<input hidden type="radio" class="btn-check filterradio" name="condition" value="new" id="new" autocomplete="off" checked>
 	<section class="container-fluid section section-padding-sm cars-search-grid-container">
 		<div class="row justify-content-center">
@@ -226,42 +224,20 @@ get_header();
 									<form class="row search-form" action="<?php echo home_url('/'); ?>">
 										<div class="col-12 form-col">
 											<label class="form-label" for="brand">Marca</label>
-											<select class="form-select live-filter" name="make" id="brand" aria-label="Marca">
-												<?php if ($_SESSION['marca'] != '' && $_SESSION['marca'] != NULL) : ?>
-													<option selected value="<?= $_SESSION['marca'] ?>"><?= $_SESSION['marca'] ?></option>
-												<?php endif; ?>
-												<option value="">Tutti</option>
+											<select class="form-select live-filter" name="make" id="brand-new" aria-label="Marca">
+												<option value="all">Tutte le marche</option>
 												<option value="ford" <?= isset($_SESSION['marca']) && $_SESSION['marca'] == 'ford' ? 'selected' : '' ?>>Ford</option>
 												<option value="mazda" <?= isset($_SESSION['marca']) && $_SESSION['marca'] == 'mazda' ? 'selected' : '' ?>>Mazda</option>
-												<option value="volkswagen" <?= isset($_SESSION['marca']) && $_SESSION['marca'] == 'volkswagen' ? 'selected' : '' ?>>Volkswagen</option>
 											</select>
 										</div>
 										<div class="col-12 form-col">
 											<label class="form-label" for="model">Modello</label>
-											<select class="form-select live-filter" name="model" id="model" aria-label="Modello">
-												<?php if ($_SESSION['modello'] != '' && $_SESSION['modello'] != NULL) : ?>
-													<option value="<?= $_SESSION['modello'] ?>"><?= ucfirst($_SESSION['modello']) ?></option>
-												<?php endif; ?>
-												<option value="">Tutti</option>
-												<option value="Aerostar">Aerostar</option>
-												<option value="B-Max">B-Max</option>
-												<option value="Bronco">Bronco</option>
-												<option value="Capri">Capri</option>
-												<option value="C-Max">C-Max</option>
-												<option value="Cortina">Cortina</option>
-												<option value="Cougar">Cougar</option>
-												<option value="Courier">Courier</option>
-												<option value="Escape">Escape</option>
-												<option value="Escort">Escort</option>
-												<option value="Explorer">Explorer</option>
-												<option value="Fiesta">Fiesta</option>
-												<option value="Focus">Focus</option>
-												<option value="Fusion">Fusion</option>
-												<option value="Galaxy">Galaxy</option>
-												<option value="Ka">Ka</option>
-												<option value="Transit">Transit</option>
-												<option value="Kuga">Kuga</option>
-												<option value="Mustang">Mustang</option>
+											<select class="form-select model-select live-filter" name="model" id="model" aria-label="Modello">
+												
+													<option value="all">Tutti i modelli</option>
+												<?php foreach($models[ucfirst($filtri['marca'])] as $model) : ?>
+													<option <?= ($_SESSION['modello'] == strtolower(str_replace(' ','_' , $model))) ? 'selected' : '';   ?> value="<?= strtolower(str_replace(' ','_' , $model))?>"><?= $model; ?></option>
+												<?php endforeach; ?>
 											</select>
 										</div>
 										<div class="col-12 form-col">
@@ -318,7 +294,7 @@ get_header();
 												<?php if ($_SESSION['alimentazione'] != '' && $_SESSION['alimentazione'] != NULL) : ?>
 													<option selected value="<?= $_SESSION['alimentazione'] ?>"><?= $_SESSION['alimentazione'] ?></option>
 												<?php endif; ?>
-												<option value="benzina_verde">Benzina</option>
+												<option value="benzina">Benzina</option>
 												<option value="diesel">Diesel</option>
 												<option value="gpl">GPL</option>
 												<option value="metano">Metano</option>

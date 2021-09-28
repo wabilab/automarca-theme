@@ -4,6 +4,7 @@
  * Pagina Home
  */
 session_start();
+include 'array.php';
 
 
 get_header(); ?>
@@ -46,20 +47,28 @@ get_header(); ?>
 								</select>
 							</div>
 							<div class="col-12 form-col">
-								<select class="form-select" name="make" id="brand" aria-label="Marca">
+								<select class="form-select new-sel-home" name="make" id="brand-new" aria-label="Marca">
 									<option value="" selected>Marca</option>
 									<option value="Ford">Ford</option>
 									<option value="Mazda">Mazda</option>
-									<option value="Volkswagen">Volkswagen</option>
+								</select>
+								<select class="form-select usato-sel-home" name="make" id="brand-usato">
+									<option value="" selected>Marca</option>
+									<?php foreach($models as $brand => $modelArr)  : ?>
+									<option value="<?= $brand; ?>"><?= $brand ?></option>
+									<?php endforeach; ?>
 								</select>
 							</div>
 							<div class="col-12 form-col">
-								<select class="form-select" name="model" id="model" aria-label="Modello">
-									<option value="" selected>Modello</option>
-									<option value="Fiesta_4_serie">Fiesta 4ª serie</option>
-									<option value="Fiesta_7_serie">Fiesta 7ª serie</option>
-									<option value="Mondeo_3_serie">Mondeo 3ª serie</option>
-									<option value="Fiesta_5_serie">Fiesta 5ª serie</option>
+								<select disabled="true" class="form-select model-select" name="model" id="model" aria-label="Modello">
+									<option value="">modello</option>
+									<?php foreach($models as $brand => $arr){ 
+											foreach($arr as $model) {	?>
+											<option disabled class="model-option <?= str_replace(' ' , '_' , $brand) . '-opt'; ?>" value="<?= $model?>"><?= $model ;?></option>	
+									<?php 
+										}
+									}
+									?>
 								</select>
 							</div>
 							<div class="col-12 form-col">
@@ -103,13 +112,6 @@ get_header(); ?>
 								</select>
 							</div>
 							<div class="col-12 form-col">
-								<select class="form-select" name="transmission" id="transmission">
-									<option value="" selected>Cambio<option>
-									<option value="automatico">Automatico</option>
-									<option value="manuale">Manuale</option>
-								</select>
-							</div>
-							<div class="col-12 form-col">
 								<div class="form-check">
 									<input class="form-check-input" type="checkbox" value="true" name="novice_drivers" id="novice-drivers">
 									<label class="form-check-label" for="novice-drivers">
@@ -134,7 +136,6 @@ get_header(); ?>
 						<?php $slides = get_field('slide'); ?>
 						<div class="home-slider">
 							<?php foreach ($slides as $slide) { ?>
-
 								<div class="home-slide">
 									<div class="container-fluid slide-container px-0 px-xxl-5">
 										<div class="row">
@@ -156,66 +157,6 @@ get_header(); ?>
 									</div>
 								</div>
 							<?php } ?>
-							<!-- <div class="home-slide">
-								<div class="container-fluid slide-container px-0 px-xxl-5">
-									<div class="row">
-										<div class="col-12 col-md-10 offset-md-2 col-xxl-8 offset-xxl-4">
-											<img src="https://via.placeholder.com/800x500" class="img-fluid" alt="ecoincentivi">
-										</div>
-										<div class="col-12 col-md-10 col-xxl-8 inner-mar-top">
-											<div class="title-1">
-												Ecoincentivi, cosa sono e come funzionano
-											</div>
-											<p>
-												Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknoa
-											</p>
-											<p>
-												<a class="btn btn-automarca-1" href="#">scopri subito</a>
-											</p>
-										</div>
-									</div>
-								</div>
-							</div>
-							<div class="home-slide">
-								<div class="container-fluid slide-container px-0 px-xxl-5">
-									<div class="row">
-										<div class="col-12 col-md-10 offset-md-2 col-xxl-8 offset-xxl-4">
-											<img src="https://via.placeholder.com/800x500" class="img-fluid" alt="ecoincentivi">
-										</div>
-										<div class="col-12 col-md-10 col-xxl-8 inner-mar-top">
-											<div class="title-1">
-												Ecoincentivi, cosa sono e come funzionano
-											</div>
-											<p>
-												Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknoa
-											</p>
-											<p>
-												<a class="btn btn-automarca-1" href="#">scopri subito</a>
-											</p>
-										</div>
-									</div>
-								</div>
-							</div>
-							<div class="home-slide">
-								<div class="container-fluid slide-container px-0 px-xxl-5">
-									<div class="row">
-										<div class="col-12 col-md-10 offset-md-2 col-xxl-8 ooffset-xxl-4">
-											<img src="https://via.placeholder.com/800x500" class="img-fluid" alt="ecoincentivi">
-										</div>
-										<div class="col-12 col-md-10 col-xxl-8 inner-mar-top">
-											<div class="title-1">
-												Ecoincentivi, cosa sono e come funzionano
-											</div>
-											<p>
-												Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknoa
-											</p>
-											<p>
-												<a class="btn btn-automarca-1" href="#">scopri subito</a>
-											</p>
-										</div>
-									</div>
-								</div>
-							</div> -->
 						</div>
 					</div>
 				</div>

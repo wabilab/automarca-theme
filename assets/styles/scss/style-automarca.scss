@@ -3008,3 +3008,11 @@ footer {
     font-size: 13px;
     line-height: 2;
 }
+
+.selectric-usato-select{
+    display:none;
+}
+
+.model-option:disabled , .disabled{
+    display:none!important;
+}

@@ -279,18 +279,18 @@ $(function () {
 
     var filterInput = $('.form-select'),
         radioInput = $('.filterradio'),
-        brandInput = $('#brand'),
+        brandInputNew = $('#brand-new'),
+        brandInputUsato = $('#brand-usato'),
         modelInput = $('#model'),
         kmInput = $('#km-until'),
         maxPriceInput = $('#max-price'),
         fuelInput = $('#fuel_type'),
         yearInput = $('#year'),
-        transmissioninput = $('#transmission'),
         noviceInput = $('#novice-drivers'),
         commercial = $('#private');
 
     
-        // TRIGGER
+    // TRIGGER
     filterInput.on('change', () => { set_filters() });
     noviceInput.on('click', () => { set_filters() });
     radioInput.on('change', () => { set_filters() });
@@ -299,13 +299,25 @@ $(function () {
     var filterSubmit = $('#filter-submit');
     filterSubmit.on('click', () => { compile_filter_url() });
     // SET FILTERS AND GET POSTS COUNT
+
     function set_filters() {
+        
+        if(brandInputNew.is(':visible')){
+            var marca = brandInputNew.val();
+        } else {
+            var  marca = brandInputUsato.val()
+        }
+        if(marca == 'all'){
+            var model = 'all';
+        } else{
+            var model = modelInput.val();
+        }
         let filter = {
             post_type: 'auto-in-vendita',
             filters: {
                 tipologia : $('input[name="condition"]:checked').val(),
-                marca: brandInput.val().replace('-' , '_'),
-                modello: modelInput.val(),
+                marca: marca,
+                modello: model,
                 maxPrice: maxPriceInput.val(),
                 km: kmInput.val(),
                 anno: yearInput.val(),
@@ -331,18 +343,27 @@ $(function () {
 
     //COMPILE URL AND REDIRECT
     function compile_filter_url() {
+        if(brandInputNew.is(':visible')){
+            var marca = brandInputNew.val();
+        } else {
+            var  marca = brandInputUsato.val()
+        }
+        if(marca == 'all'){
+            var model = 'all';
+        } else{
+            var model = modelInput.val();
+        }
         let filter = {
             tipologia : $('input[name="condition"]:checked').val(),
             query_var: {
-                marca: brandInput.val(),
-                modello: modelInput.val().replace('-' , '_'),
+                marca: marca,
+                modello: model.replace('-' , '_'),
                 alimentazione: fuelInput.val().replace(' ' , '-'),
             },
             get_params: {
                 maxPrice: maxPriceInput.val(),
                 km: kmInput.val(),
                 anno: yearInput.val(),
-                cambio: transmissioninput.val(),
                 novice: noviceInput.is(':checked') == true ? true : '',
                 order: $('#order').val() == undefined ? '' : $('#order').val(),
                 tipologia : commercial.val()
@@ -368,8 +389,8 @@ $(function () {
         let index = 0;
         // COMPILE QUERY_VARS
         for (const [key, value] of Object.entries(filter.query_var)) {
-            if (value != '') {
-                if (filter.query_var.lenght < 2) {
+            if (value != '' && value != 'all') {
+                if (filter.query_var.length < 2) {
                     searchUrl += value
                 } else if (index == 0) {
                     searchUrl += value
@@ -439,6 +460,7 @@ $(function () {
         }
     })
 
+
     //ORDER SELECT TRIGGER
     $('#order').on('change', () => {
             compile_filter_url();
@@ -455,9 +477,7 @@ $(function () {
         arrows: false,
         infinite: true,
         responsive: [],
-        // asNavFor: '.car-thumb-slider'
     });
-    // car-img-slider
 
     $(".car-thumb-slider").slick({
         lazyLoad: "ondemand",
@@ -467,6 +487,43 @@ $(function () {
         arrows: true,
         infinite: true,
         responsive: [],
-        // asNavFor: '.car-img-slider'
     });
+
+
+    // HOME FILTERS
+    $('.selectric-usato-sel-home').css('display' ,'none');
+    $('.filterradio').on('change',function(){
+        if($(this).val() == 'new'){
+            $('.selectric-usato-sel-home').css('display' , 'none');
+            $('.selectric-new-sel-home').css('display' , 'block');
+        }else{
+            $('.selectric-usato-sel-home').css('display' , 'block');
+            $('.selectric-new-sel-home').css('display' , 'none');
+        }
+    }); 
+    
+    $('.usato-sel-home').on('change' , function(){
+        let value =  $('#brand-usato').val();
+        if(value == 'all'){
+            $('.model-select').attr('disabled' , true);        
+        } else{
+            $('.model-select').removeAttr('disabled');
+        }
+        $('.model-option').prop('disabled' , true); 
+        $('.' + value + '-opt').prop('disabled' , false);
+        $('.model-select').selectric('refresh');
+    })
+
+    $('.new-sel-home').on('change' , function(){
+        let value = $('#brand-new').val();
+        if(value == 'all'){
+            $('.model-select').attr('disabled' , true);        
+        } else{
+            $('.model-select').removeAttr('disabled');
+        }
+        $('.model-select').prop('disabled' , false);
+        $('.model-option').prop('disabled' , true);
+        $('.' + value + '-opt').prop('disabled' , false);
+        $('.model-select').selectric('refresh');
+    })
 });
