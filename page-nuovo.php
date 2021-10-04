@@ -340,8 +340,6 @@ get_header();
 									<option value="prezzo_desc">prezzo-decrescente</option>
 									<option value="modello_asc">Modello (A - Z)</option>
 									<option value="modello_desc">Modello (Z - A)</option>
-									<option value="km_asc">km - crescente</option>
-									<option value="km_desc">km - decrescente</option>
 								</select>
 							</div>
 						</div>
