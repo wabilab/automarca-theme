@@ -26,8 +26,8 @@ if ($filtri['marca'] == 'benzina verde' || $filtri['marca'] == 'diesel' || $filt
 	$filtri['alimentazione'] = $filtri['modello'];
 	$filtri['modello'] = '';
 }
-if ($filtri['marca'] != 'ford' && $filtri['marca'] != 'mazda' && $filtri['marca'] != 'volkswagen') {
-	$filtri['modello'] = ucfirst($filtri['marca']);
+if ($filtri['marca'] != 'Ford' && $filtri['marca'] != 'Mazda' && $filtri['marca'] != 'Volkswagen') {
+	$filtri['modello'] = $filtri['marca'];
 	$filtri['marca'] = '';
 }
 
@@ -35,6 +35,10 @@ if ($filtri['marca'] != 'ford' && $filtri['marca'] != 'mazda' && $filtri['marca'
 $_SESSION['marca'] = $filtri['marca'];
 $_SESSION['modello'] = $filtri['modello'];
 $_SESSION['alimentazione'] = $filtri['alimentazione'];
+$_SESSION['prezzo'] = str_replace('_','-',$_GET['maxPrice']);
+$_SESSION['km'] = $_GET['km'];
+$_SESSION['anno'] = $_GET['anno'];
+$_SESSION['order'] = $_GET['order'];
 
 if (isset($_GET['maxPrice'])) {
 	$_SESSION['prezzo'] = $_GET['maxPrice'];
@@ -54,9 +58,14 @@ $queryArr = ['relation' => 'AND'];
 
 foreach ($filtri as $k => $q) {
 	if ($q != 'all') {
+		if($k == 'modello'){
+			$value = str_replace('_' , '-' , $filtri['modello']);
+		} else{
+			$value = $q;
+		}
 		$arr = array(
 			'key' => $k,
-			'value' => $q,
+			'value' => $value,
 			'compare' => 'LIKE'
 		);
 		$queryArr[] = $arr;
@@ -89,7 +98,7 @@ foreach ($_GET as $k => $v) {
 		} else if ($k == 'novice') {
 			if ($v == 'true') {
 				$arr = array(
-					'key' => 'cv',
+					'key' => 'kw',
 					'value' => 95,
 					'compare' => '<',
 					'type' => 'NUMERIC'
@@ -201,6 +210,9 @@ get_header();
 										<div class="col-12 form-col">
 											<label class="form-label" for="brand">Marca</label>
 											<select class="form-select live-filter" name="make" id="brand" aria-label="Marca">
+												<?php if ($_SESSION['marca'] != '' && $_SESSION['marca'] != NULL) : ?>
+													<option selected value="<?= $_SESSION['marca'] ?>"><?= $_SESSION['marca'] ?></option>
+												<?php endif; ?>
 												<option value="">Tutti</option>
 												<option value="ford" <?= isset($_SESSION['marca']) && $_SESSION['marca'] == 'ford' ? 'selected' : '' ?>>Ford</option>
 												<option value="mazda" <?= isset($_SESSION['marca']) && $_SESSION['marca'] == 'mazda' ? 'selected' : '' ?>>Mazda</option>
@@ -211,10 +223,28 @@ get_header();
 											<label class="form-label" for="model">Modello</label>
 											<select class="form-select live-filter" name="model" id="model" aria-label="Modello">
 												<?php if ($_SESSION['modello'] != '' && $_SESSION['modello'] != NULL) : ?>
-													<option value="<?= $_SESSION['modello'] ?>"><?= $_SESSION['modello'] ?></option>
+													<option value="<?= $_SESSION['modello'] ?>"><?= ucfirst($_SESSION['modello']) ?></option>
 												<?php endif; ?>
 												<option value="">Tutti</option>
-												<option class="" value="fiesta">Fiesta</option>
+												<option value="aerostar">Aerostar</option>
+												<option value="max">B-Max</option>
+												<option value="bronco">Bronco</option>
+												<option value="capri">Capri</option>
+												<option value="max">C-Max</option>
+												<option value="cortina">Cortina</option>
+												<option value="cougar">Cougar</option>
+												<option value="courier">Courier</option>
+												<option value="escape">Escape</option>
+												<option value="escort">Escort</option>
+												<option value="explorer">Explorer</option>
+												<option value="fiesta">Fiesta</option>
+												<option value="focus">Focus</option>
+												<option value="fusion">Fusion</option>
+												<option value="galaxy">Galaxy</option>
+												<option value="ka">Ka</option>
+												<option value="transit">Transit</option>
+												<option value="kuga">Kuga</option>
+												<option value="mustang">Mustang</option>
 											</select>
 										</div>
 										<div class="col-12 form-col">
@@ -360,12 +390,7 @@ get_header();
 											<table class="table car-features-table">
 												<tbody>
 													<tr>
-														<?php
-														$datatmp = get_field('data_immatricolazione', get_the_ID());
-														$data = $datatmp->format('m/Y');
-
-														?>
-														<td><img src="<?= get_template_directory_uri(); ?>/assets/images/home/icona-data.svg" class="feature-icon" alt=""> <?= $data ?></td>
+														<td><img src="<?= get_template_directory_uri(); ?>/assets/images/home/icona-data.svg" class="feature-icon" alt=""> <?= get_field('field_610298b45151f', get_the_ID()); ?></td>
 														<td><img src="<?= get_template_directory_uri(); ?>/assets/images/home/icona-km.svg" class="feature-icon" alt=""> <?= get_field('km', get_the_ID()) ?> km</td>
 													</tr>
 													<tr>
@@ -376,7 +401,7 @@ get_header();
 											</table>
 										</div>
 										<div class="car-price">
-											<p class="price-content"><span><?= get_field('prezzo', get_the_ID()) ?></span><?= get_field('prezzo', get_the_ID()) ?></p>
+											<p class="price-content"><span><?= get_field('field_60ffc47b7d1cf', get_the_ID()) ?></span><?= get_field('field_60ffc47b7d1cf', get_the_ID()) ?></p>
 											<p class="button-container"><a class="btn btn-automarca-car" href="<?= get_the_permalink() ?>"><span>Scopri <span class="arrow"></span></span></a></p>
 										</div>
 									</div>
@@ -423,19 +448,6 @@ get_header();
 											endif;
 											?>
 										</ul>
-										<!-- <ul class="pagination automarca-pagination justify-content-center d-flex d-xl-none">
-										<li class="page-item flex-grow-1">
-											<a class="page-link text-link prev" href="#" aria-label="Previous">
-												<span class="arrow"></span><span class="d-none d-sm-inline">Precedente</span>
-											</a>
-										</li> 
-											<li class="page-item"><a class="page-link" href="?pagina=</a></li>
-										<li class="page-item flex-grow-1 text-end">
-											<a class="page-link text-link next" href="#" aria-label="Next">
-												<span class="d-none d-sm-inline">Successiva</span><span class="arrow"></span>
-											</a>
-										</li>
-									</ul> -->
 									</nav>
 								</div>
 							</div>
