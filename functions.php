@@ -16,7 +16,6 @@ require_once(get_template_directory() . '/functions/enqueue-scripts.php');
 
 //XML creation form register route & mail sender
 
-require_once(get_template_directory() . '/functions/xml-form.php');
 
 add_action('rest_api_init', function () {
     register_rest_route(
@@ -345,9 +344,17 @@ function add_admin_page()
         'Export / Import CSV plugin', //SLUG
         'admin_page_html' //QUESTO CALL BACK STAMPA L HTML NELLA NUOVA TAB.
     );
+    add_menu_page(
+        'Import xml / Modix',
+        'Import xml / Modix',
+        'manage_options',
+        'import_xml_modix',
+        'admin_page_html_2'
+    );
 }
 
 function admin_page_html()
+
 {
     //CONTROLLO SUI PERMESSI DELL USER
     if (!current_user_can('manage_options')) {
@@ -357,12 +364,31 @@ function admin_page_html()
     <!-- CREO UN FORM PER IMPORTARE IL FILE CSV, INSERISCO NELLA ACTION DEL FORM UNA FUNZIONE CHE GESTISCE L'IMPORT-->
     <div style="width:80%;margin:50px auto;">
         <form action="<?= get_template_directory_uri() . '/importscript.php'?>" enctype="multipart/form-data" method="POST">
+            <input name="modix_xml" type="file">
+            <input type="submit" value="Carica file">
+        </form>
+    </div>
+<?php
+}
+
+function admin_page_html_2()
+
+{
+    //CONTROLLO SUI PERMESSI DELL USER
+    if (!current_user_can('manage_options')) {
+        return;
+    } ?>
+    <h1><?php echo esc_html(get_admin_page_title()); ?></h1>
+    <!-- CREO UN FORM PER IMPORTARE IL FILE CSV, INSERISCO NELLA ACTION DEL FORM UNA FUNZIONE CHE GESTISCE L'IMPORT-->
+    <div style="width:80%;margin:50px auto;">
+        <form action="<?= get_template_directory_uri() . '/importxml.php'?>" enctype="multipart/form-data" method="POST">
             <input name="csv" type="file">
             <input type="submit" value="Carica file">
         </form>
     </div>
 <?php
 }
+
 
 add_action( 'before_delete_post', function( $id ) {
     $attachments = get_attached_media( '', $id );
