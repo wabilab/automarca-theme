@@ -208,7 +208,32 @@ get_header(); ?>
 											richiedi informazioni sulla vettura
 										</div>
 										<form action="" class="automarca-form single-car-form" id="info-form">
-											<input type="hidden" name="vehicle" value="<?= get_the_ID(); ?>">
+											<?php 
+												$id_vehicle = explode( ' '  , get_the_title())[0];
+												$type = get_field('field_6151b58a76a39' , get_the_ID());
+												$tipologia = '';
+												if($type == 'new'){
+													$tipologia = 'Nuova';
+												} else if($type == 'zero'){
+													$tipologia = 'KM0';
+												}else{
+													$tipologia = 'Usata';
+												};
+											?>
+											<input type="hidden" name="id_vehicle" value="<?= $id_vehicle; ?>">
+											<input type="hidden" name="this_page" value="<?= get_permalink(); ?>">
+											<input type="hidden" name="location" value="<?= get_field('field_60ffc56b245bc' , get_the_ID()); ?>">
+											<input type="hidden" name="brand" value="<?= get_field('field_60ffc3567d1c2' , get_the_ID()); ?>">
+											<input type="hidden" name="model" value="<?= get_field('field_60ffc3607d1c3' , get_the_ID()); ?>">
+											<input type="hidden" name="version" value="<?= get_field('field_60ffc36b7d1c4' , get_the_ID()); ?>">
+											<input type="hidden" name="immatricolazione" value="<?= get_field('field_60ffc3e97d1c9' , get_the_ID()); ?>">
+											<input type="hidden" name="km" value="<?= get_field('field_60ffc3cd7d1c8' , get_the_ID()); ?>">
+											<input type="hidden" name="price" value="<?= get_field('field_60ffc47b7d1cf' ,  get_the_ID()); ?>">
+											<input type="hidden" name="fuel" value="<?= get_field('field_60ffc3ac7d1c7' , get_the_ID()); ?>">
+											<input type="hidden" name="kw" value="<?= get_field('field_614c57eb09afa' , get_the_ID()); ?>">
+											<input type="hidden" name="type" value="<?= $tipologia; ?>">
+											<input type="hidden" name="transmission" value="<?= get_field('field_60ffc4747d1ce' , get_the_ID()); ?>">
+											<input type="hidden" name="color" value="<?= get_field('field_60ffc3747d1c5' , get_the_ID()); ?>">
 											<div class="row">
 												<div class="col-12 form-col">
 													<input type="text" class="form-control" name="full_name" placeholder="Nome e cognome *" id="" required>
@@ -217,14 +242,14 @@ get_header(); ?>
 													<input type="email" class="form-control" name="email" id="" placeholder="Email *" required>
 												</div>
 												<div class="col-12 form-col">
-													<input type="tel" class="form-control" name="phone" id="" placeholder="Telefono *" required>
+													<input type="tel" class="form-control" name="tel_num" id="" placeholder="Telefono *" required>
 												</div>
 												<div class="col-12 form-col">
 													<textarea name="message" id="" class="form-control" rows="10" placeholder="Messaggio *" required></textarea>
 												</div>
 												<div class="col-12 mb-3">
 													<div class="form-check big">
-														<input class="form-check-input big" type="checkbox" id="test-drive">
+														<input class="form-check-input big" name="test_drive" type="checkbox" id="test-drive">
 														<label class="form-check-label big" for="test-drive">
 															Richiedi test drive
 														</label>

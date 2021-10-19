@@ -329,6 +329,7 @@ function get_search_results_count(WP_REST_Request $request)
     $count = count($query->posts);
 
     return json_encode($count);
+    /* return json_encode($count); */
 }
 
 
