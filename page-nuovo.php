@@ -35,10 +35,19 @@ if($filtri['marca'] != 'Ford' && $filtri['marca'] != 'Mazda' && $filtri['marca']
 $_SESSION['marca'] = $filtri['marca'];
 $_SESSION['modello'] = $filtri['modello'];
 $_SESSION['alimentazione'] = $filtri['alimentazione'];
-$_SESSION['prezzo'] = $_GET['maxPrice'];
-$_SESSION['km'] = $_GET['km'];
-$_SESSION['anno'] = $_GET['anno'];
-$_SESSION['order'] = $_GET['order'];
+
+if(isset($_GET['maxPrice'])) {
+	$_SESSION['prezzo'] = $_GET['maxPrice'];
+}
+if(isset($_GET['km'])) {
+	$_SESSION['km'] = $_GET['km'];
+}
+if(isset($_GET['anno'])) {
+	$_SESSION['abbi'] = $_GET['anno'];
+}
+if(isset($_GET['order'])) {
+	$_SESSION['order'] = $_GET['order'];
+}
 
 //COMPILE QUERY ARRAY 
 $queryArr = ['relation' => 'AND'];
