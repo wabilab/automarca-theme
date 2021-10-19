@@ -23,7 +23,6 @@ get_header(); ?>
 		</div>
 	</header>
 	<section class="container-fluid section single-post-content">
-		<?php $post_id = 0; ?>
 		<?php if (have_posts()) : while (have_posts()) : the_post(); ?>
 				<?php $post_id = get_the_ID(); ?>
 				<div class="row justify-content-center">
