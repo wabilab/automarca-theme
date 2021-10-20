@@ -126,7 +126,6 @@ $queryArr[] = array(
 	'compare' => 'LIKE'
 );
 
-var_dump($queryArr);
 //COMPILE URL WITH $_GET VARIABLES
 $url_params = '';
 
