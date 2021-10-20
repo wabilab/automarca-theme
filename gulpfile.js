@@ -2,10 +2,12 @@
 // Most packages are lazy loaded
 var gulp = require("gulp"),
   path = require('path'),
-  gutil = require("gulp-util"),
+  log = require('fancy-log'),
+  colors = require('ansi-colors'),
   notify = require("gulp-notify"),
   webpack = require("webpack-stream"),
  /*  browserSync = require("browser-sync").create(), */
+  cleanCSS = require("gulp-clean-css"),
   filter = require("gulp-filter"),
   touch = require("gulp-touch-cmd"),
   tildeImporter = require('node-sass-tilde-importer'),
@@ -95,7 +97,7 @@ gulp.task("scripts", function () {
     )
     .pipe(
       plugin.plumber(function (error) {
-        gutil.log(gutil.colors.red(error.message));
+        log.error(colors.red(error.message));
         this.emit("end");
       })
     )
@@ -117,7 +119,7 @@ gulp.task("styles", function () {
     .src(SOURCE.styles)
     .pipe(
       plugin.plumber(function (error) {
-        gutil.log(gutil.colors.red(error.message));
+        log.error(colors.red(error.message))
         this.emit("end");
       })
     )
@@ -136,9 +138,8 @@ gulp.task("styles", function () {
       })
     )
     .pipe(
-      plugin.cssnano({
-        safe: true,
-        minifyFontValues: { removeQuotes: false },
+      cleanCSS({
+        compatibility: 'ie8'
       })
     )
     .pipe(plugin.sourcemaps.write(".", { addComment: false }))
