@@ -1,8 +1,10 @@
 <?php
 
 /**
- * Pagina Usato
+ * Pagina Nuovo
  */
+
+include 'array.php';
 
 
 session_start();
@@ -13,28 +15,33 @@ $alimentazione = substr(get_query_var('param3'), 1, strlen(get_query_var('param3
 
 // SANITIZE QUERY VARS
 $filtri = array(
-	'marca' => str_replace('_', ' ', $marca),
-	'modello' => str_replace('_', ' ', $modello),
-	'alimentazione' => str_replace('_', ' ', $alimentazione),
+	'marca' => $marca,
+	'modello' => $modello,
+	'alimentazione' =>  $alimentazione
 );
+
 //CHECK QUERY VARS POSITION IN URL
-if ($filtri['marca'] == 'benzina verde' || $filtri['marca'] == 'diesel' || $filtri['marca'] == 'gpl' || $filtri['marca'] == 'ibrida' || $filtri['marca'] == 'metano' || $filtri['marca'] == 'elettrica') {
+if (in_array(strtolower($filtri['marca']) , $alimentazioniArr)) {
 	$filtri['alimentazione'] = $filtri['marca'];
 	$filtri['marca'] = '';
 	$filtri['modello'] = '';
-} else if ($filtri['modello'] == 'benzina verde' || $filtri['modello'] == 'diesel' || $filtri['modello'] == 'gpl' || $filtri['modello'] == 'ibrida' || $filtri['modello'] == 'metano') {
+} else if (in_array(strtolower($filtri['modello']) , $alimentazioniArr)) {
 	$filtri['alimentazione'] = $filtri['modello'];
 	$filtri['modello'] = '';
 }
-if ($filtri['marca'] != 'ford' && $filtri['marca'] != 'mazda' && $filtri['marca'] != 'volkswagen') {
+if (!in_array(ucfirst($filtri['marca']) , $marcheArr)) {
 	$filtri['modello'] = ucfirst($filtri['marca']);
 	$filtri['marca'] = '';
 }
 
 // SESSION VARIABLES
-$_SESSION['marca'] = $filtri['marca'];
-$_SESSION['modello'] = $filtri['modello'];
-$_SESSION['alimentazione'] = $filtri['alimentazione'];
+$_SESSION['marca'] = str_replace('_' , ' ' ,$filtri['marca']);
+$_SESSION['modello'] = str_replace('_' , '-' , $filtri['modello']);
+$_SESSION['alimentazione'] = str_replace('_',' ',$filtri['alimentazione']);
+$_SESSION['prezzo'] = str_replace('_','-',$_GET['maxPrice']);
+$_SESSION['km'] = $_GET['km'];
+$_SESSION['anno'] = $_GET['anno'];
+$_SESSION['order'] = $_GET['order'];
 
 if (isset($_GET['maxPrice'])) {
 	$_SESSION['prezzo'] = $_GET['maxPrice'];
@@ -53,9 +60,16 @@ if (isset($_GET['order'])) {
 $queryArr = ['relation' => 'AND'];
 
 foreach ($filtri as $k => $q) {
-	if ($q != 'all') {
+	if ($q != 'all' && $q != null && $q != '') {
+		if($k == 'modello'){
+			$key = 'search_model';
+		} else if($k == 'marca'){
+			$key = 'search_marca';
+		} else if($k == 'alimentazione'){
+			$key = 'search_fuel';
+		};
 		$arr = array(
-			'key' => $k,
+			'key' => $key,
 			'value' => $q,
 			'compare' => 'LIKE'
 		);
@@ -64,7 +78,7 @@ foreach ($filtri as $k => $q) {
 }
 
 foreach ($_GET as $k => $v) {
-	if ($v != 'all' && $v != '' && $k != 'order') {
+	if ($v != 'all' && $v != '' && $k != 'order' && isset($v) ) {
 		if ($k == 'maxPrice') {
 			$arr = array(
 				'key' => 'prezzo',
@@ -89,16 +103,29 @@ foreach ($_GET as $k => $v) {
 		} else if ($k == 'novice') {
 			if ($v == 'true') {
 				$arr = array(
-					'key' => 'cv',
+					'key' => 'kw',
 					'value' => 95,
 					'compare' => '<',
 					'type' => 'NUMERIC'
 				);
 			}
-		}
+		} else if($k == 'tipologia'){
+			$arr = array(
+				'key' => 'tipologia',
+				'value' => $v,
+				'compare' => 'LIKE'
+			);
+		};
 		$queryArr[] = $arr;
 	}
 }
+
+$queryArr[] = array(
+	'key' => 'tipologia_vendita',
+	'value' => 'usata',
+	'compare' => 'LIKE'
+);
+
 
 //COMPILE URL WITH $_GET VARIABLES
 $url_params = '';
@@ -158,7 +185,6 @@ $cars = new WP_Query($args);
 $page_num = $cars->max_num_pages;
 
 get_header();
-
 ?>
 
 <main class="page-wrapper">
@@ -182,7 +208,11 @@ get_header();
 		</div>
 	</header>
 	<?php
+		var_dump($queryArr);
 	?>
+	<!-- ATTENZIONE FLAG PER IL REDIRECT -->
+	<input hidden type="radio" class="btn-check filterradio" name="condition" value="usata" id="usata" autocomplete="off" checked>
+	<!-- ******************************* -->
 	<section class="container-fluid section section-padding-sm cars-search-grid-container">
 		<div class="row justify-content-center">
 			<div class="col-12 col-xxl-10">
@@ -197,24 +227,23 @@ get_header();
 							<div class="collapse filters-collapse-container" id="filter-collapse">
 								<div class="filters-container">
 									<form class="row search-form" action="<?php echo home_url('/'); ?>">
-										<input type="hidden" name="condition" value="usato" id="condition">
 										<div class="col-12 form-col">
 											<label class="form-label" for="brand">Marca</label>
-											<select class="form-select live-filter" name="make" id="brand" aria-label="Marca">
-												<option value="">Tutti</option>
-												<option value="ford" <?= isset($_SESSION['marca']) && $_SESSION['marca'] == 'ford' ? 'selected' : '' ?>>Ford</option>
-												<option value="mazda" <?= isset($_SESSION['marca']) && $_SESSION['marca'] == 'mazda' ? 'selected' : '' ?>>Mazda</option>
-												<option value="volkswagen" <?= isset($_SESSION['marca']) && $_SESSION['marca'] == 'volkswagen' ? 'selected' : '' ?>>Volkswagen</option>
+											<select class="form-select live-filter" name="make" id="brand-usato" aria-label="Marca">
+												<option value="all">Tutte le marche</option>
+												<?php foreach($models as $model => $modelArr) : ?>
+												<option value="<?= strtolower(str_replace(' ' , '_' , $model))?>" <?= isset($_SESSION['marca']) && $_SESSION['marca'] == strtolower(str_replace(' ' , '_' , $model))  ? 'selected' : '' ?>><?= $model; ?></option>
+												<?php endforeach; ?>
 											</select>
 										</div>
 										<div class="col-12 form-col">
 											<label class="form-label" for="model">Modello</label>
-											<select class="form-select live-filter" name="model" id="model" aria-label="Modello">
-												<?php if ($_SESSION['modello'] != '' && $_SESSION['modello'] != NULL) : ?>
-													<option value="<?= $_SESSION['modello'] ?>"><?= $_SESSION['modello'] ?></option>
-												<?php endif; ?>
-												<option value="">Tutti</option>
-												<option class="" value="fiesta">Fiesta</option>
+											<select class="form-select model-select live-filter" name="model" id="model" aria-label="Modello">
+												
+													<option value="all">Tutti i modelli</option>
+												<?php foreach($models[ucfirst($filtri['marca'])] as $model) : ?>
+													<option <?= ($_SESSION['modello'] == strtolower(str_replace(' ','_' , $model))) ? 'selected' : '';   ?> value="<?= strtolower(str_replace(' ','_' , $model))?>"><?= $model; ?></option>
+												<?php endforeach; ?>
 											</select>
 										</div>
 										<div class="col-12 form-col">
@@ -271,7 +300,7 @@ get_header();
 												<?php if ($_SESSION['alimentazione'] != '' && $_SESSION['alimentazione'] != NULL) : ?>
 													<option selected value="<?= $_SESSION['alimentazione'] ?>"><?= $_SESSION['alimentazione'] ?></option>
 												<?php endif; ?>
-												<option value="benzina_verde">Benzina</option>
+												<option value="benzina">Benzina</option>
 												<option value="diesel">Diesel</option>
 												<option value="gpl">GPL</option>
 												<option value="metano">Metano</option>
@@ -323,14 +352,12 @@ get_header();
 							</div>
 						</div>
 						<div class="active-filters-container">
-							<?php
-
-							?>
 							<?php foreach ($queryArr as $k => $query) {
-								if ($query != 'AND' && $query['value'] != '') :
+							
+								if ($query != 'AND' && $query['value'] != '' && $query['key'] != 'tipologia_vendita' && $query['key'] != 'tipologia') :
 							?>
 									<div class="automarca-active-filter">
-										<span class="filter-widged"><?= $query['value'] ?></span><span href="" class="remove-filter" data-filter="" data-type="<?= $query['key'] ?>"></span>
+										<span class="filter-widged"><?= str_replace('_', '-' , $query['value']) ?></span><span href="" class="remove-filter" data-filter="" data-type="<?= $query['key'] ?>"></span>
 									</div>
 							<?php
 								endif;
@@ -360,12 +387,7 @@ get_header();
 											<table class="table car-features-table">
 												<tbody>
 													<tr>
-														<?php
-														$datatmp = get_field('data_immatricolazione', get_the_ID());
-														$data = $datatmp->format('m/Y');
-
-														?>
-														<td><img src="<?= get_template_directory_uri(); ?>/assets/images/home/icona-data.svg" class="feature-icon" alt=""> <?= $data ?></td>
+														<td><img src="<?= get_template_directory_uri(); ?>/assets/images/home/icona-data.svg" class="feature-icon" alt=""> <?= get_field('field_610298b45151f', get_the_ID()); ?></td>
 														<td><img src="<?= get_template_directory_uri(); ?>/assets/images/home/icona-km.svg" class="feature-icon" alt=""> <?= get_field('km', get_the_ID()) ?> km</td>
 													</tr>
 													<tr>
@@ -376,7 +398,7 @@ get_header();
 											</table>
 										</div>
 										<div class="car-price">
-											<p class="price-content"><span><?= get_field('prezzo', get_the_ID()) ?></span><?= get_field('prezzo', get_the_ID()) ?></p>
+											<p class="price-content"><span><?= get_field('field_60ffc47b7d1cf', get_the_ID()) ?></span><?= get_field('field_60ffc47b7d1cf', get_the_ID()) ?></p>
 											<p class="button-container"><a class="btn btn-automarca-car" href="<?= get_the_permalink() ?>"><span>Scopri <span class="arrow"></span></span></a></p>
 										</div>
 									</div>
@@ -423,19 +445,6 @@ get_header();
 											endif;
 											?>
 										</ul>
-										<!-- <ul class="pagination automarca-pagination justify-content-center d-flex d-xl-none">
-										<li class="page-item flex-grow-1">
-											<a class="page-link text-link prev" href="#" aria-label="Previous">
-												<span class="arrow"></span><span class="d-none d-sm-inline">Precedente</span>
-											</a>
-										</li> 
-											<li class="page-item"><a class="page-link" href="?pagina=</a></li>
-										<li class="page-item flex-grow-1 text-end">
-											<a class="page-link text-link next" href="#" aria-label="Next">
-												<span class="d-none d-sm-inline">Successiva</span><span class="arrow"></span>
-											</a>
-										</li>
-									</ul> -->
 									</nav>
 								</div>
 							</div>
