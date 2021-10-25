@@ -7,6 +7,9 @@
 include 'array.php';
 
 
+
+
+
 session_start();
 // INITIALIZE QUERY VARS
 $marca = get_query_var('param1');
@@ -20,31 +23,31 @@ $filtri = array(
 	'alimentazione' =>  $alimentazione
 );
 
+// if(isset()) {
+// 	json_encode($models[$_GET['brand']])
+// }
+
 //CHECK QUERY VARS POSITION IN URL
-if (in_array(strtolower($filtri['marca']) , $alimentazioniArr)) {
+if (in_array(strtolower($filtri['marca']), $alimentazioniArr)) {
 	$filtri['alimentazione'] = $filtri['marca'];
 	$filtri['marca'] = '';
 	$filtri['modello'] = '';
-} else if (in_array(strtolower($filtri['modello']) , $alimentazioniArr)) {
+} else if (in_array(strtolower($filtri['modello']), $alimentazioniArr)) {
 	$filtri['alimentazione'] = $filtri['modello'];
 	$filtri['modello'] = '';
 }
-if (!in_array(ucfirst($filtri['marca']) , $marcheArr)) {
+if (!in_array(ucfirst($filtri['marca']), $marcheArr)) {
 	$filtri['modello'] = ucfirst($filtri['marca']);
 	$filtri['marca'] = '';
 }
 
 // SESSION VARIABLES
-$_SESSION['marca'] = str_replace('_' , ' ' ,$filtri['marca']);
-$_SESSION['modello'] = str_replace('_' , '-' , $filtri['modello']);
-$_SESSION['alimentazione'] = str_replace('_',' ',$filtri['alimentazione']);
-$_SESSION['prezzo'] = str_replace('_','-',$_GET['maxPrice']);
-$_SESSION['km'] = $_GET['km'];
-$_SESSION['anno'] = $_GET['anno'];
-$_SESSION['order'] = $_GET['order'];
+$_SESSION['marca'] = str_replace('_', ' ', $filtri['marca']);
+$_SESSION['modello'] = str_replace('_', '-', $filtri['modello']);
+$_SESSION['alimentazione'] = str_replace('_', ' ', $filtri['alimentazione']);
 
 if (isset($_GET['maxPrice'])) {
-	$_SESSION['prezzo'] = $_GET['maxPrice'];
+	$_SESSION['prezzo'] = str_replace('_', '-', $_GET['maxPrice']);
 }
 if (isset($_GET['km'])) {
 	$_SESSION['km'] = $_GET['km'];
@@ -61,11 +64,11 @@ $queryArr = ['relation' => 'AND'];
 
 foreach ($filtri as $k => $q) {
 	if ($q != 'all' && $q != null && $q != '') {
-		if($k == 'modello'){
+		if ($k == 'modello') {
 			$key = 'search_model';
-		} else if($k == 'marca'){
+		} else if ($k == 'marca') {
 			$key = 'search_marca';
-		} else if($k == 'alimentazione'){
+		} else if ($k == 'alimentazione') {
 			$key = 'search_fuel';
 		};
 		$arr = array(
@@ -78,7 +81,7 @@ foreach ($filtri as $k => $q) {
 }
 
 foreach ($_GET as $k => $v) {
-	if ($v != 'all' && $v != '' && $k != 'order' && isset($v) ) {
+	if ($v != 'all' && $v != '' && $k != 'order' && isset($v)) {
 		if ($k == 'maxPrice') {
 			$arr = array(
 				'key' => 'prezzo',
@@ -109,7 +112,7 @@ foreach ($_GET as $k => $v) {
 					'type' => 'NUMERIC'
 				);
 			}
-		} else if($k == 'tipologia'){
+		} else if ($k == 'tipologia') {
 			$arr = array(
 				'key' => 'tipologia',
 				'value' => $v,
@@ -200,7 +203,7 @@ get_header();
 						</nav>
 					</div>
 					<div class="col-12 col-sm-6 text-center text-sm-end">
-						<img src="https://via.placeholder.com/250x40" width="250" alt="">
+						<img src="<?= get_template_directory_uri() ?>/assets/images/logo.svg" width="250" alt="">
 					</div>
 				</div>
 			</div>
@@ -232,10 +235,10 @@ get_header();
 										<div class="col-12 form-col">
 											<label class="form-label" for="model">Modello</label>
 											<select class="form-select model-select live-filter" name="model" id="model" aria-label="Modello">
-												
-													<option value="all">Tutti i modelli</option>
-												<?php foreach($models[ucfirst($filtri['marca'])] as $model) : ?>
-													<option <?= ($_SESSION['modello'] == strtolower(str_replace(' ','_' , $model))) ? 'selected' : '';   ?> value="<?= strtolower(str_replace(' ','_' , $model))?>"><?= $model; ?></option>
+
+												<option value="all">Tutti i modelli</option>
+												<?php foreach ($models[ucfirst($filtri['marca'])] as $model) : ?>
+													<option <?= ($_SESSION['modello'] == strtolower(str_replace(' ', '_', $model))) ? 'selected' : '';   ?> value="<?= strtolower(str_replace(' ', '_', $model)) ?>"><?= $model; ?></option>
 												<?php endforeach; ?>
 											</select>
 										</div>
@@ -344,11 +347,11 @@ get_header();
 						</div>
 						<div class="active-filters-container">
 							<?php foreach ($queryArr as $k => $query) {
-							
+
 								if ($query != 'AND' && $query['value'] != '' && $query['key'] != 'tipologia_vendita' && $query['key'] != 'tipologia') :
 							?>
 									<div class="automarca-active-filter">
-										<span class="filter-widged"><?= str_replace('_', '-' , $query['value']) ?></span><span href="" class="remove-filter" data-filter="" data-type="<?= $query['key'] ?>"></span>
+										<span class="filter-widged"><?= str_replace('_', '-', $query['value']) ?></span><span href="" class="remove-filter" data-filter="" data-type="<?= $query['key'] ?>"></span>
 									</div>
 							<?php
 								endif;

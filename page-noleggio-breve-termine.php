@@ -40,26 +40,11 @@ get_header(); ?>
 								Ford Fiesta ST-Line
 							</div>
 							<p>
-								Noleggio Lungo Termine
+								Noleggio Breve Termine
 							</p>
 						</div>
-						<div class="car-features">
-							<table class="table car-features-table">
-								<tbody>
-									<tr>
-										<td>Anticipo: <strong>Zero</strong></td>
-									</tr>
-									<tr>
-										<td>Durata: <strong>51 Mesi</strong> </td>
-									</tr>
-									<tr>
-										<td>Km: <strong>50.000</strong> </td>
-									</tr>
-								</tbody>
-							</table>
-						</div>
 						<div class="car-price">
-							<p class="price-content"><span class="price-text">Canone mensile</span> € 239</p>
+							<p class="price-content"><span class="price-text">Costo giornaliero</span> € 239</p>
 							<p><a class="btn btn-automarca-car" href="#"><span>Scopri <span class="arrow"></span></span></a></p>
 						</div>
 					</div>

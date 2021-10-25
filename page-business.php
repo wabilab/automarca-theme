@@ -37,7 +37,7 @@ get_header(); ?>
 							Le nostre soluzioni per il vostro business
 						</div>
 						<p>
-							Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+							Automarca pensa alle <strong>aziende</strong> e quindi alla gestione e creazione di flotte aziendali, alla vendita di furgoni e van a prezzi scontati, agevolati e con condizioni di sconto particolari che vengono pensate apposta per chi deve creare una squadra di veicoli da lavoro o necessita di un veicolo per il suo business.
 						</p>
 					</div>
 					<div class="col-12 col-lg-6 offset-xl-1 with-element mt-4 mt-lg-0">
@@ -56,10 +56,10 @@ get_header(); ?>
 					</div>
 					<div class="col-12 col-lg-6 col-xl-5 offset-xl-1 align-self-center order-1 order-lg-2">
 						<div class="title-1">
-							Sempre a disposizione per la manutenzione ordinaria e straordinaria del tuo veicolo.
+							Lavora senza pensieri
 						</div>
 						<p>
-							Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+							Creare la tua <strong>flotta aziendale</strong> non è mai stato così semplice, noi con tutti i nostri brand possiamo farti scegliere il meglio e offrirti il comfort che cerchi. Infatti, nelle nostre 9 concessionarie mettiamo a disposizione auto con svariati optional e caratteristiche uniche.
 						</p>
 					</div>
 				</div>
@@ -72,10 +72,10 @@ get_header(); ?>
 				<div class="row">
 					<div class="col-12 col-lg-6 col-xl-5 align-self-center">
 						<div class="title-1">
-							Il nostro centro assistenza
+							Tutti i servizi dopo l'acquisto
 						</div>
 						<p>
-							Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+							Poniamo un occhio di riguardo verso le aziende e i liberi professionisti anche dopo la vendita: la nostra attenzione infatti si muove verso l’assistenza dove riserviamo pacchetti di manutenzione, corsie preferenziali di intervento e sconti sul <strong>tagliando auto</strong> e assistenza.
 						</p>
 					</div>
 					<div class="col-12 col-lg-6 offset-xl-1 with-element mt-4 mt-lg-0">

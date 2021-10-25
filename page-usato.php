@@ -13,38 +13,48 @@ $marca = get_query_var('param1');
 $modello = substr(get_query_var('param2'), 1, strlen(get_query_var('param2')));
 $alimentazione = substr(get_query_var('param3'), 1, strlen(get_query_var('param3')));
 
+
+//CHECK QUERY VARS POSITION IN URL
+if(in_array(strtolower($marca), $alimentazioniArr)) {
+	$alimentazione = $marca;
+	$marca == '';
+} else if (in_array(strtolower($modello), $alimentazioniArr)) {
+	$alimentazione = $modello;
+	$modello == '';
+}
+
+if (!in_array(ucfirst($marca), $marcheArr)) {
+	$modello = $marca;
+	$marca = '';
+}
+
 // SANITIZE QUERY VARS
 $filtri = array(
 	'marca' => $marca,
 	'modello' => $modello,
 	'alimentazione' =>  $alimentazione
 );
+// if (in_array(strtolower($filtri['marca']), $alimentazioniArr)) {
+// 	$filtri['alimentazione'] = $filtri['marca'];
+// 	$filtri['marca'] = '';
+// 	$filtri['modello'] = '';
+// } else if (in_array(strtolower($filtri['modello']), $alimentazioniArr)) {
+// 	$filtri['alimentazione'] = $filtri['modello'];
+// 	$filtri['modello'] = '';
+// }
 
-//CHECK QUERY VARS POSITION IN URL
-if (in_array(strtolower($filtri['marca']) , $alimentazioniArr)) {
-	$filtri['alimentazione'] = $filtri['marca'];
-	$filtri['marca'] = '';
-	$filtri['modello'] = '';
-} else if (in_array(strtolower($filtri['modello']) , $alimentazioniArr)) {
-	$filtri['alimentazione'] = $filtri['modello'];
-	$filtri['modello'] = '';
-}
-if (!in_array(ucfirst($filtri['marca']) , $marcheArr)) {
-	$filtri['modello'] = ucfirst($filtri['marca']);
-	$filtri['marca'] = '';
-}
+// if (!in_array(ucfirst($filtri['marca']), $marcheArr)) {
+// 	$filtri['modello'] = ucfirst($filtri['marca']);
+// 	$filtri['marca'] = '';
+// }
 
 // SESSION VARIABLES
-$_SESSION['marca'] = str_replace('_' , ' ' ,$filtri['marca']);
-$_SESSION['modello'] = str_replace('_' , '-' , $filtri['modello']);
-$_SESSION['alimentazione'] = str_replace('_',' ',$filtri['alimentazione']);
-$_SESSION['prezzo'] = str_replace('_','-',$_GET['maxPrice']);
-$_SESSION['km'] = $_GET['km'];
-$_SESSION['anno'] = $_GET['anno'];
-$_SESSION['order'] = $_GET['order'];
+$_SESSION['marca'] = str_replace('_', ' ', $filtri['marca']);
+$_SESSION['modello'] = str_replace('_', '-', $filtri['modello']);
+$_SESSION['alimentazione'] = str_replace('_', ' ', $filtri['alimentazione']);
 
 if (isset($_GET['maxPrice'])) {
-	$_SESSION['prezzo'] = $_GET['maxPrice'];
+	$_SESSION['prezzo'] = str_replace('_', '-', $_GET['maxPrice']);
 }
 if (isset($_GET['km'])) {
 	$_SESSION['km'] = $_GET['km'];
@@ -61,11 +71,11 @@ $queryArr = ['relation' => 'AND'];
 
 foreach ($filtri as $k => $q) {
 	if ($q != 'all' && $q != null && $q != '') {
-		if($k == 'modello'){
+		if ($k == 'modello') {
 			$key = 'search_model';
-		} else if($k == 'marca'){
+		} else if ($k == 'marca') {
 			$key = 'search_marca';
-		} else if($k == 'alimentazione'){
+		} else if ($k == 'alimentazione') {
 			$key = 'search_fuel';
 		};
 		$arr = array(
@@ -78,7 +88,7 @@ foreach ($filtri as $k => $q) {
 }
 
 foreach ($_GET as $k => $v) {
-	if ($v != 'all' && $v != '' && $k != 'order' && isset($v) ) {
+	if ($v != 'all' && $v != '' && $k != 'order' && isset($v)) {
 		if ($k == 'maxPrice') {
 			$arr = array(
 				'key' => 'prezzo',
@@ -109,13 +119,14 @@ foreach ($_GET as $k => $v) {
 					'type' => 'NUMERIC'
 				);
 			}
-		} else if($k == 'tipologia'){
+		} else if ($k == 'tipologia') {
 			$arr = array(
 				'key' => 'tipologia',
 				'value' => $v,
 				'compare' => 'LIKE'
 			);
 		};
+
 		$queryArr[] = $arr;
 	}
 }
@@ -201,14 +212,14 @@ get_header();
 						</nav>
 					</div>
 					<div class="col-12 col-sm-6 text-center text-sm-end">
-						<img src="https://via.placeholder.com/250x40" width="250" alt="">
+						<img src="<?= get_template_directory_uri() ?>/assets/images/automarca-plus.svg" width="250" alt="">
 					</div>
 				</div>
 			</div>
 		</div>
 	</header>
 	<?php
-		var_dump($queryArr);
+	// var_dump($queryArr);
 	?>
 	<!-- ATTENZIONE FLAG PER IL REDIRECT -->
 	<input hidden type="radio" class="btn-check filterradio" name="condition" value="usata" id="usata" autocomplete="off" checked>
@@ -231,18 +242,18 @@ get_header();
 											<label class="form-label" for="brand">Marca</label>
 											<select class="form-select live-filter" name="make" id="brand-usato" aria-label="Marca">
 												<option value="all">Tutte le marche</option>
-												<?php foreach($models as $model => $modelArr) : ?>
-												<option value="<?= strtolower(str_replace(' ' , '_' , $model))?>" <?= isset($_SESSION['marca']) && $_SESSION['marca'] == strtolower(str_replace(' ' , '_' , $model))  ? 'selected' : '' ?>><?= $model; ?></option>
+												<?php foreach ($models as $model => $modelArr) : ?>
+													<option value="<?= strtolower(str_replace(' ', '_', $model)) ?>" <?= isset($_SESSION['marca']) && $_SESSION['marca'] == strtolower(str_replace(' ', '_', $model))  ? 'selected' : '' ?>><?= $model; ?></option>
 												<?php endforeach; ?>
 											</select>
 										</div>
 										<div class="col-12 form-col">
 											<label class="form-label" for="model">Modello</label>
 											<select class="form-select model-select live-filter" name="model" id="model" aria-label="Modello">
-												
-													<option value="all">Tutti i modelli</option>
-												<?php foreach($models[ucfirst($filtri['marca'])] as $model) : ?>
-													<option <?= ($_SESSION['modello'] == strtolower(str_replace(' ','_' , $model))) ? 'selected' : '';   ?> value="<?= strtolower(str_replace(' ','_' , $model))?>"><?= $model; ?></option>
+
+												<option value="all">Tutti i modelli</option>
+												<?php foreach ($models[ucfirst($filtri['marca'])] as $model) : ?>
+													<option <?= ($_SESSION['modello'] == strtolower(str_replace(' ', '_', $model))) ? 'selected' : '';   ?> value="<?= strtolower(str_replace(' ', '_', $model)) ?>"><?= $model; ?></option>
 												<?php endforeach; ?>
 											</select>
 										</div>
@@ -337,30 +348,31 @@ get_header();
 							<div class="cars-order d-flex">
 								<p>Ordina:</p>
 								<select class="form-select-2 order-select" name="order" id="order" aria-label="Ordina">
-									<?php if ($_SESSION['order'] != '' && $_SESSION['order'] != NULL) { ?>
-										<option selected value="<?= $_SESSION['order']; ?>"> <?= str_replace('_', ' ', $_SESSION['order']); ?></option>
-									<?php } else { ?>
-										<option selected value="">Ordina</option>
-									<?php  } ?>
-									<option value="prezzo_asc">prezzo-crescente</option>
-									<option value="prezzo_desc">prezzo-decrescente</option>
-									<option value="modello_asc">Modello (A - Z)</option>
-									<option value="modello_desc">Modello (Z - A)</option>
-									<option value="km_asc">km - crescente</option>
-									<option value="km_desc">km - decrescente</option>
+									<option <?= !isset($_SESSION['order']) ? 'selected' : '' ?> value="">Ordina</option>
+									<option <?= isset($_SESSION['order']) && $_SESSION['order'] == 'prezzo_asc' ? 'selected' : '' ?> value="prezzo_asc">Dal più economico</option>
+									<option <?= isset($_SESSION['order']) && $_SESSION['order'] == 'prezzo_desc' ? 'selected' : '' ?> value="prezzo_desc">Dal più caro</option>
+									<option <?= isset($_SESSION['order']) && $_SESSION['order'] == 'modello_asc' ? 'selected' : '' ?> value="modello_asc">Modello (A - Z)</option>
+									<option <?= isset($_SESSION['order']) && $_SESSION['order'] == 'modello_desc' ? 'selected' : '' ?> value="modello_desc">Modello (Z - A)</option>
+									<option <?= isset($_SESSION['order']) && $_SESSION['order'] == 'km_asc' ? 'selected' : '' ?> value="km_asc">Chilometraggio crescente</option>
+									<option <?= isset($_SESSION['order']) && $_SESSION['order'] == 'km_desc' ? 'selected' : '' ?> value="km_desc">Chilometraggio decrescente</option>
 								</select>
 							</div>
 						</div>
 						<div class="active-filters-container">
-							<?php foreach ($queryArr as $k => $query) {
-							
-								if ($query != 'AND' && $query['value'] != '' && $query['key'] != 'tipologia_vendita' && $query['key'] != 'tipologia') :
-							?>
-									<div class="automarca-active-filter">
-										<span class="filter-widged"><?= str_replace('_', '-' , $query['value']) ?></span><span href="" class="remove-filter" data-filter="" data-type="<?= $query['key'] ?>"></span>
-									</div>
 							<?php
-								endif;
+
+							if (count($_SESSION) != 0) {
+								foreach ($_SESSION as $k => $v) {
+									if (($k != 'pagina' && $k != 'order') && strlen($v) != 0) {
+										$value = $v;
+										if ($k == 'marca') {
+											$value = $v == 'bmw' || $v == 'mg' || $v == 'ds' || $v == 'ktm' ? strtoupper($v) : ucfirst($v);
+										}
+										echo "<div class=\"automarca-active-filter\">
+											<span class=\"filter-widged\">$value</span><a href=\"#\" class=\"remove-filter\" data-filter data-type=\"$k\"></a>
+										</div>";
+									}
+								}
 							}
 							?>
 						</div>
@@ -382,12 +394,12 @@ get_header();
 												<?= get_field('descrizione', get_the_ID()) ?>
 											</p>
 										</div>
-										<img src="https://via.placeholder.com/800x600" class="car-img" alt="">
+										<img src="<?= get_field('foto_1', get_the_ID()); ?>" class="car-img" alt="">
 										<div class="car-features">
 											<table class="table car-features-table">
 												<tbody>
 													<tr>
-														<td><img src="<?= get_template_directory_uri(); ?>/assets/images/home/icona-data.svg" class="feature-icon" alt=""> <?= get_field('field_610298b45151f', get_the_ID()); ?></td>
+														<td><img src="<?= get_template_directory_uri(); ?>/assets/images/home/icona-data.svg" class="feature-icon" alt=""> <?= get_field('anno_immatricolazione', get_the_ID()); ?></td>
 														<td><img src="<?= get_template_directory_uri(); ?>/assets/images/home/icona-km.svg" class="feature-icon" alt=""> <?= get_field('km', get_the_ID()) ?> km</td>
 													</tr>
 													<tr>
@@ -398,8 +410,8 @@ get_header();
 											</table>
 										</div>
 										<div class="car-price">
-											<p class="price-content"><span><?= get_field('field_60ffc47b7d1cf', get_the_ID()) ?></span><?= get_field('field_60ffc47b7d1cf', get_the_ID()) ?></p>
-											<p class="button-container"><a class="btn btn-automarca-car" href="<?= get_the_permalink() ?>"><span>Scopri <span class="arrow"></span></span></a></p>
+											<p class="price-content">&euro; <?= number_format(floatval(get_field('field_60ffc47b7d1cf', get_the_ID())), 0, ',', '.'); ?></p>
+											<p class="button-container"><a class="btn btn-automarca-car" href="<?= get_the_permalink(get_the_ID()) ?>"><span>Scopri <span class="arrow"></span></span></a></p>
 										</div>
 									</div>
 							<?php

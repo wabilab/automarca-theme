@@ -9,7 +9,7 @@
  */
 ?>
 <footer class="footer container-fluid">
-	<div class="row justify-content-center">
+	<div class="row justify-content-center bg-blue">
 		<div class="col-12 col-xxl-10">
 			<div class="row footer-top gx-4 gx-md-0">
 				<div class="col-12 col-md-6 logo-container">
@@ -75,6 +75,26 @@
 						Fiera (TV)<br>
 						T. +39 0422 362480
 					</p>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="row lower-footer justify-content-center">
+		<div class="col-12 col-xxl-10">
+			<div class="row">
+				<div class="col-12 col-xl-4">
+					<p>&copy; <?= date('Y') ?> Tutti i diritti riservati - Automarca S.p.A. - Via Ernesto Calzavara 1, Silea (TV)<br>
+						P.IVA 00191440262 - REA TV n.97656 Cap. Soc. € 500.000 i.v.</p>
+				</div>
+				<div class="col-12 col-xl-8">
+					<ul class="nav flex-column flex-sm-row legal-links justify-content-end align-items-center">
+						<a href="#" class="nav-link">Privacy Policy Ford Italia</a>
+						<a href="#" class="nav-link">Privacy Policy Automarca S.P.A.</a>
+						<a href="#" class="nav-link">Cookie Policy</a>
+						<a href="#" class="nav-link">Impostazioni di tracciamento</a>
+						<a href="#" class="nav-link">Termini e condizioni</a>
+						<a href="https://www.wabi.it" target="_blank" class="nav-link">Credits</a>
+					</ul>
 				</div>
 			</div>
 		</div>

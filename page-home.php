@@ -54,18 +54,18 @@ get_header(); ?>
 								</select>
 								<select class="form-select usato-sel-home" name="make" id="brand-usato">
 									<option value="" selected>Marca</option>
-									<?php foreach($models as $brand => $modelArr)  : ?>
-									<option value="<?= $brand; ?>"><?= $brand ?></option>
+									<?php foreach ($models as $brand => $modelArr) : ?>
+										<option value="<?= $brand; ?>"><?= $brand ?></option>
 									<?php endforeach; ?>
 								</select>
 							</div>
 							<div class="col-12 form-col">
 								<select disabled="true" class="form-select model-select" name="model" id="model" aria-label="Modello">
 									<option value="">modello</option>
-									<?php foreach($models as $brand => $arr){ 
-											foreach($arr as $model) {	?>
-											<option disabled class="model-option <?= str_replace(' ' , '_' , $brand) . '-opt'; ?>" value="<?= $model?>"><?= $model ;?></option>	
-									<?php 
+									<?php foreach ($models as $brand => $arr) {
+										foreach ($arr as $model) {	?>
+											<option disabled class="model-option <?= str_replace(' ', '_', $brand) . '-opt'; ?>" value="<?= $model ?>"><?= $model; ?></option>
+									<?php
 										}
 									}
 									?>
@@ -91,19 +91,20 @@ get_header(); ?>
 								<!-- <input type="text" class="form-control" placeholder="anno" name="year" id="year"> -->
 								<select class="form-select" name="year" id="year" aria-label="Anno">
 									<option value="">Anno</option>
-									<?php 
-										for($i = 1990 ; $i <= 2021 ; $i++){
+									<?php
+									for ($i = 1990; $i <= 2021; $i++) {
 									?>
 										<option value="<?= $i; ?>"><?= $i; ?></option>
 
 									<?php
-										}
+									}
 									?>
 								</select>
 							</div>
 							<div class="col-12 form-col">
 								<select class="form-select" name="fuel_type" id="fuel_type">
-									<option value="" selected>Alimentazione<option>
+									<option value="" selected>Alimentazione
+									<option>
 									<option value="benzina_verde">Benzina verde</option>
 									<option value="benzina_super">Benzina Super</option>
 									<option value="diesel">Diesel</option>
@@ -123,7 +124,7 @@ get_header(); ?>
 								<button id="filter-submit" type="button" class="btn btn-automarca block"><span id="count-result">400</span> <span>risultati<span class="arrow"></span></span></button>
 							</div>
 							<div class="col-12 form-col">
-								<a href=""  class="reset-link" id="reset-search">reimposta ricerca</a>
+								<a href="" class="reset-link" id="reset-search">reimposta ricerca</a>
 							</div>
 						</form>
 					</div>
@@ -445,70 +446,57 @@ get_header(); ?>
 				<div class="title-1 text-center mar-big">
 					La nostra offerta<br> di auto usate
 				</div>
+				<?php
+				$args = array(
+					'post_type' => 'auto-usate',
+					'order' => 'rand',
+					'posts_per_page' => 8,
+				);
+
+				//GET FILTERED CARS
+				$cars = get_posts($args);
+				?>
 				<div class="row">
-					<div class="col-12 col-md-6 col-xxl-3 car-item">
-						<div class="title-container">
-							<div class="title-5">
-								VOLKSWAGEN<br> PASSAT VARIANT
+
+					<?php
+
+					if (count($cars) > 0) {
+						foreach ($cars as $idx => $car) {
+					?>
+							<div class="col-12 col-md-6 col-xxl-3 car-item">
+								<div class="title-container">
+									<div class="title-5">
+										<?= get_field('marca', $car->ID) ?><br> <?= get_field('modello', $car->ID) ?>
+									</div>
+									<p>
+										<?= get_field('descrizione', $car->ID) ?>
+									</p>
+								</div>
+								<img src="<?= get_field('foto_1', $car->ID); ?>" class="car-img" alt="">
+								<div class="car-features">
+									<table class="table car-features-table">
+										<tbody>
+											<tr>
+												<td><img src="<?= get_template_directory_uri(); ?>/assets/images/home/icona-data.svg" class="feature-icon" alt=""> <?= get_field('anno_immatricolazione', $car->ID); ?></td>
+												<td><img src="<?= get_template_directory_uri(); ?>/assets/images/home/icona-km.svg" class="feature-icon" alt=""> <?= get_field('km', $car->ID) ?> km</td>
+											</tr>
+											<tr>
+												<td><img src="<?= get_template_directory_uri(); ?>/assets/images/home/icona-alimentazione.svg" class="feature-icon" alt=""><?= get_field('alimentazione', $car->ID) ?></td>
+												<td><img src="<?= get_template_directory_uri(); ?>/assets/images/home/icona-cambio.svg" class="feature-icon" alt=""><?= get_field('cambio', $car->ID) ?></td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+								<div class="car-price">
+									<p class="price-content">&euro; <?= number_format(floatval(get_field('prezzo', $car->ID)), 0, ',', '.'); ?></p>
+									<p class="button-container"><a class="btn btn-automarca-car" href="<?= get_the_permalink($car->ID) ?>"><span>Scopri <span class="arrow"></span></span></a></p>
+								</div>
 							</div>
-							<p>
-								8ª serie Variant - 2.0 TDI Business BlueMotion
-							</p>
-						</div>
-						<img data-src="https://via.placeholder.com/800x600" class="car-img lazyload" alt="">
-						<div class="car-features">
-							<table class="table car-features-table">
-								<tbody>
-									<tr>
-										<td><img src="<?= get_template_directory_uri(); ?>/assets/images/home/icona-data.svg" class="feature-icon" alt=""> 05/2019</td>
-										<td><img src="<?= get_template_directory_uri(); ?>/assets/images/home/icona-km.svg" class="feature-icon" alt=""> 30.000 km</td>
-									</tr>
-									<tr>
-										<td><img src="<?= get_template_directory_uri(); ?>/assets/images/home/icona-alimentazione.svg" class="feature-icon" alt=""> Benzina</td>
-										<td><img src="<?= get_template_directory_uri(); ?>/assets/images/home/icona-cambio.svg" class="feature-icon" alt=""> Manuale</td>
-									</tr>
-								</tbody>
-							</table>
-						</div>
-						<div class="car-price">
-							<p class="price-content"><span>€ 19.900</span> € 19.900</p>
-							<p class="button-container">
-								<a class="btn btn-automarca-car" href="#"><span>Scopri <span class="arrow"></span></span></a>
-							</p>
-						</div>
-					</div>
-					<div class="col-12 col-md-6 col-xxl-3 car-item">
-						<div class="title-container">
-							<div class="title-5">
-								VOLKSWAGEN<br> PASSAT VARIANT
-							</div>
-							<p>
-								8ª serie Variant - 2.0 TDI Business BlueMotion
-							</p>
-						</div>
-						<img src="https://via.placeholder.com/800x600" class="car-img" alt="">
-						<div class="car-features">
-							<table class="table car-features-table">
-								<tbody>
-									<tr>
-										<td><img src="<?= get_template_directory_uri(); ?>/assets/images/home/icona-data.svg" class="feature-icon" alt=""> 05/2019</td>
-										<td><img src="<?= get_template_directory_uri(); ?>/assets/images/home/icona-km.svg" class="feature-icon" alt=""> 30.000 km</td>
-									</tr>
-									<tr>
-										<td><img src="<?= get_template_directory_uri(); ?>/assets/images/home/icona-alimentazione.svg" class="feature-icon" alt=""> Benzina</td>
-										<td><img src="<?= get_template_directory_uri(); ?>/assets/images/home/icona-cambio.svg" class="feature-icon" alt=""> Manuale</td>
-									</tr>
-								</tbody>
-							</table>
-						</div>
-						<div class="car-price">
-							<p class="price-content"><span>€ 19.900</span> € 19.900</p>
-							<p class="button-container">
-								<a class="btn btn-automarca-car" href="#"><span>Scopri <span class="arrow"></span></span></a>
-							</p>
-						</div>
-					</div>
-					<div class="col-12 col-md-6 col-xxl-3 car-item">
+					<?php
+						}
+					} ?>
+
+					<!-- <div class="col-12 col-md-6 col-xxl-3 car-item">
 						<div class="title-container">
 							<div class="title-5">
 								VOLKSWAGEN<br> PASSAT VARIANT
@@ -694,6 +682,37 @@ get_header(); ?>
 							</p>
 						</div>
 					</div>
+					<div class="col-12 col-md-6 col-xxl-3 car-item">
+						<div class="title-container">
+							<div class="title-5">
+								VOLKSWAGEN<br> PASSAT VARIANT
+							</div>
+							<p>
+								8ª serie Variant - 2.0 TDI Business BlueMotion
+							</p>
+						</div>
+						<img src="https://via.placeholder.com/800x600" class="car-img" alt="">
+						<div class="car-features">
+							<table class="table car-features-table">
+								<tbody>
+									<tr>
+										<td><img src="<?= get_template_directory_uri(); ?>/assets/images/home/icona-data.svg" class="feature-icon" alt=""> 05/2019</td>
+										<td><img src="<?= get_template_directory_uri(); ?>/assets/images/home/icona-km.svg" class="feature-icon" alt=""> 30.000 km</td>
+									</tr>
+									<tr>
+										<td><img src="<?= get_template_directory_uri(); ?>/assets/images/home/icona-alimentazione.svg" class="feature-icon" alt=""> Benzina</td>
+										<td><img src="<?= get_template_directory_uri(); ?>/assets/images/home/icona-cambio.svg" class="feature-icon" alt=""> Manuale</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+						<div class="car-price">
+							<p class="price-content"><span>€ 19.900</span> € 19.900</p>
+							<p class="button-container">
+								<a class="btn btn-automarca-car" href="#"><span>Scopri <span class="arrow"></span></span></a>
+							</p>
+						</div>
+					</div> -->
 				</div>
 			</div>
 		</div>
