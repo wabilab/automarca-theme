@@ -15,7 +15,7 @@ get_header(); ?>
 						<nav aria-label="breadcrumb">
 							<ol class="breadcrumb justify-content-center justify-content-sm-start mb-3 mb-sm-0">
 								<li class="breadcrumb-item">Home</li>
-								<li class="breadcrumb-item">Auto usate </li>
+								<li class="breadcrumb-item">Auto nuove</li>
 								<li class="breadcrumb-item active" aria-current="page"><?= get_the_title(); ?></li>
 							</ol>
 						</nav>
@@ -269,7 +269,7 @@ get_header(); ?>
 								</div>
 								<div class="technical-sheet-btn btn-container">
 									<div class="d-grid gap-2">
-										<a id="create-technical-sheet" class="btn btn-automarca-outline-sm">
+										<a href="#" class="btn btn-automarca-outline-sm">
 											<img src="<?= get_template_directory_uri() ?>/assets/images/dettaglio-auto/scheda-tecnica.svg" class="img-fluid" style="width: 15px" alt="">scheda tecnica
 										</a>
 									</div>
@@ -314,7 +314,7 @@ get_header(); ?>
 					$max_price = intval(get_field('prezzo', $car_id)) + (intval(get_field('prezzo', $car_id)) * 0.5);
 
 					$other_cars = get_posts([
-						'post_type' => 'auto-usate',
+						'post_type' => 'auto-nuove',
 						'numberposts' => 4,
 						'exclude' => [$car_id],
 						'meta_query'	=> array(

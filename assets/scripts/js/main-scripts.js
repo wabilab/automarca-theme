@@ -4,9 +4,8 @@ import * as selectric from "selectric";
 import * as slick from "slick-carousel"
 import 'lazysizes';
 import 'lazysizes/plugins/unveilhooks/ls.unveilhooks';
-import {
-    Loader
-} from "@googlemaps/js-api-loader";
+import { Loader } from "@googlemaps/js-api-loader";
+import jsPDF from 'jspdf';
 
 const Modernizr = require("modernizr");
 
@@ -25,7 +24,6 @@ window.mobileAndTabletCheck = function () {
     })(navigator.userAgent || navigator.vendor || window.opera);
     return check;
 };
-
 
 $(function () {
 
@@ -279,56 +277,44 @@ $(function () {
 
     var filterInput = $('.form-select'),
         radioInput = $('.filterradio'),
-        brandInputNew = $('#brand-new'),
-        brandInputUsato = $('#brand-usato'),
+        brandInput = $('#brand'),
         modelInput = $('#model'),
         kmInput = $('#km-until'),
         maxPriceInput = $('#max-price'),
         fuelInput = $('#fuel_type'),
         yearInput = $('#year'),
-        noviceInput = $('#novice-drivers'),
-        commercial = $('#private');
-
-    
+        transmissioninput = $('#transmission'),
+        noviceInput = $('#novice-drivers');
+        yearInput.on('change' , () => {
+            console.log('ciao');
+        })
     // TRIGGER
     filterInput.on('change', () => { set_filters() });
     noviceInput.on('click', () => { set_filters() });
-    radioInput.on('change', () => { set_filters() });
+    radioInput.on('click', () => { set_filters() });
     yearInput.on('change' , () => { set_filters() });
     // SUBMIT 
     var filterSubmit = $('#filter-submit');
     filterSubmit.on('click', () => { compile_filter_url() });
-    // SET FILTERS AND GET POSTS COUNT
 
+    // SET FILTERS AND GET POSTS COUNT
     function set_filters() {
-        
-        if(brandInputNew.is(':visible')){
-            var marca = brandInputNew.val();
-        } else {
-            var  marca = brandInputUsato.val()
-        }
-        if(marca == 'all'){
-            var model = 'all';
-        } else{
-            var model = modelInput.val();
-        }
         let filter = {
             post_type: 'auto-in-vendita',
             filters: {
-                tipologia : $('input[name="condition"]:checked').val(),
-                marca: marca,
-                modello: model,
+                /* tipologia : $('input[name="condition"]:checked').val(), */
+                marca: brandInput.val(),
+                modello: modelInput.val(),
                 maxPrice: maxPriceInput.val(),
                 km: kmInput.val(),
                 anno: yearInput.val(),
                 alimentazione: fuelInput.val(),
-                tipologia_veicolo : commercial.val(),
+                cambio: transmissioninput.val(),
                 novice: noviceInput.is(':checked') == true ? true : '',
             }
         }
         get_search_results_count(filter);
     }
-
     // GET POSTS COUNT AJAX CALL
     function get_search_results_count(filterObj) {
         $.ajax({
@@ -340,56 +326,31 @@ $(function () {
             $('#count-result').html(response);
         })
     }
-
     //COMPILE URL AND REDIRECT
     function compile_filter_url() {
-        if(brandInputNew.is(':visible')){
-            var marca = brandInputNew.val();
-        } else {
-            var  marca = brandInputUsato.val()
-        }
-        if(marca == 'all'){
-            var model = 'all';
-        } else{
-            var model = modelInput.val();
-        }
+
         let filter = {
-            tipologia : $('input[name="condition"]:checked').val(),
+            /* tipologia : $('input[name="condition"]:checked').val(), */
             query_var: {
-                marca: marca,
-                modello: model,
+                marca: brandInput.val(),
+                modello: modelInput.val(),
                 alimentazione: fuelInput.val(),
             },
             get_params: {
                 maxPrice: maxPriceInput.val(),
                 km: kmInput.val(),
                 anno: yearInput.val(),
+                cambio: transmissioninput.val(),
                 novice: noviceInput.is(':checked') == true ? true : '',
-                order: $('#order').val() == undefined ? '' : $('#order').val(),
-                tipologia : commercial.val()
+                order: $('#order').val() == undefined ? '' : $('#order').val()
             }
         };
-        var pageUrl;
-        switch (filter.tipologia) {
-            case 'new':
-                pageUrl = '/nuovo/';
-                break;
-            case 'zero':
-                pageUrl = '/km0/';
-                break;
-            case 'usata' :
-                pageUrl = '/usato/';
-                break;
-            default:
-                pageUrl = '/usato/';
-                break;
-        }
-        var searchUrl = home_url + pageUrl;
+        var searchUrl = home_url + '/nuovo/';
         var paramsArr = [];
         let index = 0;
         // COMPILE QUERY_VARS
         for (const [key, value] of Object.entries(filter.query_var)) {
-            if (value != '' && value != 'all') {
+            if (value != '') {
                 if (filter.query_var.length < 2) {
                     searchUrl += value
                 } else if (index == 0) {
@@ -403,11 +364,11 @@ $(function () {
         let params_index = 0;
         // COMPILE $_GET VARIABLES
         for (const [key, value] of Object.entries(filter.get_params)) {
-            if (value != '' && params_index == 0 && value != undefined) {
+            if (value != '' && params_index == 0) {
                 let newParam = '?' + key + '=' + value;
                 paramsArr.push(newParam);
                 params_index++;
-            } else if (value != '' && value != undefined) {
+            } else if (value != '') {
                 let newParam = '&' + key + '=' + value;
                 paramsArr.push(newParam);
             }
@@ -422,17 +383,46 @@ $(function () {
     set_filters();
 
     //RESET FILTERS
-    $('#reset-search').on('click', function() {
-        window.location.href = home_url + '/nuovo';
-    })
-    $('#reset-filters').on('click', function() {
-        window.location.href = home_url + '/nuovo';
-    })
+    
+
+
+    if(window.location.href.indexOf('usato') != -1) {
+        
+        $('#reset-search').on('click', function () {
+            window.location.href = home_url + '/usato';
+        })
+
+        $('#reset-filters').on('click', function () {
+            window.location.href = home_url + '/usato';
+        })
+    }
+
+    if(window.location.href.indexOf('nuovo') != -1) {
+        $('#reset-search').on('click', function () {
+            window.location.href = home_url + '/nuovo';
+        })
+
+        $('#reset-filters').on('click', function () {
+            window.location.href = home_url + '/nuovo';
+        })
+    }
 
     //REMOVE SINGLE FILTER PROP BUTTONS
     $('.remove-filter').on('click', function() {
         console.log($(this).data('type'));
         switch ($(this).data('type')) {
+            case 'marca':
+                brandInput.val('');
+                compile_filter_url();
+                break;
+            case 'modello':
+                modelInput.val('');
+                compile_filter_url();
+                break;
+            case 'alimentazione':
+                fuelInput.val('');
+                compile_filter_url()
+                break;
             case 'prezzo':
                 maxPriceInput.val('');
                 compile_filter_url();
@@ -445,31 +435,13 @@ $(function () {
                 yearInput.val('');
                 compile_filter_url();
                 break;
-            case 'search_model':
-                modelInput.val('all');
-                compile_filter_url();
-                break;
-            case 'search_fuel':
-                fuelInput.val('');
-                compile_filter_url();
-                break;
-            case 'search_marca':
-                if(brandInputNew.is(':visible')){
-                    brandInputNew.val('all');
-                } else {
-                    brandInputUsato.val('all')
-                }
-                modelInput.val('all');
-                compile_filter_url();
-                break;     
         }
     })
-
 
     //ORDER SELECT TRIGGER
     $('#order').on('change', () => {
             compile_filter_url();
-    })
+        })
         //TRIGGER FILTERS PAGINA RICERCA
     $('.live-filter').on('change', () => { compile_filter_url() });
 
@@ -482,7 +454,9 @@ $(function () {
         arrows: false,
         infinite: true,
         responsive: [],
+        asNavFor: '.car-thumb-slider'
     });
+    // car-img-slider
 
     $(".car-thumb-slider").slick({
         lazyLoad: "ondemand",
@@ -492,43 +466,53 @@ $(function () {
         arrows: true,
         infinite: true,
         responsive: [],
+        // asNavFor: '.car-img-slider'
     });
 
-
-    // HOME FILTERS
-    $('.selectric-usato-sel-home').css('display' ,'none');
-    $('.filterradio').on('change',function(){
-        if($(this).val() == 'new'){
-            $('.selectric-usato-sel-home').css('display' , 'none');
-            $('.selectric-new-sel-home').css('display' , 'block');
-        }else{
-            $('.selectric-usato-sel-home').css('display' , 'block');
-            $('.selectric-new-sel-home').css('display' , 'none');
-        }
-    }); 
-    
-    $('.usato-sel-home').on('change' , function(){
-        let value =  $('#brand-usato').val();
-        if(value == 'all'){
-            $('.model-select').attr('disabled' , true);        
-        } else{
-            $('.model-select').removeAttr('disabled');
-        }
-        $('.model-option').prop('disabled' , true); 
-        $('.' + value + '-opt').prop('disabled' , false);
-        $('.model-select').selectric('refresh');
+    $('.car-img-thumb').on('click', function (e) {
+        e.preventDefault();
+        $(".car-img-slider").slick('slickGoTo', $(this).data('index'));
     })
 
-    $('.new-sel-home').on('change' , function(){
-        let value = $('#brand-new').val();
-        if(value == 'all'){
-            $('.model-select').attr('disabled' , true);        
-        } else{
-            $('.model-select').removeAttr('disabled');
-        }
-        $('.model-select').prop('disabled' , false);
-        $('.model-option').prop('disabled' , true);
-        $('.' + value + '-opt').prop('disabled' , false);
-        $('.model-select').selectric('refresh');
+    function get_pdf_html(data) {
+        var htmlContent = '<html><head><title>Scheda Tecnica - ' + data['brand'] + ' ' + data['model'] + '</title></head><body style="width: 800px; padding: 20px; margin: 0 auto; font-size: 18px;"><h1>' + data['brand'] + ' ' + data['model'] + '</h1><p style="font-size: 25px; margin-bottom: 30px;">' + data['version'] + '</p><img src="' + data['image'] + '" style="margin-bottom: 30px;" alt=""><table style="border: none; font-size: 25px; text-align: left;"><tbody><tr><th style="font-size: 35px;">Prezzo:</th><td style="font-size: 35px;">' + data['price'] + ' &euro;</td></tr><tr><th>Tipologia:</th><td>' + data['type'] + '</td></tr><tr><th>Immatricolazione:</th><td>' + data['immatricolazione'] + '</td></tr><tr><th>Chilometri:</th><td>' + data['km'] + '</td></tr><tr><th>Colore:</th><td>' + data['color'] + '</td></tr><tr><th>Alimentazione:</th><td>' + data['fuel'] + '</td></tr><tr><th>Cambio:</th><td>' + data['transmission'] + '</td></tr></tbody></table></body></html>';
+
+        return htmlContent;
+    }
+
+    $('#create-technical-sheet').on('click', function (e) {
+        e.preventDefault();
+
+        var doc = new jsPDF({
+            orientation: "portrait",
+            unit: "px",
+            format: 'a4'
+        });
+
+        var data = [];
+
+        var $inputs = $('#info-form').find('input[type="hidden"]');
+        console.log($inputs);
+        $inputs.each(function(idx, el) {
+            var $el = $(el);
+            // console.log($el.attr('name'));
+            // console.log($el.val());
+            data[$el.attr('name')] = $el.val();
+        })
+
+        console.log($($('.car-img')[0]).attr('src'));
+        data['image'] = $($('.car-img')[0]).attr('src');
+
+        console.log(data);
+
+        var result = get_pdf_html(data);
+
+        console.log(result);
+        doc.html(result, {
+            callback: function (doc) {
+                doc.save();
+            }
+        });
     })
+
 });

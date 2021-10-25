@@ -37,7 +37,7 @@ get_header(); ?>
 							Il nostro centro assistenza
 						</div>
 						<p>
-							Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+							Da oltre 50 anni il reparto <strong>assistenza</strong> in Automarca è costantemente rivolto a fornirti l'assistenza necessaria a mantenere la tua vettura nelle migliori condizioni, così come quando l'hai acquistata. Ogni veicolo quando arriva in una delle nostre sedi, è trattato da tecnici altamente qualificati, che sapranno dedicare le attenzioni necessarie in ogni fase della manutenzione. I nostri servizi comprendono: lavoro di carrozzeria, elettrauto, riparazione meccanica, gommista, lavaggio, auto sostitutiva, ritiro e riconsegna veicolo.
 						</p>
 						<p>
 							<a class="btn btn-automarca-1" href="<?= get_permalink(get_page_by_path('contatti')) ?>"><span>trova sede<span class="arrow"></span></span></a>
@@ -62,10 +62,10 @@ get_header(); ?>
 							Sempre a disposizione per la manutenzione ordinaria e straordinaria del tuo veicolo.
 						</div>
 						<p>
-							Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+							I tecnici di Automarca sono sempre al tuo fianco per ogni necessità, come la manutenzione ordinaria e straordinaria, con un servizio completo che ti accompagna fin dall’acquisto della tua vettura. Presso le nostre <strong>officine di Treviso, Mestre, Conegliano e Mogliano Veneto</strong>, mettiamo a tua disposizione un team di tecnici qualificati, costantemente formati e aggiornati sulle nuove tecnologie utilizzate.
 						</p>
 						<p>
-							<a class="btn btn-automarca-1" href="#"><span>Prenota il tuo tagliando<span class="arrow"></span></span></a>
+							<a target="_blank" class="btn btn-automarca-1" href="https://www.fordautomarca.it/assistenza/prenota-intervento-officina-ford-treviso"><span>Prenota il tuo tagliando<span class="arrow"></span></span></a>
 						</p>
 					</div>
 				</div>
@@ -81,10 +81,10 @@ get_header(); ?>
 							Inconvenienti o anomalie? Analizziamo e risolviamo tutti i problemi del tuo mezzo.
 						</div>
 						<p>
-							Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+							Il nostro personale del service inoltre, è a tua disposizione anche solo per darti le informazioni e i consigli sulle operazioni e i controlli più adatti da eseguire. Da noi troverai la garanzia di un’assistenza ufficiale con garanzia di un anno su tutti i ricambi utilizzati. Presso le nostre officine, avrai a disposizione una confortevole area di attesa, completa di collegamento Wi-Fi e quotidiani per rendere più piacevole l’attesa durante la riparazione. Per velocizzare le operazioni ti offriamo la possibilità di scaricare e compilare il <strong>Modulo Inconvenienti</strong> qui di seguito.
 						</p>
 						<p>
-							<a class="btn btn-automarca-1" href="#" download=""><span>Scarica il modulo inconvenienti<span class="arrow"></span></span></a>
+							<a target="_blank" class="btn btn-automarca-1" href="<?= get_template_directory_uri() ?>/assets/files/modulo-inconvenienti.pdf" download=""><span>Scarica il modulo inconvenienti<span class="arrow"></span></span></a>
 						</p>
 					</div>
 					<div class="col-12 col-lg-6 offset-xl-1 with-element mt-4 mt-lg-0">

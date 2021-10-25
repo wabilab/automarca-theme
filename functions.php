@@ -401,7 +401,7 @@ add_action( 'before_delete_post', function( $id ) {
 function print_value_links($txt = 'new'){
 
     $cars = get_posts(array(
-        'post_type' => 'auto-in-vendita',
+        'post_type' => 'auto-usate',
         'numberposts' => -1, 
         'meta_query' => array(
             'key' => 'tipologia_vendita',

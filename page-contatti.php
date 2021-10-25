@@ -46,7 +46,7 @@ get_header(); ?>
 									info@automarca.it
 								</p>
 								<p class="contact-phone">
-									<a href="tel:+3904223020"><img src="https://via.placeholder.com/20"> +39 0422 3020</a>
+									<a href="tel:+3904223020"><img style="width: 20px" src="<?= get_template_directory_uri() ?>/assets/images/contatti/chiamaci.svg"> +39 0422 3020</a>
 								</p>
 								<p>
 									<a class="btn btn-automarca-sm" href="<?= get_permalink(get_page_by_path('contatti/silea')) ?>"><span>Orari e contatti<span class="arrow"></span></span></a>
@@ -61,7 +61,7 @@ get_header(); ?>
 									info@automarca.it
 								</p>
 								<p class="contact-phone">
-									<a href="tel:+390438400446"><img src="https://via.placeholder.com/20"> +39 0438 400446</a>
+									<a href="tel:+390438400446"><img style="width: 20px" src="<?= get_template_directory_uri() ?>/assets/images/contatti/chiamaci.svg"> +39 0438 400446</a>
 								</p>
 								<p>
 									<a class="btn btn-automarca-sm" href="<?= get_permalink(get_page_by_path('contatti/conegliano')) ?>"><span>Orari e contatti<span class="arrow"></span></span></a>
@@ -76,7 +76,7 @@ get_header(); ?>
 									info@automarca.it
 								</p>
 								<p class="contact-phone">
-									<a href="tel:+390418628632"><img src="https://via.placeholder.com/20"> +39 0418 628632</a>
+									<a href="tel:+390418628632"><img style="width: 20px" src="<?= get_template_directory_uri() ?>/assets/images/contatti/chiamaci.svg"> +39 0418 628632</a>
 								</p>
 								<p>
 									<a class="btn btn-automarca-sm" href="<?= get_permalink(get_page_by_path('contatti/mestre')) ?>"><span>Orari e contatti<span class="arrow"></span></span></a>
@@ -91,7 +91,7 @@ get_header(); ?>
 									info@automarca.it
 								</p>
 								<p class="contact-phone">
-									<a href="tel:+390418622421"><img src="https://via.placeholder.com/20"> +39 041 8622421</a>
+									<a href="tel:+390418622421"><img style="width: 20px" src="<?= get_template_directory_uri() ?>/assets/images/contatti/chiamaci.svg"> +39 041 8622421</a>
 								</p>
 								<p>
 									<a class="btn btn-automarca-sm" href="<?= get_permalink(get_page_by_path('contatti/centro-dellusato')) ?>"><span>Orari e contatti<span class="arrow"></span></span></a>
@@ -106,7 +106,7 @@ get_header(); ?>
 									mazdatreviso@automarca.it
 								</p>
 								<p class="contact-phone">
-									<a href="tel:+390422362480"><img src="https://via.placeholder.com/20"> +39 0422 362480</a>
+									<a href="tel:+390422362480"><img style="width: 20px" src="<?= get_template_directory_uri() ?>/assets/images/contatti/chiamaci.svg"> +39 0422 362480</a>
 								</p>
 								<p>
 									<a class="btn btn-automarca-sm" href="<?= get_permalink(get_page_by_path('contatti/automarca-mazda')) ?>"><span>Orari e contatti<span class="arrow"></span></span></a>

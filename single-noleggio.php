@@ -15,7 +15,7 @@ get_header(); ?>
 						<nav aria-label="breadcrumb">
 							<ol class="breadcrumb justify-content-center justify-content-sm-start mb-3 mb-sm-0">
 								<li class="breadcrumb-item">Home</li>
-								<li class="breadcrumb-item">Auto usate </li>
+								<li class="breadcrumb-item">Noleggio </li>
 								<li class="breadcrumb-item active" aria-current="page"><?= get_the_title(); ?></li>
 							</ol>
 						</nav>
@@ -36,7 +36,7 @@ get_header(); ?>
 					<div class="col-12 col-xxl-10">
 						<div class="title-container">
 							<div class="title-1">
-								<?= get_field('marca') . ' ' . get_field('modello') ?>
+								<?= strtoupper(get_field('marca')) . ' ' . get_field('modello') ?>
 							</div>
 							<div class="title-6 subtitle"><?= get_field('descrizione') ?></div>
 						</div>
@@ -45,38 +45,10 @@ get_header(); ?>
 								<div class="row">
 									<div class="col-12 col-lg-8">
 										<div class="car-img-slider">
-											<?php for ($i = 1; $i < 11; $i++) { ?>
-												<img src="<?= get_field('foto_' . $i, get_the_ID()) ?>" class="car-img img-fluid">
-											<?php } ?>
-										</div>
-										<div class="car-thumb-slider">
-											<?php for ($y = 1; $y < 11; $y++) { ?>
-												<img src="<?= get_field('foto_' . $y, get_the_ID()) ?>" data-index="<?= $y - 1 ?>" class="car-img-thumb img-fluid">
-											<?php } ?>
+											<img src="<?= get_the_post_thumbnail_url(get_the_ID(), 'rta_thumb_center_center_1280x960') ?>" class="car-img img-fluid">
 										</div>
 									</div>
 									<div class="col-12 col-lg-4">
-										<div class="car-info">
-											<div class="title-6">
-												<img src="<?= get_template_directory_uri() ?>/assets/images/dettaglio-auto/info-vettura.svg" style="width: 23px; margin-top: -3px;"> informazioni vettura
-											</div>
-											<table class="table">
-												<tbody>
-													<tr>
-														<th>Immatricolazione</th>
-														<td><?= date_format(date_create_from_format('Y-m-d', get_field('data_immatricolazione', $car_id)), 'm/Y'); ?></td>
-													</tr>
-													<tr>
-														<th>Chilometraggio</th>
-														<td><?= number_format(intval(get_field('km', $car_id)), 0, ',', '.') . ' ' . 'km'; ?></td>
-													</tr>
-													<tr>
-														<th>Sede</th>
-														<td><?= ucfirst(get_field('sede', $car_id)); ?></td>
-													</tr>
-												</tbody>
-											</table>
-										</div>
 										<div class="car-info">
 											<div class="title-6">
 												<img src="<?= get_template_directory_uri() ?>/assets/images/dettaglio-auto/carozzeria.svg" style="width: 23px; margin-top: -3px;"> carrozzeria e colori
@@ -100,7 +72,7 @@ get_header(); ?>
 										</div>
 										<div class="car-info">
 											<div class="title-6">
-												<img src="<?= get_template_directory_uri() ?>/assets/images/dettaglio-auto/motore-meccanica.svg" style="width: 23px;margin-top: -3px;"> motore e meccanica
+												<img src="<?= get_template_directory_uri() ?>/assets/images/dettaglio-auto/motore-meccanica.svg" style="width: 23px; margin-top: -3px;"> motore e meccanica
 											</div>
 											<table class="table">
 												<tbody>
@@ -149,10 +121,6 @@ get_header(); ?>
 										<div class="row">
 											<?php
 											$optionals = get_field('lista_optionals');
-											$optionals = str_replace('<ul>', '', $optionals);
-											$optionals = str_replace('<li>', '', $optionals);
-											$optionals = str_replace('</li>', '#', $optionals);
-											$optionals = str_replace('</ul>', '', $optionals);
 
 											$optionalsArr = explode('#', $optionals);
 											array_pop($optionalsArr);
@@ -177,23 +145,40 @@ get_header(); ?>
 							</div>
 							<div class="col-12 col-xl-3">
 								<div class="price-info bg-light-blue-4">
-									<div class="title-6">
-										prezzo a te riservato
+									<div class="price-item">
+										<div class="title-6">
+											Tariffa giornaliera
+										</div>
+										<div class="price">
+											<?= number_format(floatval(get_field('tariffa', get_the_ID())), 2, ',', '.') ?> &euro;
+										</div>
 									</div>
-									<!-- <div class="price-discounted">
-										12.000 €
-									</div> -->
-									<div class="price">
-										<?= number_format(floatval(get_field('prezzo', get_the_ID())), 0, ',', '.') ?> €
+									<hr>
+									<div class="price-item">
+										<div class="title-6">
+											Costo al km eccedente
+										</div>
+										<div class="price">
+											<?= number_format(floatval(get_field('costo_km_eccedente', get_the_ID())), 2, ',', '.') ?> &euro;
+										</div>
+									</div>
+									<hr>
+									<div class="price-item">
+										<div class="title-6">
+											Al giorno inc. furto e kasco
+										</div>
+										<div class="price">
+											<?= number_format(floatval(get_field('giornaliero_coperture', get_the_ID())), 2, ',', '.') ?> &euro;
+										</div>
 									</div>
 								</div>
 								<div class="form-info mt-3 bg-light-blue-4">
 									<div class="info-title">
-										<img src="<?= get_template_directory_uri() ?>/assets/images/dettaglio-auto/richiedi-info-bianco.svg" style="width: 22px" class="img-fluid top-title-img"> richiedi informazioni
+										<img src="<?= get_template_directory_uri() ?>/assets/images/dettaglio-auto/richiedi-info-bianco.svg" style="width: 22px;" class="img-fluid top-title-img"> richiedi informazioni
 									</div>
 									<div class="info-content">
 										<div class="title-6">
-											richiedi informazioni sulla vettura
+											richiedi informazioni sul noleggio
 										</div>
 										<form action="" class="automarca-form single-car-form" id="info-form">
 											<?php
@@ -210,19 +195,20 @@ get_header(); ?>
 											?>
 											<input type="hidden" name="id_vehicle" value="<?= $id_vehicle; ?>">
 											<input type="hidden" name="this_page" value="<?= get_permalink(); ?>">
-											<input type="hidden" name="location" value="<?= get_field('field_60ffc56b245bc', get_the_ID()); ?>">
 											<input type="hidden" name="brand" value="<?= get_field('field_60ffc3567d1c2', get_the_ID()); ?>">
 											<input type="hidden" name="model" value="<?= get_field('field_60ffc3607d1c3', get_the_ID()); ?>">
 											<input type="hidden" name="version" value="<?= get_field('field_60ffc36b7d1c4', get_the_ID()); ?>">
-											<input type="hidden" name="immatricolazione" value="<?= get_field('field_60ffc3e97d1c9', get_the_ID()); ?>">
-											<input type="hidden" name="km" value="<?= get_field('field_60ffc3cd7d1c8', get_the_ID()); ?>">
-											<input type="hidden" name="price" value="<?= get_field('field_60ffc47b7d1cf',  get_the_ID()); ?>">
 											<input type="hidden" name="fuel" value="<?= get_field('field_60ffc3ac7d1c7', get_the_ID()); ?>">
 											<input type="hidden" name="kw" value="<?= get_field('field_614c57eb09afa', get_the_ID()); ?>">
-											<input type="hidden" name="type" value="<?= $tipologia; ?>">
 											<input type="hidden" name="transmission" value="<?= get_field('field_60ffc4747d1ce', get_the_ID()); ?>">
 											<input type="hidden" name="color" value="<?= get_field('field_60ffc3747d1c5', get_the_ID()); ?>">
 											<div class="row">
+												<div class="col-12 form-col">
+													<input type="text" onfocus="(this.type='date')" min="<?= date('Y-m-d') ?>" class="form-control" id="day-from" name="day_from" placeholder="Giorno ritiro *" id="" required>
+												</div>
+												<div class="col-12 form-col">
+													<input type="text" onfocus="(this.type='date')" min=" <?= date('Y-m-d') ?>" class="form-control" name="day_to" placeholder="Giorno consegna *" id="" required>
+												</div>
 												<div class="col-12 form-col">
 													<input type="text" class="form-control" name="full_name" placeholder="Nome e cognome *" id="" required>
 												</div>
@@ -235,14 +221,14 @@ get_header(); ?>
 												<div class="col-12 form-col">
 													<textarea name="message" id="" class="form-control" rows="10" placeholder="Messaggio *" required></textarea>
 												</div>
-												<div class="col-12 mb-3">
+												<!-- <div class="col-12 mb-3">
 													<div class="form-check big">
 														<input class="form-check-input big" name="test_drive" type="checkbox" id="test-drive">
 														<label class="form-check-label big" for="test-drive">
 															Richiedi test drive
 														</label>
 													</div>
-												</div>
+												</div> -->
 												<div class="col-12 mb-2">
 													<div class="form-check">
 														<input class="form-check-input" type="checkbox" id="privacy" required>
@@ -263,29 +249,17 @@ get_header(); ?>
 								<div class="call-us-btn btn-container">
 									<div class="d-grid gap-2">
 										<a href="tel:+393519391880" class="btn btn-automarca-outline-sm">
-											<img src="<?= get_template_directory_uri() ?>/assets/images/dettaglio-auto/chiamaci.svg" class="img-fluid" style="width: 15px" alt="">chiamaci +39 351 939 1880
+											<img src="<?= get_template_directory_uri() ?>/assets/images/dettaglio-auto/chiamaci.svg" style="width: 15px;" class="img-fluid"> chiamaci +39 351 939 1880
 										</a>
 									</div>
 								</div>
 								<div class="technical-sheet-btn btn-container">
 									<div class="d-grid gap-2">
-										<a id="create-technical-sheet" class="btn btn-automarca-outline-sm">
-											<img src="<?= get_template_directory_uri() ?>/assets/images/dettaglio-auto/scheda-tecnica.svg" class="img-fluid" style="width: 15px" alt="">scheda tecnica
+										<a href="#" class="btn btn-automarca-outline-sm">
+											<img src="<?= get_template_directory_uri() ?>/assets/images/dettaglio-auto/scheda-tecnica.svg" style="width: 15px;" class="img-fluid"> scheda tecnica
 										</a>
 									</div>
 								</div>
-								<!-- <div class="others-btn btn-container row">
-									<div class="col-12 col-sm-6 col-md-12 col-xxl-6">
-										<a href="#" class="btn btn-automarca-outline-sm w-100">
-											<img src="https://via.placeholder.com/15" class="img-fluid" alt="">finanziamento
-										</a>
-									</div>
-									<div class="col-12 col-sm-6 col-md-12 col-xxl-6 mt-3 mt-sm-0">
-										<a href="#" class="btn btn-automarca-outline-sm w-100">
-											<img src="https://via.placeholder.com/15" class="img-fluid" alt="">permuta
-										</a>
-									</div>
-								</div> -->
 							</div>
 						</div>
 					</div>
@@ -310,11 +284,9 @@ get_header(); ?>
 				</div>
 				<div class="row inner-mar-top justify-content-between">
 					<?php
-					$min_price = intval(get_field('prezzo', $car_id)) - (intval(get_field('prezzo', $car_id)) * 0.5);
-					$max_price = intval(get_field('prezzo', $car_id)) + (intval(get_field('prezzo', $car_id)) * 0.5);
 
 					$other_cars = get_posts([
-						'post_type' => 'auto-usate',
+						'post_type' => 'noleggio',
 						'numberposts' => 4,
 						'exclude' => [$car_id],
 						'meta_query'	=> array(
@@ -323,19 +295,7 @@ get_header(); ?>
 								'key' => 'marca',
 								'value' => get_field('marca', $post),
 								'compare' => 'LIKE'
-							),
-							array(
-								'key'	 	=> 'km',
-								'value'	  	=> get_field('km', $post),
-								'compare' 	=> '<=',
-								'type' => 'NUMERIC'
-							),
-							array(
-								'key' => 'prezzo',
-								'value' => [$min_price, $max_price],
-								'compare' => 'BETWEEN',
-								'type' => 'NUMERIC'
-							),
+							)
 						),
 					]);
 
